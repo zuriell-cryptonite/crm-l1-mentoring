@@ -1,0 +1,3159 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>C-Finance Live CRM Simulator — L1 Roleplay & Mentoring</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #F5F6F8;
+      color: #1F2937;
+      overflow-x: hidden;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F5F6F8;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D1D5DB;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #9CA3AF;
+    }
+    .coral-bg {
+      background-color: #EE4D2D;
+    }
+    .coral-bg:hover {
+      background-color: #D93E1F;
+    }
+    .coral-text {
+      color: #EE4D2D;
+    }
+    .coral-border {
+      border-color: #EE4D2D;
+    }
+    .req-star {
+      color: #EE4D2D;
+      margin-right: 2px;
+      font-weight: 700;
+    }
+    .crm-input {
+      width: 100%;
+      border: 1px solid #D1D5DB;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 12px;
+      color: #1F2937;
+      background-color: #FFFFFF;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .crm-input:focus {
+      border-color: #EE4D2D;
+      box-shadow: 0 0 0 2px rgba(238, 77, 45, 0.12);
+    }
+    .crm-input:disabled {
+      background-color: #F3F4F6;
+      color: #9CA3AF;
+      cursor: not-allowed;
+      border-color: #E5E7EB;
+    }
+    .crm-input-error {
+      border-color: #EF4444 !important;
+      background-color: #FEF2F2 !important;
+    }
+    @keyframes pulseRing {
+      0% { transform: scale(0.95); opacity: 0.7; }
+      70% { transform: scale(1.15); opacity: 0; }
+      100% { transform: scale(1.15); opacity: 0; }
+    }
+    .animate-ring::before {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 9999px;
+      border: 2px solid #10B981;
+      animation: pulseRing 1.5s infinite;
+    }
+  </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="fixed top-14 right-4 z-[70] flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- ===================================================================== -->
+  <!-- 0. LANDING / LOGIN SCREEN ("Welcome! CF Customer Service System")     -->
+  <!-- ===================================================================== -->
+  <div id="login-screen" class="fixed inset-0 bg-[#F5F6F8] z-[60] flex flex-col items-center justify-center p-4 overflow-y-auto">
+    <!-- Top Brand Logo -->
+    <div class="flex items-center gap-2 mb-6 select-none">
+      <div class="w-8 h-8 rounded-lg coral-bg flex items-center justify-center text-white font-bold text-lg shadow-xs">
+        <span>C</span>
+      </div>
+      <span class="font-bold text-gray-800 tracking-tight text-2xl">finance</span>
+    </div>
+
+    <!-- Centered Login Card -->
+    <div class="bg-white w-full max-w-[440px] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.06)] border border-gray-100 p-7 sm:p-8 text-center">
+      <h1 class="text-xl font-bold text-gray-800">Welcome!</h1>
+      <p class="text-xs text-gray-500 mt-1">Welcome CF Customer Service System</p>
+
+      <!-- Clean Vector CS Illustration (Laptop, Headset, Chat Bubbles, Coffee Mug) -->
+      <div class="my-5 flex justify-center">
+        <svg class="w-48 h-28" viewBox="0 0 240 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Decorative Dots -->
+          <circle cx="48" cy="30" r="2.5" fill="#E5E7EB" />
+          <circle cx="58" cy="30" r="2.5" fill="#E5E7EB" />
+          <circle cx="68" cy="30" r="2.5" fill="#E5E7EB" />
+          <circle cx="48" cy="40" r="2.5" fill="#E5E7EB" />
+          <circle cx="58" cy="40" r="2.5" fill="#E5E7EB" />
+          <circle cx="68" cy="40" r="2.5" fill="#E5E7EB" />
+          <!-- Bar Chart Accent Right -->
+          <rect x="186" y="58" width="6" height="22" rx="2" fill="#FEF3C7" />
+          <rect x="195" y="48" width="6" height="32" rx="2" fill="#FDE68A" />
+          <rect x="204" y="64" width="6" height="16" rx="2" fill="#E0E7FF" />
+          <!-- Laptop Screen -->
+          <rect x="72" y="34" width="96" height="62" rx="5" fill="#475569" />
+          <rect x="77" y="39" width="86" height="52" rx="2" fill="#F8FAFC" />
+          <!-- Mock UI inside Laptop -->
+          <rect x="82" y="44" width="24" height="42" rx="2" fill="#E2E8F0" />
+          <rect x="85" y="48" width="14" height="3" rx="1.5" fill="#EE4D2D" />
+          <rect x="85" y="54" width="18" height="2.5" rx="1.25" fill="#94A3B8" />
+          <rect x="85" y="59" width="16" height="2.5" rx="1.25" fill="#94A3B8" />
+          <rect x="110" y="44" width="48" height="18" rx="2" fill="#FFFFFF" stroke="#E2E8F0" />
+          <rect x="110" y="66" width="48" height="20" rx="2" fill="#FFFFFF" stroke="#E2E8F0" />
+          <!-- Laptop Base -->
+          <path d="M62 96H178L173 102H67L62 96Z" fill="#94A3B8" />
+          <!-- Headset Left -->
+          <path d="M36 74C36 62.9543 44.9543 54 56 54C67.0457 54 76 62.9543 76 74" stroke="#334155" stroke-width="4" stroke-linecap="round" />
+          <rect x="32" y="69" width="8" height="16" rx="4" fill="#EE4D2D" />
+          <rect x="72" y="69" width="8" height="16" rx="4" fill="#EE4D2D" />
+          <path d="M36 85C36 92 43 95 52 95" stroke="#334155" stroke-width="2.5" stroke-linecap="round" />
+          <circle cx="53" cy="95" r="2.5" fill="#EE4D2D" />
+          <!-- Chat Bubbles Top Right -->
+          <rect x="138" y="20" width="32" height="20" rx="4" fill="#EE4D2D" />
+          <path d="M144 40L140 45L150 40H144Z" fill="#EE4D2D" />
+          <circle cx="148" cy="30" r="1.8" fill="white" />
+          <circle cx="154" cy="30" r="1.8" fill="white" />
+          <circle cx="160" cy="30" r="1.8" fill="white" />
+          <rect x="160" y="30" width="28" height="18" rx="4" fill="#2563EB" />
+          <path d="M180 48L184 52L175 48H180Z" fill="#2563EB" />
+          <circle cx="169" cy="39" r="1.5" fill="white" />
+          <circle cx="174" cy="39" r="1.5" fill="white" />
+          <circle cx="179" cy="39" r="1.5" fill="white" />
+          <!-- Coffee Mug Right -->
+          <rect x="172" y="76" width="18" height="24" rx="3" fill="#EA580C" />
+          <path d="M190 81H194C196.209 81 198 82.7909 198 85V91C198 93.2091 196.209 95 194 95H190" stroke="#EA580C" stroke-width="2.5" />
+          <!-- Ground Line -->
+          <line x1="28" y1="102" x2="212" y2="102" stroke="#CBD5E1" stroke-width="2" stroke-linecap="round" />
+        </svg>
+      </div>
+
+      <!-- Role Selector Tabs (Agent vs Mentor) -->
+      <div class="grid grid-cols-2 gap-1.5 bg-gray-100 p-1 rounded-md mb-4 text-xs font-semibold">
+        <button type="button" id="role-tab-agent" onclick="selectLoginRole('agent')"
+          class="py-2 rounded bg-white text-gray-800 shadow-2xs transition-all flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-headset coral-text"></i>
+          <span>Agent (Mentoring)</span>
+        </button>
+        <button type="button" id="role-tab-mentor" onclick="selectLoginRole('mentor')"
+          class="py-2 rounded text-gray-500 hover:text-gray-800 transition-all flex items-center justify-center gap-1.5">
+          <i class="fa-solid fa-chalkboard-user text-indigo-600"></i>
+          <span>Mentor</span>
+        </button>
+      </div>
+
+      <!-- AGENT LOGIN FIELDS -->
+      <div id="login-form-agent" class="space-y-3 text-left text-xs mb-5">
+        <div>
+          <label class="text-gray-600 font-medium block mb-1">Nama Lengkap Agent (Trainee)</label>
+          <input id="login-agent-name" type="text" placeholder="Contoh: Budi Santoso" class="crm-input py-2" />
+        </div>
+        <div>
+          <label class="text-gray-600 font-medium block mb-1">Channel / Tim L1</label>
+          <select id="login-agent-role" class="crm-input py-2">
+            <option value="Agent L1 Call SPaylater">Agent L1 Call SPaylater</option>
+            <option value="Agent L1 Email SPaylater">Agent L1 Email SPaylater</option>
+            <option value="Agent L1 CCS SPaylater">Agent L1 CCS SPaylater</option>
+            <option value="Agent L1 Live Chat">Agent L1 Live Chat</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- MENTOR LOGIN FIELDS -->
+      <div id="login-form-mentor" class="hidden space-y-3 text-left text-xs mb-5">
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-gray-600 font-medium">Mentor ID / Nama Mentor</label>
+            <span id="sheet-sync-badge" class="text-[10px] text-emerald-600 font-medium flex items-center gap-1">
+              <i class="fa-solid fa-rotate fa-spin"></i> Syncing Sheet...
+            </span>
+          </div>
+          <input id="login-mentor-id" list="mentor-id-datalist" type="text" placeholder="Ketik atau pilih Mentor ID dari sheet..." class="crm-input py-2" />
+          <datalist id="mentor-id-datalist"></datalist>
+        </div>
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="text-gray-600 font-medium">PIN Akses Mentor</label>
+            <span class="text-[10px] text-gray-400">PIN default: 1234</span>
+          </div>
+          <input id="login-mentor-pin" type="password" value="1234" placeholder="Masukkan PIN Mentor..." class="crm-input py-2" />
+        </div>
+      </div>
+
+      <!-- Primary Orange Login Button -->
+      <button onclick="handleAppLogin()" class="w-full py-2.5 rounded coral-bg text-white font-semibold text-xs tracking-wide shadow-xs transition-all">
+        Login
+      </button>
+
+      <div class="mt-4 flex items-center justify-between text-[11px] text-gray-400">
+        <span>Simulasi Mentoring L1 CS</span>
+        <button type="button" onclick="syncFromGoogleSheet(true)" class="text-indigo-600 hover:underline font-medium flex items-center gap-1">
+          <i class="fa-solid fa-cloud-arrow-down"></i> Refresh Data Sheet
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- MODALS                                                                -->
+  <!-- ===================================================================== -->
+  <div id="modal-backdrop" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
+
+    <!-- MODAL: MACRO TEMPLATES -->
+    <div id="modal-macro" class="hidden bg-white rounded-lg shadow-xl w-full max-w-lg overflow-hidden">
+      <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+        <h3 class="font-semibold text-sm text-gray-800"><i class="fa-solid fa-bolt coral-text mr-1.5"></i>L1 CS Macro Templates</h3>
+        <button onclick="closeAllModals()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="p-4 space-y-2.5 max-h-96 overflow-y-auto text-xs" id="macro-list-container"></div>
+    </div>
+
+    <!-- MODAL: CASE ESCALATION -->
+    <div id="modal-escalation" class="hidden bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden">
+      <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+        <h3 class="font-semibold text-sm text-gray-800">Case Escalation</h3>
+        <button onclick="closeAllModals()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="p-4 space-y-3 text-xs">
+        <div>
+          <label class="text-gray-600 font-medium block mb-1">Target Queue (Sesuai Master Queue Sheet)</label>
+          <select id="esc-target-team" class="crm-input"></select>
+        </div>
+        <div>
+          <label class="text-gray-600 font-medium block mb-1">Escalation Reason</label>
+          <select id="esc-reason" class="crm-input">
+            <option value="other">other</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-gray-600 font-medium block mb-1">Handover Note (Wajib diisi L1)</label>
+          <textarea id="esc-note" rows="3" placeholder="Tuliskan detail verifikasi dan ringkasan untuk tim L2/L3..." class="crm-input"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button onclick="closeAllModals()" class="px-3 py-1.5 rounded border border-gray-300 text-gray-600">Batal</button>
+          <button onclick="submitEscalation()" class="px-4 py-1.5 rounded coral-bg text-white font-medium">Submit Escalation</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: SCENARIO LIBRARY -->
+    <div id="modal-scenario" class="hidden bg-white rounded-lg shadow-xl w-full max-w-xl overflow-hidden">
+      <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+        <h3 class="font-semibold text-sm text-gray-800">Pilih Skenario Mentoring L1 CS</h3>
+        <button onclick="closeAllModals()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="p-4 space-y-2.5 text-xs max-h-[80vh] overflow-y-auto" id="modal-scenario-list"></div>
+    </div>
+
+    <!-- MODAL: CUSTOMER REPLY INJECTOR -->
+    <div id="modal-customer-reply" class="hidden bg-white rounded-lg shadow-xl w-full max-w-md overflow-hidden">
+      <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+        <h3 class="font-semibold text-sm text-gray-800">Simulasi Balasan Customer (Mentor Tool)</h3>
+        <button onclick="closeAllModals()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="p-4 space-y-3 text-xs">
+        <div>
+          <label class="text-gray-600 block mb-1">Channel Balasan</label>
+          <select id="sim-cust-channel" class="crm-input">
+            <option value="Inbound Email">Inbound Email</option>
+            <option value="Inbound Live Chat">Inbound Live Chat</option>
+            <option value="Inbound Social Media">Inbound Social Media</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-gray-600 block mb-1">Isi Pesan Customer</label>
+          <textarea id="sim-cust-message" rows="4" placeholder="Ketik balasan dari sisi customer..." class="crm-input"></textarea>
+        </div>
+        <div class="flex justify-end gap-2">
+          <button onclick="closeAllModals()" class="px-3 py-1.5 rounded border border-gray-300 text-gray-600">Batal</button>
+          <button onclick="submitCustomCustomerReply()" class="px-4 py-1.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-medium">Kirim sebagai Customer</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL: GENERIC (APPROVAL / REMINDER / SOP / CSV SYNC / PREVIEW) -->
+    <div id="modal-generic" class="hidden bg-white rounded-lg shadow-xl w-full max-w-lg overflow-hidden">
+      <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
+        <h3 id="generic-modal-title" class="font-semibold text-sm text-gray-800">Detail</h3>
+        <button onclick="closeAllModals()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="generic-modal-body" class="p-4 text-xs space-y-3 max-h-[80vh] overflow-y-auto"></div>
+    </div>
+
+    <!-- MODAL: CREATE CUSTOM SCENARIO (MENTOR BUILDER) -->
+    <div id="modal-create-scenario" class="hidden bg-white rounded-lg shadow-xl w-full max-w-xl overflow-hidden">
+      <div class="px-4 py-3 bg-indigo-900 text-white flex items-center justify-between">
+        <h3 class="font-semibold text-sm"><i class="fa-solid fa-wand-magic-sparkles mr-1.5 text-indigo-300"></i>Buat Skenario Kasus Baru (Mentor Builder)</h3>
+        <button onclick="closeAllModals()" class="text-indigo-200 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="p-4 text-xs space-y-3 max-h-[82vh] overflow-y-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="text-gray-600 font-medium block mb-1">Judul Skenario *</label>
+            <input id="new-sc-title" type="text" placeholder="Contoh: Skenario 4 - Kendala Refund" class="crm-input" />
+          </div>
+          <div>
+            <label class="text-gray-600 font-medium block mb-1">Case ID *</label>
+            <input id="new-sc-caseid" type="text" value="2123761161830707287" class="crm-input" />
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="text-gray-600 font-medium block mb-1">Case Origin</label>
+            <select id="new-sc-origin" class="crm-input">
+              <option value="Call">Call</option>
+              <option value="Chat">Chat</option>
+              <option value="Email">Email</option>
+              <option value="Instagram-Private">Instagram-Private</option>
+              <option value="Whatsapp-Private">Whatsapp-Private</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-gray-600 font-medium block mb-1">Credit Product</label>
+            <select id="new-sc-product" class="crm-input">
+              <option value="SPaylater">SPaylater</option>
+              <option value="SPaylater Limit Xtra">SPaylater Limit Xtra</option>
+              <option value="Cicilan Motor by SPaylater">Cicilan Motor by SPaylater</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-gray-600 font-medium block mb-1">Email Nasabah (Dummy)</label>
+            <input id="new-sc-email" type="email" value="nasabah.roleplay@example.com" class="crm-input" />
+          </div>
+        </div>
+        <div>
+          <label class="text-gray-600 font-medium block mb-1">Target Reason Code L3 (Kunci Jawaban QA) *</label>
+          <select id="new-sc-target-l3" class="crm-input"></select>
+        </div>
+        <div>
+          <label class="text-gray-600 font-medium block mb-1">Pesan Awal Customer / Kronologi Kasus *</label>
+          <textarea id="new-sc-message" rows="3" placeholder="Tuliskan keluhan nasabah yang akan muncul di timeline..." class="crm-input"></textarea>
+        </div>
+        <div class="flex items-center justify-between pt-2 border-t border-gray-100">
+          <label class="flex items-center gap-1.5 text-gray-600 cursor-pointer">
+            <input id="new-sc-blank-mandatory" type="checkbox" checked class="rounded text-indigo-600" />
+            <span>Kosongkan Reason Code & Priority awal agar Trainee mengisi sendiri</span>
+          </label>
+          <div class="flex gap-2">
+            <button onclick="closeAllModals()" class="px-3 py-1.5 rounded border border-gray-300 text-gray-600">Batal</button>
+            <button onclick="saveNewCustomScenario()" class="px-4 py-1.5 rounded coral-bg text-white font-semibold">Simpan & Mulai</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 1. TOP NAVIGATION HEADER                                              -->
+  <!-- ===================================================================== -->
+  <header class="h-12 bg-white border-b border-gray-200 px-3 flex items-center justify-between shrink-0 z-30">
+    <!-- Left: Brand + Live Badge + Active Ticket Tab -->
+    <div class="flex items-center gap-3 min-w-0">
+      <div class="flex items-center gap-1.5 select-none">
+        <div class="w-6 h-6 rounded-full coral-bg flex items-center justify-center text-white font-bold text-xs shadow-xs">
+          <span>C</span>
+        </div>
+        <span class="font-semibold text-gray-800 tracking-tight text-base">finance</span>
+        <span class="coral-bg text-white text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider">Live</span>
+      </div>
+
+      <!-- Ticket Tabs -->
+      <div class="hidden md:flex items-center border-l border-gray-200 pl-3 gap-1.5">
+        <button id="tab-buat-kasus" onclick="handleBuatKasusTabClick()" class="flex items-center gap-1.5 px-2.5 py-1 rounded text-xs text-gray-500 hover:bg-gray-100 transition-colors" title="Buat Kasus / Skenario Baru">
+          <i class="fa-solid fa-file-circle-plus text-gray-400"></i>
+          <span>Buat Kasus</span>
+        </button>
+        <div class="flex items-center gap-2 px-2.5 py-1 rounded bg-orange-50/70 border-b-2 coral-border text-xs font-medium coral-text">
+          <i class="fa-solid fa-ticket text-[11px]"></i>
+          <span id="tab-case-id">...235025</span>
+          <button onclick="resetCurrentScenario()" title="Reset Skenario" class="text-gray-400 hover:text-gray-700 ml-1">
+            <i class="fa-solid fa-rotate-right text-[10px]"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center: Global Search Bar -->
+    <div class="hidden sm:flex items-center max-w-md w-full mx-4">
+      <div class="flex w-full border border-gray-300 rounded overflow-hidden focus-within:border-[#EE4D2D] bg-white">
+        <select id="search-scope" class="bg-gray-50 text-gray-600 text-xs px-2.5 py-1.5 border-r border-gray-200 outline-none">
+          <option value="all">All</option>
+          <option value="case">Case ID</option>
+          <option value="uid">Shopee UID</option>
+        </select>
+        <input id="global-search-input" type="text" value="2123740026664235025" placeholder="Cari Case ID / User ID..."
+          onkeydown="if(event.key==='Enter') handleGlobalSearch()"
+          class="w-full px-2.5 py-1 text-xs text-gray-700 outline-none" />
+        <button onclick="handleGlobalSearch()" class="px-3 bg-gray-100 hover:bg-gray-200 text-gray-600 border-l border-gray-200 transition-colors">
+          <i class="fa-solid fa-magnifying-glass text-xs"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Right: Role Badge + Mentor Panel + Quick Create + Phone + Status + Profile -->
+    <div class="flex items-center gap-2 sm:gap-2.5">
+      <span id="header-role-badge" class="hidden sm:inline-block px-2 py-0.5 text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded">
+        AGENT TRAINEE
+      </span>
+
+      <button id="mentor-toggle-btn" onclick="toggleMentorDrawer()"
+        class="hidden flex items-center gap-1.5 px-2.5 py-1 rounded bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-semibold transition-all">
+        <i class="fa-solid fa-chalkboard-user"></i>
+        <span class="hidden lg:inline">Mentor Panel</span>
+        <span id="qa-score-pill" class="px-1.5 py-0.2 bg-indigo-600 text-white rounded-full text-[10px]">0/6</span>
+      </button>
+
+      <button id="header-new-case-btn" onclick="openCreateScenarioModal()" title="Buat Kasus / Skenario Baru" class="hidden w-7 h-7 rounded-full bg-gray-700 hover:bg-gray-800 text-white flex items-center justify-center text-xs">
+        <i class="fa-solid fa-plus"></i>
+      </button>
+
+      <button onclick="togglePhoneWidget()" title="Simulasi Softphone Call" class="w-7 h-7 rounded-full hover:bg-gray-100 text-emerald-600 flex items-center justify-center text-sm relative">
+        <i class="fa-solid fa-phone"></i>
+      </button>
+
+      <!-- Agent Status Dropdown -->
+      <div class="relative">
+        <button onclick="toggleStatusMenu()" class="flex items-center gap-1.5 px-2 py-1 rounded hover:bg-gray-100 text-xs text-gray-600 border border-transparent hover:border-gray-200">
+          <span id="status-dot" class="w-2.5 h-2.5 rounded-full bg-gray-400"></span>
+          <span id="status-label" class="hidden sm:inline font-medium">Offline</span>
+          <i class="fa-solid fa-caret-down text-[10px] text-gray-400"></i>
+        </button>
+        <div id="status-dropdown" class="hidden absolute right-0 mt-1 w-36 bg-white rounded-md shadow-lg border border-gray-200 py-1 text-xs z-50">
+          <button onclick="setAgentStatus('Online', 'bg-emerald-500')" class="w-full px-3 py-1.5 text-left hover:bg-gray-50 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> Online
+          </button>
+          <button onclick="setAgentStatus('Busy / ACW', 'bg-amber-500')" class="w-full px-3 py-1.5 text-left hover:bg-gray-50 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-amber-500"></span> Busy / ACW
+          </button>
+          <button onclick="setAgentStatus('Offline', 'bg-gray-400')" class="w-full px-3 py-1.5 text-left hover:bg-gray-50 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-gray-400"></span> Offline
+          </button>
+        </div>
+      </div>
+
+      <!-- User Profile & Logout Menu -->
+      <div class="relative">
+        <button onclick="toggleProfileMenu()" class="flex items-center gap-1.5 pl-1 pr-2 py-0.5 rounded-full hover:bg-gray-100 border border-gray-200">
+          <div id="header-avatar-initials" class="w-6 h-6 rounded-full coral-bg text-white flex items-center justify-center font-bold text-[10px] shrink-0">
+            CS
+          </div>
+          <span id="header-user-name" class="hidden md:inline text-xs font-medium text-gray-700 max-w-[120px] truncate">Agent L1</span>
+          <i class="fa-solid fa-chevron-down text-[9px] text-gray-400"></i>
+        </button>
+        <div id="profile-dropdown" class="hidden absolute right-0 mt-1 w-52 bg-white rounded-md shadow-lg border border-gray-200 py-1.5 text-xs z-50">
+          <div class="px-3 py-1.5 border-b border-gray-100">
+            <div id="menu-user-fullname" class="font-semibold text-gray-800 truncate">Agent L1</div>
+            <div id="menu-user-role" class="text-[10px] text-gray-500 truncate">Agent L1 Call SPaylater</div>
+          </div>
+          <button onclick="handleAppLogout()" class="w-full px-3 py-2 text-left text-red-600 hover:bg-red-50 flex items-center gap-2 font-medium">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Logout / Ganti Peran</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================================================================== -->
+  <!-- 2. MAIN WORKSPACE AREA                                                -->
+  <!-- ===================================================================== -->
+  <div class="flex-1 flex overflow-hidden relative">
+
+    <!-- Far-Left Slim Icon Sidebar -->
+    <aside class="w-11 bg-white border-r border-gray-200 flex flex-col items-center py-3 gap-4 text-gray-400 shrink-0 select-none">
+      <button onclick="openScenarioModal()" title="Daftar Skenario Roleplay" class="w-8 h-8 rounded bg-orange-50 coral-text flex items-center justify-center">
+        <i class="fa-solid fa-inbox text-sm"></i>
+      </button>
+      <button id="rail-mentor-btn" onclick="toggleMentorDrawer()" title="Mentor Panel & QA" class="hidden w-8 h-8 rounded hover:bg-gray-100 hover:text-gray-700 flex items-center justify-center">
+        <i class="fa-solid fa-graduation-cap text-sm"></i>
+      </button>
+      <button id="rail-csv-btn" onclick="openCsvSyncModal()" title="Sync Base Data Google Sheets (CSV)" class="hidden w-8 h-8 rounded hover:bg-gray-100 hover:text-gray-700 flex items-center justify-center">
+        <i class="fa-solid fa-table text-sm"></i>
+      </button>
+      <button onclick="openKnowledgeModal()" title="Panduan Mandatory Field L1" class="w-8 h-8 rounded hover:bg-gray-100 hover:text-gray-700 flex items-center justify-center">
+        <i class="fa-regular fa-circle-question text-sm"></i>
+      </button>
+    </aside>
+
+    <!-- =================================================================== -->
+    <!-- LEFT COLUMN: INFO KASUS (READ MODE & FULL PENCIL EDIT MODE)         -->
+    <!-- =================================================================== -->
+    <section class="w-full md:w-[330px] lg:w-[355px] bg-white border-r border-gray-200 flex flex-col shrink-0 overflow-hidden">
+      <!-- Sticky Header Info Kasus -->
+      <div class="px-4 py-3 border-b border-gray-100 flex items-center justify-between bg-white shrink-0">
+        <div class="flex items-center gap-2">
+          <h2 class="font-semibold text-[15px] text-gray-800">Info Kasus</h2>
+          <span class="w-4 h-4 rounded-full border-2 border-emerald-500 border-t-transparent inline-block"></span>
+          <span id="edit-mode-badge" class="hidden px-1.5 py-0.5 bg-orange-100 coral-text text-[10px] font-semibold rounded">Edit Mode</span>
+        </div>
+        <button id="edit-case-btn" onclick="toggleEditCaseInfo()" title="Edit Info Kasus (Mandatory Field)"
+          class="w-7 h-7 rounded hover:bg-gray-100 text-gray-600 flex items-center justify-center transition-colors">
+          <i class="fa-solid fa-pen text-xs"></i>
+        </button>
+      </div>
+
+      <!-- Scrollable Body Info Kasus -->
+      <div id="left-info-scroll" class="flex-1 overflow-y-auto px-4 py-3 text-xs space-y-4">
+
+        <!-- REASON CODE BLOCK -->
+        <div>
+          <div class="text-gray-500 font-medium mb-1">
+            <span id="star-rc" class="req-star hidden">*</span>Reason Code
+          </div>
+          <!-- Read View -->
+          <div id="rc-read-view" class="space-y-1 text-gray-800 leading-snug">
+            <div id="rc-l1-text">L1-SPayLater & Kredit Lainnya</div>
+            <div id="rc-l2-text">L2-Akun & Keamanan</div>
+            <div id="rc-l3-text">L3-Akun pembayaran dibekukan</div>
+          </div>
+          <!-- Edit View (Cascading L1 -> L2 -> L3 + Quick Search) -->
+          <div id="rc-edit-view" class="hidden space-y-2 bg-gray-50 p-2.5 rounded border border-gray-200">
+            <input id="rc-search-input" type="text" placeholder="Cari cepat Reason Code L3..." oninput="filterReasonCodeCombined(this.value)" class="crm-input text-[11px]" />
+            <div>
+              <label class="text-[10px] text-gray-500 block mb-0.5">Level 1</label>
+              <select id="rc-l1-select" onchange="onRcL1Change()" class="crm-input"></select>
+            </div>
+            <div>
+              <label class="text-[10px] text-gray-500 block mb-0.5">Level 2</label>
+              <select id="rc-l2-select" onchange="onRcL2Change()" class="crm-input"></select>
+            </div>
+            <div>
+              <label class="text-[10px] text-gray-500 block mb-0.5">Level 3</label>
+              <select id="rc-l3-select" class="crm-input"></select>
+            </div>
+          </div>
+        </div>
+
+        <!-- CASE BASIC INFO SECTION -->
+        <div class="border-t border-gray-100 pt-3">
+          <button onclick="toggleSection('basic-info-body', 'basic-info-chev')" class="w-full flex items-center justify-between font-semibold text-gray-800 mb-3">
+            <span>Case Basic Info</span>
+            <i id="basic-info-chev" class="fa-solid fa-chevron-down text-[10px] text-gray-500 transition-transform"></i>
+          </button>
+
+          <div id="basic-info-body" class="space-y-3">
+            <!-- Case ID (Non-editable) -->
+            <div>
+              <div class="text-gray-400 text-[11px] mb-0.5">Case ID</div>
+              <div class="flex items-center gap-1.5 text-gray-800">
+                <span id="disp-case-id">2123740026664235025</span>
+                <button onclick="copyTextValue(currentState.caseId, 'Case ID')" class="text-blue-500 hover:text-blue-700" title="Salin Case ID">
+                  <i class="fa-regular fa-copy text-[11px]"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- * Case Status -->
+            <div>
+              <div class="text-gray-500 text-[11px] mb-1"><span class="req-star edit-star hidden">*</span>Case Status</div>
+              <div id="read-case-status">
+                <span id="badge-case-status" class="inline-block px-2 py-0.5 rounded bg-red-50 text-red-500 text-[11px] font-medium border border-red-100">Open</span>
+              </div>
+              <select id="edit-case-status" class="crm-input hidden">
+                <option value="Open">Open</option>
+                <option value="Pending">Pending</option>
+                <option value="On Hold">On Hold</option>
+                <option value="Solved">Solved</option>
+              </select>
+            </div>
+
+            <!-- * Case Origin -->
+            <div>
+              <div class="text-gray-500 text-[11px] mb-1"><span class="req-star edit-star hidden">*</span>Case Origin</div>
+              <div id="read-case-origin" class="text-gray-800">Call</div>
+              <select id="edit-case-origin" class="crm-input hidden"></select>
+            </div>
+
+            <!-- Case Created time (Non-editable) -->
+            <div>
+              <div class="text-gray-400 text-[11px] mb-0.5">Case Created time</div>
+              <div id="disp-created-time" class="text-gray-800">20-11-2026 18:27 +0700</div>
+            </div>
+
+            <!-- Case Age (Non-editable) -->
+            <div>
+              <div class="text-gray-400 text-[11px] mb-0.5">Case Age</div>
+              <div id="disp-case-age" class="text-gray-800">1 hari 19 jam 8 menit</div>
+            </div>
+
+            <!-- * Case Owner (Agent / Queue Dual Control + assign to me) -->
+            <div>
+              <div class="text-gray-500 text-[11px] mb-1"><span class="req-star edit-star hidden">*</span>Case Owner</div>
+              <div id="read-case-owner" class="flex items-start gap-1.5 text-gray-800 leading-snug">
+                <i id="read-owner-icon" class="fa-solid fa-user-tie text-emerald-600 mt-0.5"></i>
+                <span id="disp-case-owner">Ifin Nur Primandiri | ID L1 Call Spaylater Agent</span>
+              </div>
+              <div id="edit-case-owner-wrap" class="hidden flex gap-1.5">
+                <select id="edit-owner-type" onchange="onOwnerTypeChange()" class="crm-input !w-24 shrink-0">
+                  <option value="Agent">Agent</option>
+                  <option value="Queue">Queue</option>
+                </select>
+                <select id="edit-owner-value" onchange="onOwnerValueChange()" class="crm-input"></select>
+              </div>
+              <button onclick="assignToMe()" class="text-blue-500 hover:underline text-[11px] mt-1 inline-block font-medium">assign to me</button>
+            </div>
+
+            <!-- Case Owner Team -->
+            <div>
+              <div class="text-gray-400 text-[11px] mb-0.5">Case Owner Team</div>
+              <div id="disp-owner-team" class="text-gray-800 leading-snug">ID - Credit - L1 - Call Credit - Agent</div>
+            </div>
+
+            <!-- * Entry Point -->
+            <div>
+              <div class="text-gray-500 text-[11px] mb-1"><span class="req-star edit-star hidden">*</span>Entry Point</div>
+              <div id="read-entry-point" class="text-gray-800">None</div>
+              <select id="edit-entry-point" class="crm-input hidden">
+                <option value="">Pilih</option>
+                <option value="None">None</option>
+                <option value="ShopeePayHC">ShopeePayHC</option>
+              </select>
+            </div>
+
+            <!-- * Case Priority -->
+            <div>
+              <div class="text-gray-500 text-[11px] mb-1"><span class="req-star edit-star hidden">*</span>Case Priority</div>
+              <div id="read-case-priority" class="text-gray-800">Medium</div>
+              <select id="edit-case-priority" class="crm-input hidden">
+                <option value="">Pilih</option>
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Critical">Critical</option>
+              </select>
+            </div>
+
+            <!-- * Case Subject (400 char counter) -->
+            <div>
+              <div class="text-gray-500 text-[11px] mb-1"><span class="req-star edit-star hidden">*</span>Case Subject</div>
+              <div id="read-case-subject" class="text-gray-800 break-words">2123740026664235025 - permintaan pembekuan akun</div>
+              <div id="edit-case-subject-wrap" class="hidden">
+                <textarea id="edit-case-subject" rows="2" maxlength="400" oninput="updateCharCounter('edit-case-subject', 'subject-counter', 400)" class="crm-input"></textarea>
+                <div class="flex justify-between text-[10px] text-gray-400 mt-0.5">
+                  <span>Wajib 1 - 400 karakter</span>
+                  <span id="subject-counter">0 / 400</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Shopee User ID -->
+            <div>
+              <div class="text-gray-500 text-[11px] mb-1">Shopee User ID</div>
+              <div id="read-shopee-uid" class="text-gray-800">805017450</div>
+              <input id="edit-shopee-uid" type="text" class="crm-input hidden" />
+            </div>
+
+            <!-- Case Description (400 char counter) -->
+            <div>
+              <div class="text-gray-500 text-[11px] mb-1">Case Description</div>
+              <div id="read-case-desc" class="text-gray-800 break-words">Normal / - NA - NA</div>
+              <div id="edit-case-desc-wrap" class="hidden">
+                <textarea id="edit-case-desc" rows="2" maxlength="400" oninput="updateCharCounter('edit-case-desc', 'desc-counter', 400)" class="crm-input"></textarea>
+                <div class="flex justify-end text-[10px] text-gray-400 mt-0.5">
+                  <span id="desc-counter">0 / 400</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Case Last Modified Time -->
+            <div>
+              <div class="text-gray-400 text-[11px] mb-0.5">Case Last Modified Time</div>
+              <div id="disp-modified-time" class="text-gray-800">21-11-2026 15:09 +0700</div>
+            </div>
+
+            <!-- * Credit Product -->
+            <div>
+              <div class="text-gray-500 text-[11px] mb-1"><span class="req-star edit-star hidden">*</span>Credit Product</div>
+              <div id="read-credit-product" class="text-gray-800">SPaylater</div>
+              <select id="edit-credit-product" class="crm-input hidden">
+                <option value="">Pilih</option>
+                <option value="SPaylater">SPaylater</option>
+                <option value="SPaylater Limit Xtra">SPaylater Limit Xtra</option>
+                <option value="Cicilan Motor by SPaylater">Cicilan Motor by SPaylater</option>
+              </select>
+            </div>
+
+            <!-- Escalation reason (only 'other') -->
+            <div>
+              <div class="text-gray-500 text-[11px] mb-1">Escalation reason</div>
+              <div id="read-escalation-reason" class="text-gray-800">-</div>
+              <select id="edit-escalation-reason" class="crm-input hidden">
+                <option value="">Pilih</option>
+                <option value="other">other</option>
+              </select>
+            </div>
+
+            <!-- Sentiment -->
+            <div>
+              <div class="text-gray-500 text-[11px] mb-1">Sentiment</div>
+              <div id="read-sentiment" class="text-gray-800">Complaint</div>
+              <select id="edit-sentiment" onchange="onSentimentChange()" class="crm-input hidden">
+                <option value="">Pilih</option>
+                <option value="Hard Complaint">Hard Complaint</option>
+                <option value="Complaint">Complaint</option>
+                <option value="Non Complaint">Non Complaint</option>
+                <option value="Positive">Positive</option>
+              </select>
+            </div>
+
+            <!-- Hard Complaint Type -->
+            <div>
+              <div class="text-gray-500 text-[11px] mb-1">Hard Complaint Type</div>
+              <div id="read-hc-type" class="text-gray-800">-</div>
+              <select id="edit-hc-type" onchange="onHcTypeChange()" class="crm-input hidden">
+                <option value="">Pilih</option>
+                <option value="HCP1">HCP1</option>
+                <option value="HCP2">HCP2</option>
+                <option value="HCP3">HCP3</option>
+                <option value="Non HCP - Khusus Noti Admin">Non HCP - Khusus Noti Admin</option>
+              </select>
+            </div>
+
+            <!-- Hard Complaint Hashtag -->
+            <div>
+              <div class="text-gray-500 text-[11px] mb-1">Hard Complaint Hashtag</div>
+              <div id="read-hc-hashtag" class="text-gray-800">-</div>
+              <select id="edit-hc-hashtag" class="crm-input hidden"></select>
+            </div>
+
+            <!-- Offering Csat (Disabled / Locked for L1 as requested) -->
+            <div>
+              <div class="text-gray-400 text-[11px] mb-1">Offering Csat <span class="text-[10px] italic">(Locked L1)</span></div>
+              <div id="read-offering-csat" class="text-gray-400">-</div>
+              <select id="edit-offering-csat" disabled class="crm-input hidden">
+                <option value="">Tidak perlu diubah L1</option>
+              </select>
+            </div>
+
+            <!-- Remark CSAT (Disabled / Locked for L1 as requested) -->
+            <div>
+              <div class="text-gray-400 text-[11px] mb-1">Remark CSAT <span class="text-[10px] italic">(Locked L1)</span></div>
+              <div id="read-remark-csat" class="text-gray-400">-</div>
+              <select id="edit-remark-csat" disabled class="crm-input hidden">
+                <option value="">Tidak perlu diubah L1</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- CASE CUSTOMER INFO SECTION -->
+        <div class="border-t border-gray-100 pt-3">
+          <button onclick="toggleSection('cust-info-body', 'cust-info-chev')" class="w-full flex items-center justify-between font-semibold text-gray-800 mb-3">
+            <span>Case Customer Info</span>
+            <i id="cust-info-chev" class="fa-solid fa-chevron-down text-[10px] text-gray-500 transition-transform"></i>
+          </button>
+
+          <div id="cust-info-body" class="space-y-3">
+            <!-- CS User ID -->
+            <div>
+              <div class="text-gray-400 text-[11px] mb-0.5">CS User ID</div>
+              <div class="flex items-center gap-1.5 text-gray-800">
+                <span id="disp-cs-uid">948877868455457</span>
+                <button onclick="copyTextValue(currentState.csUserId, 'CS User ID')" class="text-blue-500 hover:text-blue-700">
+                  <i class="fa-regular fa-copy text-[11px]"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Request Email -->
+            <div>
+              <div class="text-gray-500 text-[11px] mb-1">Request Email</div>
+              <div id="read-req-email" class="text-gray-800 break-all">ida_rahmawati29@yahoo.com</div>
+              <div id="edit-req-email-wrap" class="hidden">
+                <input id="edit-req-email" type="email" maxlength="200" oninput="updateCharCounter('edit-req-email', 'email-counter', 200)" class="crm-input" />
+                <div class="flex justify-end text-[10px] text-gray-400 mt-0.5"><span id="email-counter">0 / 200</span></div>
+              </div>
+            </div>
+
+            <!-- Request Phone (ID +62 + Number) -->
+            <div>
+              <div class="text-gray-500 text-[11px] mb-1">Request Phone</div>
+              <div id="read-req-phone" class="text-gray-800">ID +62 811 190 293 32</div>
+              <div id="edit-req-phone-wrap" class="hidden flex gap-1.5">
+                <select id="edit-phone-prefix" class="crm-input !w-24 shrink-0">
+                  <option value="ID +62">ID +62</option>
+                </select>
+                <input id="edit-req-phone" type="text" placeholder="812 3456 7890" class="crm-input" />
+              </div>
+            </div>
+
+            <!-- Request Social Media Account (Platform Dropdown + Username Input) -->
+            <div>
+              <div class="text-gray-500 text-[11px] mb-1">Request Social Media Account</div>
+              <div id="read-req-sosmed" class="text-gray-800">-</div>
+              <div id="edit-req-sosmed-wrap" class="hidden flex gap-1.5">
+                <select id="edit-sosmed-platform" class="crm-input !w-28 shrink-0">
+                  <option value="">Pilih</option>
+                  <option value="Facebook">Facebook</option>
+                  <option value="Instagram">Instagram</option>
+                  <option value="Twitter/X">Twitter/X</option>
+                  <option value="WhatsApp">WhatsApp</option>
+                  <option value="TikTok">TikTok</option>
+                </select>
+                <input id="edit-sosmed-handle" type="text" placeholder="Input nama/username sosmed..." class="crm-input" />
+              </div>
+            </div>
+
+            <!-- User Type -->
+            <div>
+              <div class="text-gray-500 text-[11px] mb-1">User Type</div>
+              <div id="read-user-type" class="text-gray-800">Buyer</div>
+              <select id="edit-user-type" class="crm-input hidden">
+                <option value="Buyer">Buyer</option>
+                <option value="Seller">Seller</option>
+                <option value="None">None</option>
+              </select>
+            </div>
+
+            <!-- Business User Identity -->
+            <div>
+              <div class="text-gray-500 text-[11px] mb-1">Business User Identity</div>
+              <div id="read-biz-identity" class="text-gray-800">Shopee TuC : idha29</div>
+              <div id="edit-biz-identity-wrap" class="hidden flex gap-1.5">
+                <select id="edit-biz-type" class="crm-input !w-28 shrink-0">
+                  <option value="Shopee TuC">Shopee TuC</option>
+                  <option value="Shopee Merchant">Shopee Merchant</option>
+                  <option value="None">None</option>
+                </select>
+                <input id="edit-biz-value" type="text" class="crm-input" />
+              </div>
+            </div>
+
+            <!-- IC Number -->
+            <div>
+              <div class="text-gray-500 text-[11px] mb-1">IC Number</div>
+              <div id="read-ic-number" class="text-gray-800">-</div>
+              <input id="edit-ic-number" type="text" placeholder="Masukkan NIK / IC..." class="crm-input hidden" />
+            </div>
+          </div>
+        </div>
+
+        <!-- CASE SYSTEM INFO SECTION -->
+        <div class="border-t border-gray-100 pt-3">
+          <div class="font-semibold text-gray-800 mb-2">Case System Info</div>
+          <div class="text-gray-400 text-[11px] mb-0.5">Number of Incoming Contacts</div>
+          <div id="disp-incoming-contacts" class="text-gray-800 font-medium">1</div>
+        </div>
+      </div>
+
+      <!-- Sticky Edit Mode Footer: Batal & Simpan -->
+      <div id="left-edit-footer" class="hidden px-4 py-2.5 bg-white border-t border-gray-200 flex items-center justify-end gap-2 shrink-0">
+        <button onclick="cancelEditCaseInfo()" class="px-4 py-1.5 rounded border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-medium">
+          Batal
+        </button>
+        <button onclick="saveEditCaseInfo()" class="px-4 py-1.5 rounded coral-bg text-white text-xs font-medium shadow-2xs">
+          Simpan
+        </button>
+      </div>
+
+      <!-- Bottom Attachments Drawer -->
+      <div class="border-t border-gray-200 bg-white px-4 py-2.5 shrink-0">
+        <div class="flex items-center justify-between text-xs">
+          <button onclick="toggleSection('attachments-list', 'att-chev')" class="flex items-center gap-1.5 font-semibold text-gray-800">
+            <i id="att-chev" class="fa-solid fa-chevron-right text-[10px] text-gray-500 transition-transform"></i>
+            <span>Attachments (<span id="att-count">3</span>)</span>
+          </button>
+          <button onclick="toggleSection('attachments-list', 'att-chev')" class="text-blue-500 hover:underline text-[11px] font-medium">
+            View Detail
+          </button>
+        </div>
+        <div id="attachments-list" class="hidden mt-2.5 space-y-1.5 max-h-32 overflow-y-auto"></div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- RIGHT COLUMN: COMPOSER & TIMELINE                                   -->
+    <!-- =================================================================== -->
+    <main class="flex-1 flex flex-col bg-[#F5F6F8] overflow-y-auto p-3 gap-3 pb-16">
+
+      <!-- TOP CARD: CHANNEL COMPOSER -->
+      <div class="bg-white rounded-md border border-gray-200 shadow-2xs shrink-0">
+        <!-- Channel Tabs -->
+        <div class="px-4 border-b border-gray-200 flex items-center justify-between overflow-x-auto">
+          <div class="flex items-center gap-5 text-xs font-medium text-gray-600 whitespace-nowrap">
+            <button onclick="switchChannelTab('email')" id="tab-btn-email" class="channel-tab py-3 border-b-2 coral-border coral-text">Email</button>
+            <button onclick="switchChannelTab('social')" id="tab-btn-social" class="channel-tab py-3 border-b-2 border-transparent hover:text-gray-900">Social</button>
+            <button onclick="switchChannelTab('call')" id="tab-btn-call" class="channel-tab py-3 border-b-2 border-transparent hover:text-gray-900 flex items-center gap-1">
+              <span>Call</span><i class="fa-solid fa-caret-down text-[10px]"></i>
+            </button>
+            <button onclick="switchChannelTab('note')" id="tab-btn-note" class="channel-tab py-3 border-b-2 border-transparent hover:text-gray-900">Internal Note</button>
+            <button onclick="switchChannelTab('tasks')" id="tab-btn-tasks" class="channel-tab py-3 border-b-2 border-transparent hover:text-gray-900">Tasks</button>
+            <button onclick="switchChannelTab('details')" id="tab-btn-details" class="channel-tab py-3 border-b-2 border-transparent hover:text-gray-900">Case Details</button>
+          </div>
+
+          <button id="tab-sim-reply-btn" onclick="openCustomerReplyModal()" class="hidden sm:flex items-center gap-1 text-[11px] text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-2.5 py-1 rounded font-medium shrink-0">
+            <i class="fa-solid fa-reply"></i> Simulasi Balasan Customer
+          </button>
+        </div>
+
+        <!-- TAB 1: EMAIL -->
+        <div id="composer-email" class="composer-pane">
+          <div class="px-4 py-2 border-b border-gray-100 flex items-center justify-between text-xs">
+            <div class="flex items-center gap-3 min-w-0">
+              <span class="text-gray-400 w-12 shrink-0">From:</span>
+              <span class="text-gray-700 truncate">Customer Service PT Commerce Finance &lt;customerservice@support.cmf.co.id&gt;</span>
+            </div>
+            <i class="fa-solid fa-chevron-down text-gray-400 text-[10px]"></i>
+          </div>
+
+          <div class="px-4 py-2 border-b border-gray-100 flex items-center justify-between text-xs">
+            <div class="flex items-center gap-3 flex-wrap">
+              <span class="text-gray-400 w-12 shrink-0">To:</span>
+              <span id="composer-to-chip" class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-gray-100 border border-gray-200 text-gray-700 text-[11px]">
+                <span id="composer-to-email">ida_rahmawati29@yahoo.com</span>
+                <button onclick="showToast('Email penerima dikunci sesuai data tiket', 'info')" class="text-gray-400 hover:text-gray-600">
+                  <i class="fa-solid fa-circle-xmark text-[10px]"></i>
+                </button>
+              </span>
+            </div>
+            <button onclick="toggleCcRow()" class="text-blue-500 hover:underline text-[11px]">Cc</button>
+          </div>
+
+          <div id="email-cc-row" class="hidden px-4 py-2 border-b border-gray-100 flex items-center gap-3 text-xs">
+            <span class="text-gray-400 w-12 shrink-0">Cc:</span>
+            <input id="email-cc-input" type="text" placeholder="Masukkan alamat Cc..." class="w-full text-xs text-gray-700 outline-none" />
+          </div>
+
+          <div class="px-4 py-2 border-b border-gray-100 flex items-center gap-3 text-xs">
+            <span class="text-gray-400 w-12 shrink-0">Subject:</span>
+            <input id="email-subject-input" type="text" placeholder="Input" class="w-full text-xs text-gray-700 outline-none placeholder-gray-300" />
+          </div>
+
+          <div class="p-4">
+            <textarea id="email-body-input" rows="5" oninput="updateSendButtonsState()"
+              placeholder="Ketik balasan email kepada nasabah atau klik tombol 'Macro' di bawah untuk menggunakan template SOP L1..."
+              class="w-full text-xs text-gray-800 outline-none resize-y leading-relaxed"></textarea>
+          </div>
+
+          <div class="px-4 py-2.5 border-t border-gray-100 flex flex-wrap items-center justify-between gap-2 bg-gray-50/50 rounded-b-md">
+            <div class="flex items-center gap-3 text-gray-500 text-xs">
+              <button onclick="document.execCommand('bold')" class="hover:text-gray-800 font-serif font-bold px-1">A</button>
+              <button onclick="attachDummyFile()" class="hover:text-gray-800 flex items-center gap-0.5"><i class="fa-solid fa-paperclip"></i></button>
+              <button onclick="insertHelpLink()" class="hover:text-gray-800"><i class="fa-solid fa-link"></i></button>
+              <button onclick="openMacroModal()" class="hover:text-gray-800 flex items-center gap-1 text-blue-600 font-medium">
+                <i class="fa-regular fa-message"></i><span>Insert Macro</span>
+              </button>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button id="btn-send-solve" onclick="sendEmailReply(true)" disabled
+                class="px-3 py-1.5 rounded border border-gray-200 bg-gray-100 text-gray-400 text-xs font-medium cursor-not-allowed transition-all">
+                Send and Solve
+              </button>
+              <button id="btn-send" onclick="sendEmailReply(false)"
+                class="px-4 py-1.5 rounded coral-bg text-white text-xs font-medium shadow-2xs transition-all">
+                Send
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 2: SOCIAL / CHAT -->
+        <div id="composer-social" class="composer-pane hidden p-4 space-y-3">
+          <div class="flex items-center justify-between text-xs bg-blue-50 text-blue-800 px-3 py-2 rounded border border-blue-100">
+            <span><i class="fa-solid fa-comments mr-1.5"></i>Channel: <strong>In-App Live Chat / Social Media DM</strong></span>
+            <span class="text-[11px] text-blue-600">Max 1000 karakter</span>
+          </div>
+          <textarea id="social-body-input" rows="4" placeholder="Ketik balasan singkat, ramah, dan sesuai SOP untuk kanal Chat / Social Media..."
+            class="w-full border border-gray-200 rounded p-2.5 text-xs outline-none focus:border-[#EE4D2D]"></textarea>
+          <div class="flex justify-end gap-2">
+            <button onclick="openMacroModal()" class="px-3 py-1.5 rounded border border-gray-300 text-gray-600 text-xs hover:bg-gray-50">Pilih Macro</button>
+            <button onclick="sendSocialReply()" class="px-4 py-1.5 rounded coral-bg text-white text-xs font-medium">Kirim Pesan</button>
+          </div>
+        </div>
+
+        <!-- TAB 3: CALL SIMULATOR -->
+        <div id="composer-call" class="composer-pane hidden p-4 space-y-3">
+          <div class="bg-gray-900 text-white rounded-md p-3 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex items-center gap-3">
+              <div id="call-avatar-ring" class="w-9 h-9 rounded-full bg-emerald-600 flex items-center justify-center relative">
+                <i class="fa-solid fa-phone-volume text-sm"></i>
+              </div>
+              <div>
+                <div class="text-xs font-semibold" id="call-customer-name">Ida Rahmawati (ID +62 811 190 293 32)</div>
+                <div class="text-[11px] text-gray-400"><span id="call-status-text">Ready to Call</span> • <span id="call-timer" class="font-mono text-emerald-400">00:00</span></div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 text-xs">
+              <button id="btn-toggle-call" onclick="toggleCallSession()" class="px-3 py-1.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-medium flex items-center gap-1.5">
+                <i class="fa-solid fa-phone"></i> <span>Mulai Call</span>
+              </button>
+              <button onclick="toggleMuteCall()" id="btn-mute-call" class="px-2.5 py-1.5 rounded bg-gray-700 hover:bg-gray-600 text-gray-200">
+                <i class="fa-solid fa-microphone"></i> Mute
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div>
+              <label class="text-gray-500 block mb-1">Call Disposition</label>
+              <select id="call-disposition" class="crm-input">
+                <option value="Connected - Edukasi & Verifikasi">Connected - Edukasi & Verifikasi</option>
+                <option value="Connected - Escalated to L2/L3">Connected - Escalated to L2/L3</option>
+                <option value="No Answer / Voicemail">No Answer / Voicemail</option>
+                <option value="Dropped Call">Dropped Call</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-gray-500 block mb-1">Verifikasi Data Nasabah (3 Poin)</label>
+              <select id="call-verification" class="crm-input">
+                <option value="Lolos Verifikasi (Nama, NIK, No. HP)">Lolos Verifikasi (Nama, NIK, No. HP)</option>
+                <option value="Gagal Verifikasi Data">Gagal Verifikasi Data</option>
+                <option value="Belum Dilakukan">Belum Dilakukan</option>
+              </select>
+            </div>
+          </div>
+          <textarea id="call-notes-input" rows="2" placeholder="Catat ringkasan percakapan telepon di sini..." class="crm-input"></textarea>
+          <div class="flex justify-end">
+            <button onclick="logCallRecord()" class="px-4 py-1.5 rounded coral-bg text-white text-xs font-medium">Simpan Call Log</button>
+          </div>
+        </div>
+
+        <!-- TAB 4: INTERNAL NOTE -->
+        <div id="composer-note" class="composer-pane hidden p-4 space-y-3 bg-amber-50/40">
+          <div class="flex items-center justify-between text-xs text-amber-800">
+            <span><i class="fa-solid fa-lock mr-1"></i><strong>Internal Note</strong> (Hanya terlihat oleh tim internal CS, L2, dan L3)</span>
+            <button onclick="fillNoteTemplate()" class="text-blue-600 hover:underline text-[11px]">Isi Template Handover L1</button>
+          </div>
+          <textarea id="internal-note-input" rows="4" placeholder="Tuliskan hasil pengecekan akun, hasil verifikasi data nasabah, atau catatan untuk L2/L3..."
+            class="w-full border border-amber-200 bg-white rounded p-2.5 text-xs outline-none focus:border-amber-500"></textarea>
+          <div class="flex justify-end">
+            <button onclick="addInternalNote()" class="px-4 py-1.5 rounded bg-amber-600 hover:bg-amber-700 text-white text-xs font-medium">Add Internal Note</button>
+          </div>
+        </div>
+
+        <!-- TAB 5: TASKS -->
+        <div id="composer-tasks" class="composer-pane hidden p-4 space-y-3">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+            <input id="task-title-input" type="text" placeholder="Judul Task (misal: Follow up dokumen KTP)" class="sm:col-span-2 crm-input" />
+            <input id="task-due-input" type="text" value="24 Jam dari sekarang" class="crm-input" />
+          </div>
+          <div class="flex justify-end">
+            <button onclick="createInlineTask()" class="px-4 py-1.5 rounded coral-bg text-white text-xs font-medium">Buat Task</button>
+          </div>
+        </div>
+
+        <!-- TAB 6: CASE DETAILS (SIMULATED BACKEND SYSTEM DATA) -->
+        <div id="composer-details" class="composer-pane hidden p-4 bg-gray-50/60">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-xs" id="customer-system-details"></div>
+        </div>
+      </div>
+
+      <!-- BOTTOM CARD: ACTIVITY TIMELINE -->
+      <div class="bg-white rounded-md border border-gray-200 shadow-2xs flex-1 flex flex-col min-h-[260px]">
+        <div class="px-4 border-b border-gray-200 flex items-center justify-between overflow-x-auto shrink-0">
+          <div class="flex items-center gap-5 text-xs font-medium text-gray-600 whitespace-nowrap">
+            <button onclick="filterTimeline('All')" id="tl-tab-All" class="tl-filter-tab py-2.5 border-b-2 coral-border coral-text">All</button>
+            <button onclick="filterTimeline('Dialogue')" id="tl-tab-Dialogue" class="tl-filter-tab py-2.5 border-b-2 border-transparent hover:text-gray-900">Dialogue Events</button>
+            <button onclick="filterTimeline('Notes')" id="tl-tab-Notes" class="tl-filter-tab py-2.5 border-b-2 border-transparent hover:text-gray-900">Notes & Reminder</button>
+            <button onclick="filterTimeline('Task')" id="tl-tab-Task" class="tl-filter-tab py-2.5 border-b-2 border-transparent hover:text-gray-900">Task Events</button>
+            <button onclick="filterTimeline('System')" id="tl-tab-System" class="tl-filter-tab py-2.5 border-b-2 border-transparent hover:text-gray-900">System Events</button>
+            <button onclick="filterTimeline('Approvals')" id="tl-tab-Approvals" class="tl-filter-tab py-2.5 border-b-2 border-transparent hover:text-gray-900">Approvals</button>
+          </div>
+          <button onclick="refreshTimeline()" title="Refresh Timeline" class="w-7 h-7 rounded border border-gray-200 hover:bg-gray-50 text-gray-500 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-rotate-right text-xs"></i>
+          </button>
+        </div>
+
+        <div id="timeline-feed" class="p-4 space-y-4 overflow-y-auto flex-1 text-xs"></div>
+      </div>
+    </main>
+
+    <!-- =================================================================== -->
+    <!-- SLIDE-OVER MENTOR CONTROL & MANDATORY FIELD AUDIT DRAWER            -->
+    <!-- =================================================================== -->
+    <aside id="mentor-drawer" class="fixed top-12 right-0 bottom-12 w-full sm:w-96 bg-white border-l border-gray-200 shadow-2xl z-40 transform translate-x-full transition-transform duration-200 flex flex-col">
+      <div class="px-4 py-3 bg-indigo-900 text-white flex items-center justify-between">
+        <div>
+          <h3 class="font-semibold text-sm flex items-center gap-1.5">
+            <i class="fa-solid fa-chalkboard-user text-indigo-300"></i> Mentor Control & QA
+          </h3>
+          <p class="text-[11px] text-indigo-200">Audit Mandatory Field & Evaluasi L1</p>
+        </div>
+        <button onclick="toggleMentorDrawer()" class="text-indigo-200 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+      </div>
+
+      <div class="p-4 flex-1 overflow-y-auto space-y-4 text-xs">
+        <!-- Mandatory Field Audit Box -->
+        <div class="bg-indigo-50 border border-indigo-200 rounded-md p-3 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-semibold text-indigo-900">Audit Mandatory Field (*)</span>
+            <button onclick="runMandatoryAudit()" class="px-2 py-0.5 bg-indigo-600 text-white rounded text-[10px] font-medium hover:bg-indigo-700">
+              Cek Sekarang
+            </button>
+          </div>
+          <div id="mandatory-audit-result" class="text-[11px] text-indigo-800 space-y-1">
+            Klik "Cek Sekarang" untuk memeriksa kelengkapan mandatory field trainee.
+          </div>
+        </div>
+
+        <!-- Scenario Switcher -->
+        <div class="bg-gray-50 border border-gray-200 rounded-md p-3 space-y-2">
+          <div class="flex items-center justify-between">
+            <label class="font-semibold text-gray-800 block">Pilih Skenario Roleplay</label>
+            <button onclick="openCreateScenarioModal()" class="text-[10px] font-semibold text-indigo-700 hover:underline">+ Buat Skenario</button>
+          </div>
+          <div id="drawer-scenario-list" class="space-y-1.5"></div>
+        </div>
+
+        <!-- Quick Customer Reply Injector -->
+        <div class="space-y-2">
+          <div class="font-semibold text-gray-800">Simulasi Respons Customer (Live)</div>
+          <div class="grid grid-cols-1 gap-1.5">
+            <button onclick="injectQuickCustomerReply('Halo kak, ini saya lampirkan foto selfie bersama e-KTP sesuai arahan kakak. Mohon dibantu buka blokir SPayLater saya ya.')"
+              class="text-left p-2 rounded border border-gray-200 hover:bg-emerald-50 hover:border-emerald-300 text-gray-700">
+              <span class="font-semibold text-emerald-700">+ Customer Kooperatif:</span> Kirim foto selfie + KTP
+            </button>
+            <button onclick="injectQuickCustomerReply('Saya tidak mau tahu! Kalau hari ini tidak beres saya lapor ke OJK dan viralkan di media sosial!')"
+              class="text-left p-2 rounded border border-gray-200 hover:bg-red-50 hover:border-red-300 text-gray-700">
+              <span class="font-semibold text-red-700">+ Trigger HCP1 (Lapor OJK/MedSos):</span> Uji ketepatan tagging HCP1
+            </button>
+          </div>
+        </div>
+
+        <!-- QA Evaluation Checklist -->
+        <div class="border-t border-gray-200 pt-3 space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="font-semibold text-gray-800">Checklist Penilaian L1 CS</span>
+            <span id="drawer-qa-score" class="font-bold text-indigo-700">Skor: 0 / 6</span>
+          </div>
+          <div class="space-y-1.5" id="qa-checklist-items">
+            <label class="flex items-start gap-2 p-2 rounded border border-gray-100 hover:bg-gray-50 cursor-pointer">
+              <input type="checkbox" onchange="updateQaScore()" class="qa-check mt-0.5 rounded text-indigo-600" />
+              <span><strong>1. Case Ownership & Verifikasi:</strong> Klik <em>assign to me</em> & cek detail KYC nasabah.</span>
+            </label>
+            <label class="flex items-start gap-2 p-2 rounded border border-gray-100 hover:bg-gray-50 cursor-pointer">
+              <input type="checkbox" onchange="updateQaScore()" class="qa-check mt-0.5 rounded text-indigo-600" />
+              <span><strong>2. Reason Code (L1-L3):</strong> Memilih kombinasi L1, L2, L3 yang sesuai sheet.</span>
+            </label>
+            <label class="flex items-start gap-2 p-2 rounded border border-gray-100 hover:bg-gray-50 cursor-pointer">
+              <input type="checkbox" onchange="updateQaScore()" class="qa-check mt-0.5 rounded text-indigo-600" />
+              <span><strong>3. Kelengkapan Mandatory (*):</strong> Entry Point, Priority, Subject, dan Credit Product terisi tepat.</span>
+            </label>
+            <label class="flex items-start gap-2 p-2 rounded border border-gray-100 hover:bg-gray-50 cursor-pointer">
+              <input type="checkbox" onchange="updateQaScore()" class="qa-check mt-0.5 rounded text-indigo-600" />
+              <span><strong>4. Sentiment & HCP Tagging:</strong> Tepat mendeteksi Hard Complaint & Hashtag HCP jika ada.</span>
+            </label>
+            <label class="flex items-start gap-2 p-2 rounded border border-gray-100 hover:bg-gray-50 cursor-pointer">
+              <input type="checkbox" onchange="updateQaScore()" class="qa-check mt-0.5 rounded text-indigo-600" />
+              <span><strong>5. Komunikasi Empati & SOP:</strong> Penyampaian edukasi & SLA jelas tanpa <em>overpromise</em>.</span>
+            </label>
+            <label class="flex items-start gap-2 p-2 rounded border border-gray-100 hover:bg-gray-50 cursor-pointer">
+              <input type="checkbox" onchange="updateQaScore()" class="qa-check mt-0.5 rounded text-indigo-600" />
+              <span><strong>6. Handover / Eskalasi Tepat:</strong> Internal Note lengkap sebelum eskalasi ke Queue L2/L3.</span>
+            </label>
+          </div>
+          <textarea id="mentor-feedback-note" rows="2" placeholder="Catatan evaluasi dari Mentor..." class="crm-input"></textarea>
+          <button onclick="postQaEvaluation()" class="w-full py-2 rounded bg-indigo-600 hover:bg-indigo-700 text-white font-semibold">
+            Simpan Hasil QA ke Timeline
+          </button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 3. STICKY BOTTOM ACTION BAR                                           -->
+  <!-- ===================================================================== -->
+  <footer class="h-12 bg-white border-t border-gray-200 px-4 flex items-center justify-between shrink-0 z-30">
+    <div class="hidden md:flex items-center gap-2 text-[11px] text-gray-500">
+      <span class="px-2 py-0.5 bg-gray-100 rounded font-medium text-gray-700" id="footer-scenario-name">Skenario 1</span>
+      <span>•</span>
+      <button onclick="openCsvSyncModal()" class="text-blue-600 hover:underline">Sync CSV Google Sheets</button>
+    </div>
+
+    <div class="flex items-center gap-2 ml-auto overflow-x-auto py-1">
+      <button onclick="openApprovalModal()" class="px-3 py-1.5 rounded border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-medium whitespace-nowrap">
+        Create Approval
+      </button>
+      <button onclick="openMacroModal()" class="px-3 py-1.5 rounded border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-medium whitespace-nowrap">
+        Macro
+      </button>
+      <button onclick="openReminderModal()" class="px-3 py-1.5 rounded border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-medium whitespace-nowrap">
+        Reminder Set
+      </button>
+      <button onclick="openEscalationModal()" class="px-3 py-1.5 rounded border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-medium whitespace-nowrap">
+        Case Escalation
+      </button>
+      <button onclick="switchChannelTab('tasks')" class="px-3 py-1.5 rounded border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 text-xs font-medium whitespace-nowrap">
+        Create Task
+      </button>
+
+      <!-- Split Button: Change Case Status -->
+      <div class="relative inline-block">
+        <button onclick="toggleStatusActionMenu()" class="px-3.5 py-1.5 rounded coral-bg text-white text-xs font-medium flex items-center gap-2 whitespace-nowrap shadow-2xs">
+          <span>Change Case Status</span>
+          <i class="fa-solid fa-chevron-down text-[10px]"></i>
+        </button>
+        <div id="case-status-menu" class="hidden absolute right-0 bottom-10 w-40 bg-white rounded-md shadow-xl border border-gray-200 py-1 text-xs z-50">
+          <button onclick="quickChangeStatus('Open')" class="w-full px-3 py-1.5 text-left hover:bg-gray-50 text-red-600 font-medium">Open</button>
+          <button onclick="quickChangeStatus('Pending')" class="w-full px-3 py-1.5 text-left hover:bg-gray-50 text-amber-600 font-medium">Pending</button>
+          <button onclick="quickChangeStatus('On Hold')" class="w-full px-3 py-1.5 text-left hover:bg-gray-50 text-purple-600 font-medium">On Hold</button>
+          <button onclick="quickChangeStatus('Solved')" class="w-full px-3 py-1.5 text-left hover:bg-gray-50 text-emerald-600 font-medium">Solved</button>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- JAVASCRIPT APPLICATION LOGIC & MASTER DATA FROM GOOGLE SHEET          -->
+  <!-- ===================================================================== -->
+  <script>
+    // --- 0. GOOGLE SHEET LIVE CONNECTION CONFIG ---
+    const GOOGLE_SHEET_ID = "1lVXQbUgl8Y6vv5CHD5H7V86FUka8BNrYSIVz7SHupxQ";
+    let MASTER_MENTORS = [
+      { id: "MTR-001", name: "Ifin Nur Primandiri", team: "ID - Credit - L1 - Training & QA" }
+    ];
+
+    // --- 1. BASE DATA (AUTO-OVERRIDDEN BY LIVE GOOGLE SHEET ON LOAD) ---
+    let MASTER_REASON_CODES = [
+      { l1: "Pemasaran", l2: "Kampanye & Promosi", l3: "Masukan terkait aktivitas pemasaran" },
+      { l1: "Lainnya", l2: "Umum", l3: "Panggilan terputus" },
+      { l1: "Lainnya", l2: "Umum", l3: "Sampah / Spam" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Akun & Keamanan", l3: "Pembatasan akun & voucher karena keterlambatan pembayaran" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Akun & Keamanan", l3: "Akun diretas" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Akun & Keamanan", l3: "Permintaan perubahan data akun" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Akun & Keamanan", l3: "Pencurian data" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Akun & Keamanan", l3: "Akun pembayaran dibekukan" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Aktivasi / KYC", l3: "Permintaan aktivasi" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Aktivasi / KYC", l3: "Cek status KYC" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Aktivasi / KYC", l3: "Klarifikasi kontrak" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Aktivasi / KYC", l3: "Masukan terkait proses KYC" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Aktivasi / KYC", l3: "KTP sudah digunakan / terdaftar / tidak jelas / tidak sesuai" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Aktivasi / KYC", l3: "Pertanyaan aktivasi KYC" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Aktivasi / KYC", l3: "Pemeriksaan status KYC" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Aktivasi / KYC", l3: "Pembatalan pinjaman" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Aktivasi / KYC", l3: "Tertahan di pengecekan liveness" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Aktivasi / KYC", l3: "Pengguna tidak memiliki identitas / izin kerja" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Checkout / Pembayaran", l3: "Kelebihan bayar / kurang bayar / bayar ganda / nominal salah" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Checkout / Pembayaran", l3: "Kendala teknis pembayaran di merchant" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Checkout / Pembayaran", l3: "Kendala teknis pembayaran" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Checkout / Pembayaran", l3: "Otorisasi ditolak / gagal" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Checkout / Pembayaran", l3: "Tidak bisa menggunakan SPL di merchant terpilih" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Checkout / Pembayaran", l3: "Pemotongan limit tidak sesuai" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Pertanyaan Umum SPL", l3: "Cara menggunakan SPL untuk pembayaran di merchant offline" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Pertanyaan Umum SPL", l3: "Pertanyaan produk" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Pertanyaan Umum SPL", l3: "Pertanyaan transaksi SPayLater di merchant" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Pertanyaan Umum SPL", l3: "Limit kredit SPL" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Refund / Escrow Merchant SPayLater", l3: "Cek status refund" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Pembayaran / Penagihan", l3: "Pembayaran tagihan tidak sesuai dengan pinjaman" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Pembayaran / Penagihan", l3: "Pertanyaan pembayaran tagihan" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Pembayaran / Penagihan", l3: "Permintaan terkait penagihan" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Pembayaran / Penagihan", l3: "Limit kredit belum kembali setelah pembayaran" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Pembayaran / Penagihan", l3: "Masukan terkait desk collection" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Pembayaran / Penagihan", l3: "Pelunasan lebih awal" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Pembayaran / Penagihan", l3: "Pengingat pembayaran salah pada periode tagihan" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Pembayaran / Penagihan", l3: "Pengingat pembayaran salah pada periode penagihan" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Pembayaran / Penagihan", l3: "Pertanyaan suku bunga" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Pembayaran / Penagihan", l3: "Biaya denda keterlambatan" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Pembayaran / Penagihan", l3: "Tidak menerima pengingat pembayaran" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Pembayaran / Penagihan", l3: "Pembayaran offline" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Pembayaran / Penagihan", l3: "Permintaan penghapusan biaya" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Pembayaran / Penagihan", l3: "Program restrukturisasi" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Pembayaran / Penagihan", l3: "Pembayaran gagal" },
+      { l1: "SPayLater & Kredit Lainnya", l2: "Penarikan Dana SPayLater", l3: "Penarikan dibatalkan - Fraud / aktivitas tidak biasa" }
+    ];
+
+    const MASTER_CASE_ORIGINS = [
+      "Call", "Chat", "Email", "Facebook-Private", "Facebook-Public",
+      "Twitter-Private", "Twitter-Public", "Instagram-Private", "Instagram-Public",
+      "Google Play-Public", "App Store-Public", "Whatsapp-Private",
+      "Reclame Aqui-Public", "Outbound Email", "Outbound Call",
+      "Outbound Social Media", "None", "Webform (Special)",
+      "Webform (General)", "In-app case tracker"
+    ];
+
+    const MASTER_AGENTS = [
+      { name: "Ifin Nur Primandiri | ID L1 Call Spaylater Agent", team: "ID - Credit - L1 - Call Credit - Agent" },
+      { name: "Agent L1 Call SPaylater", team: "ID - Credit - L1 - Call Credit - Agent" },
+      { name: "Agent L1 Email SPaylater", team: "ID - Credit - L1 - Email Credit - Agent" },
+      { name: "Agent L1 CCS SPaylater", team: "ID - Credit - L1 - CCS Credit - Agent" },
+      { name: "Agent L1 Live Chat", team: "ID - Credit - L1 - Live Chat Credit - Agent" }
+    ];
+
+    const MASTER_QUEUES = [
+      { name: "ID L3 Credit - Freeze/Unfreeze Limit Credit Product", team: "ID - Credit - L3 - Freeze/Unfreeze" },
+      { name: "ID L1 Credit - Permintaan Keringanan Pembayaran (AMR)", team: "ID - Credit - L1 - AMR" },
+      { name: "ID L2 Credit - Credit Product Case", team: "ID - Credit - L2 - Product Case" },
+      { name: "ID L2 Credit - Credit Product SWAT (Case)", team: "ID - Credit - L2 - SWAT" },
+      { name: "ID L2 Credit - SWAT HCP", team: "ID - Credit - L2 - SWAT HCP" },
+      { name: "ID L2 Credit - to be Force Closed (case)", team: "ID - Credit - L2 - Force Closed" }
+    ];
+
+    const MASTER_HCP_HASHTAGS = [
+      { tag: "#HCP1Management", type: "HCP1" },
+      { tag: "#HCP1LembagaKonsumen/Pemerintah", type: "HCP1" },
+      { tag: "#HCP1Media", type: "HCP1" },
+      { tag: "#HCP1SocialMedia", type: "HCP1" },
+      { tag: "#HCP1LAD", type: "HCP1" },
+      { tag: "#HCP1Terorisme", type: "HCP1" },
+      { tag: "#HCP1SensitiveCase", type: "HCP1" },
+      { tag: "#HCP1LaporPolisi", type: "HCP1" },
+      { tag: "#HCP1Somasi", type: "HCP1" },
+      { tag: "#HCP1LaporPerdata", type: "HCP1" },
+      { tag: "#HCP2AncamLaporkan", type: "HCP2" },
+      { tag: "#HCP2DatangKeKantorShopee", type: "HCP2" },
+      { tag: "#HCP2RatingBuruk", type: "HCP2" },
+      { tag: "#HCP2UninstallShopee", type: "HCP2" },
+      { tag: "#HCP2PindahAplikasi", type: "HCP2" },
+      { tag: "#HCP2HapusAkun", type: "HCP2" },
+      { tag: "#HCP3BerkataKasar", type: "HCP3" },
+      { tag: "#HCP3Berteriak", type: "HCP3" },
+      { tag: "#HCP3EmoticonKasar", type: "HCP3" },
+      { tag: "#HCP3Capslock", type: "HCP3" },
+      { tag: "#HCP3AncamanLainnya", type: "HCP3" },
+      { tag: "#HCP3InginBerbicaraDenganAtasan", type: "HCP3" }
+    ];
+
+    // --- 2. ROLEPLAY SCENARIOS (INCLUDING CASE ID 2123761161830707287) ---
+    let SCENARIOS = [
+      {
+        title: "Skenario 1: Akun Pembayaran Dibekukan (From Reference Sheet)",
+        difficulty: "Medium",
+        summary: "Nasabah Ida Rahmawati menghubungi CS via Call karena akun SPayLater dibekukan. L3 mengembalikan kasus ke L1 untuk meminta foto selfie + KTP.",
+        caseId: "2123740026664235025",
+        rcL1: "SPayLater & Kredit Lainnya",
+        rcL2: "Akun & Keamanan",
+        rcL3: "Akun pembayaran dibekukan",
+        status: "Open",
+        origin: "Call",
+        createdTime: "20-11-2026 18:27 +0700",
+        age: "1 hari 19 jam 8 menit",
+        ownerType: "Agent",
+        ownerValue: "Ifin Nur Primandiri | ID L1 Call Spaylater Agent",
+        ownerTeam: "ID - Credit - L1 - Call Credit - Agent",
+        entryPoint: "None",
+        priority: "Medium",
+        caseSubject: "2123740026664235025 - permintaan pembekuan akun",
+        shopeeUserId: "805017450",
+        caseDescription: "Normal / - NA - NA",
+        modifiedTime: "21-11-2026 15:09 +0700",
+        creditProduct: "SPaylater",
+        escalationReason: "",
+        sentiment: "Complaint",
+        hcType: "",
+        hcHashtag: "",
+        csUserId: "948877868455457",
+        requestEmail: "ida_rahmawati29@yahoo.com",
+        phonePrefix: "ID +62",
+        requestPhone: "811 190 293 32",
+        sosmedPlatform: "",
+        sosmedHandle: "",
+        userType: "Buyer",
+        bizType: "Shopee TuC",
+        bizValue: "idha29",
+        icNumber: "",
+        incomingContacts: 1,
+        expectedL3: "Akun pembayaran dibekukan",
+        expectedProduct: "SPaylater",
+        systemDetails: [
+          { label: "Nama Nasabah (KYC)", value: "Ida Rahmawati (Verified)" },
+          { label: "Status Akun SPL", value: "FROZEN (New Device Login)", highlight: "text-red-600 font-bold" },
+          { label: "Limit SPayLater", value: "Rp 4.500.000 (Terpakai: Rp 1.250.000)" },
+          { label: "Tagihan Jatuh Tempo", value: "25-11-2026 (Rp 420.000)" },
+          { label: "Perangkat Terakhir", value: "Xiaomi Redmi Note 13" },
+          { label: "Catatan L3 Sebelumnya", value: "Wajib lampirkan Foto Selfie + e-KTP" }
+        ],
+        attachments: [
+          { name: "KTP_Ida_Rahmawati.jpg", size: "1.2 MB", type: "image", desc: "Foto e-KTP nasabah (Terbaca jelas)." },
+          { name: "Error_Akun_Dibekukan.png", size: "540 KB", type: "image", desc: "Screenshot notifikasi pembekuan akun di aplikasi." },
+          { name: "Log_Pengecekan_L1.pdf", size: "280 KB", type: "pdf", desc: "Ringkasan riwayat login perangkat." }
+        ],
+        timeline: [
+          {
+            id: 1,
+            type: "System",
+            actor: "Rijki Saputra",
+            badgeBg: "bg-[#EE4D2D]",
+            icon: "fa-share-nodes",
+            title: "Case Escalation",
+            time: "21-11-2026 15:09 +0700",
+            content: "Case Owner: ID L3 Credit - Freeze/Unfreeze Limit Credit Product → Ifin Nur Primandiri | ID L1 Call Spaylater Agent\nCatatan L3: Mohon L1 bantu follow up ke user untuk melampirkan foto selfie memegang e-KTP sebelum proses unfreeze dilakukan."
+          },
+          {
+            id: 2,
+            type: "Notes",
+            actor: "Rijki Saputra",
+            badgeBg: "bg-[#EE4D2D]",
+            icon: "fa-note-sticky",
+            title: "Internal Note",
+            time: "21-11-2026 15:09 +0700",
+            content: "Akun terbekukan otomatis oleh sistem keamanan pada 20-11-2026 karena terdeteksi login dari perangkat baru."
+          }
+        ]
+      },
+      {
+        title: "Skenario 2: Hard Complaint — Bayar Ganda & Ancam Lapor OJK (#HCP1)",
+        difficulty: "Hard (HCP Tagging)",
+        summary: "Nasabah mengalami kelebihan bayar / bayar ganda pada SPayLater Limit Xtra dan mengancam akan melapor ke OJK serta memviralkan di Instagram.",
+        caseId: "2123740099112233445",
+        rcL1: "SPayLater & Kredit Lainnya",
+        rcL2: "Checkout / Pembayaran",
+        rcL3: "Kelebihan bayar / kurang bayar / bayar ganda / nominal salah",
+        status: "Open",
+        origin: "Instagram-Private",
+        createdTime: "22-11-2026 09:40 +0700",
+        age: "0 hari 4 jam 35 menit",
+        ownerType: "Agent",
+        ownerValue: "Agent L1 CCS SPaylater",
+        ownerTeam: "ID - Credit - L1 - CCS Credit - Agent",
+        entryPoint: "ShopeePayHC",
+        priority: "Critical",
+        caseSubject: "2123740099112233445 - Komplain bayar ganda SPayLater Limit Xtra",
+        shopeeUserId: "992104412",
+        caseDescription: "User bayar 2x via VA dan mengancam lapor OJK",
+        modifiedTime: "22-11-2026 10:15 +0700",
+        creditProduct: "SPaylater Limit Xtra",
+        escalationReason: "",
+        sentiment: "Hard Complaint",
+        hcType: "HCP1",
+        hcHashtag: "#HCP1LembagaKonsumen/Pemerintah",
+        csUserId: "881122334455667",
+        requestEmail: "hendra.wijaya90@example.com",
+        phonePrefix: "ID +62",
+        requestPhone: "812 998 877 66",
+        sosmedPlatform: "Instagram",
+        sosmedHandle: "@hendrawijaya.official",
+        userType: "Buyer",
+        bizType: "Shopee TuC",
+        bizValue: "hendraw90",
+        icNumber: "",
+        incomingContacts: 3,
+        expectedL3: "Kelebihan bayar / kurang bayar / bayar ganda / nominal salah",
+        expectedProduct: "SPaylater Limit Xtra",
+        systemDetails: [
+          { label: "Nama Nasabah (KYC)", value: "Hendra Wijaya (Verified)" },
+          { label: "Produk Aktif", value: "SPayLater Limit Xtra", highlight: "text-indigo-700 font-bold" },
+          { label: "Transaksi 1", value: "Rp 1.500.000 (Sukses 09:10 WIB)" },
+          { label: "Transaksi 2", value: "Rp 1.500.000 (Sukses 09:12 WIB - Duplikat)" },
+          { label: "SOP Hard Complaint", value: "Wajib set Sentiment = Hard Complaint, HCP1, & eskalasi ke ID L2 Credit - SWAT HCP" },
+          { label: "SLA Refund Kelebihan Bayar", value: "3-5 Hari Kerja" }
+        ],
+        attachments: [
+          { name: "Mutasi_Bank_Bayar_Ganda.jpg", size: "1.4 MB", type: "image", desc: "Bukti mutasi 2 kali pendebetan nominal Rp 1.500.000." }
+        ],
+        timeline: [
+          {
+            id: 21,
+            type: "Dialogue",
+            actor: "Hendra Wijaya (@hendrawijaya.official)",
+            badgeBg: "bg-pink-600",
+            icon: "fa-brands fa-instagram",
+            title: "Instagram-Private Inbound",
+            time: "22-11-2026 09:40 +0700",
+            content: "Min gimana sih sistemnya! Saya bayar tagihan SPayLater Limit Xtra Rp 1,5 juta tapi terpotong 2 kali jadi Rp 3 juta! Kalau hari ini tidak dikembalikan saya lapor ke OJK dan viralkan di IG saya!"
+          }
+        ]
+      },
+      {
+        title: "Skenario 3: Tertahan di Pengecekan Liveness (Aktivasi / KYC)",
+        difficulty: "Easy",
+        summary: "Nasabah gagal verifikasi wajah (liveness check) saat aktivasi Cicilan Motor by SPayLater.",
+        caseId: "2123740055443322110",
+        rcL1: "SPayLater & Kredit Lainnya",
+        rcL2: "Aktivasi / KYC",
+        rcL3: "Tertahan di pengecekan liveness",
+        status: "Open",
+        origin: "Chat",
+        createdTime: "22-11-2026 11:20 +0700",
+        age: "0 hari 2 jam 55 menit",
+        ownerType: "Agent",
+        ownerValue: "Agent L1 Live Chat",
+        ownerTeam: "ID - Credit - L1 - Live Chat Credit - Agent",
+        entryPoint: "None",
+        priority: "Medium",
+        caseSubject: "2123740055443322110 - Kendala liveness check aktivasi Cicilan Motor",
+        shopeeUserId: "774411223",
+        caseDescription: "Gagal verifikasi wajah berkali-kali",
+        modifiedTime: "22-11-2026 11:25 +0700",
+        creditProduct: "Cicilan Motor by SPaylater",
+        escalationReason: "",
+        sentiment: "Non Complaint",
+        hcType: "",
+        hcHashtag: "",
+        csUserId: "948877112233445",
+        requestEmail: "siti.aminah88@example.com",
+        phonePrefix: "ID +62",
+        requestPhone: "857 123 456 78",
+        sosmedPlatform: "",
+        sosmedHandle: "",
+        userType: "Buyer",
+        bizType: "Shopee TuC",
+        bizValue: "sitiaminah88",
+        icNumber: "",
+        incomingContacts: 1,
+        expectedL3: "Tertahan di pengecekan liveness",
+        expectedProduct: "Cicilan Motor by SPaylater",
+        systemDetails: [
+          { label: "Nama Nasabah (KYC)", value: "Siti Aminah" },
+          { label: "Produk Diajukan", value: "Cicilan Motor by SPaylater" },
+          { label: "Status Liveness", value: "Failed 3x (Low Light / Blur)", highlight: "text-amber-600 font-bold" },
+          { label: "SOP L1", value: "Edukasi pencahayaan, koneksi stabil, lepas kacamata/masker, & update aplikasi." }
+        ],
+        attachments: [],
+        timeline: [
+          {
+            id: 31,
+            type: "Dialogue",
+            actor: "Siti Aminah",
+            badgeBg: "bg-emerald-600",
+            icon: "fa-comments",
+            title: "In-App Live Chat Inbound",
+            time: "22-11-2026 11:20 +0700",
+            content: "Kak, saya mau aktifkan Cicilan Motor by SPayLater tapi pas tahap verifikasi wajah (liveness) gagal terus padahal KTP sudah jelas. Mohon solusinya."
+          }
+        ]
+      }
+    ];
+
+    const MACROS = [
+      {
+        title: "SPL - Permintaan Dokumen Selfie + e-KTP (Akun Dibekukan)",
+        category: "Akun & Keamanan",
+        subject: "Tindak Lanjut Pembukaan Pembekuan Akun SPayLater [Case #[CASE_ID]]",
+        body: "Halo Kak [CUSTOMER_NAME],\n\nTerima kasih telah menghubungi Customer Service PT Commerce Finance.\n\nTerkait kendala akun SPayLater Kakak yang saat ini dalam status dibekukan, tim terkait kami memerlukan verifikasi tambahan untuk memastikan keamanan akun Kakak.\n\nMohon balas email ini dengan melampirkan:\n1. Foto e-KTP asli yang masih berlaku (terlihat jelas dan tidak buram).\n2. Foto selfie sambil memegang e-KTP asli.\n\nSetelah dokumen kami terima lengkap, proses pengecekan akan dilakukan sesuai estimasi hingga 3 hari kalender.\n\nSalam hangat,\nCustomer Service PT Commerce Finance"
+      },
+      {
+        title: "SPL - Eskalasi Hard Complaint / Kelebihan Bayar",
+        category: "Hard Complaint / Eskalasi",
+        subject: "Konfirmasi Penanganan Laporan Anda [Case #[CASE_ID]]",
+        body: "Halo Kak [CUSTOMER_NAME],\n\nKami memahami ketidaknyamanan yang Kakak alami terkait kendala transaksi tersebut dan memohon maaf atas hal ini.\n\nSaat ini laporan Kakak telah kami catat sebagai prioritas dan diteruskan ke tim spesialis terkait untuk dilakukan pengecekan mendalam dengan estimasi penanganan 3–5 hari kerja.\n\nKami akan segera menginformasikan hasil pengecekan melalui email ini.\n\nSalam hangat,\nCustomer Service PT Commerce Finance"
+      },
+      {
+        title: "SPL - Edukasi Kendala Liveness Check KYC",
+        category: "Aktivasi / KYC",
+        subject: "Panduan Verifikasi Wajah (Liveness Check) [Case #[CASE_ID]]",
+        body: "Halo Kak [CUSTOMER_NAME],\n\nTerkait kendala verifikasi wajah (liveness check) pada pengajuan SPayLater, silakan mencoba langkah berikut:\n1. Pastikan berada di ruangan dengan pencahayaan terang dan tidak membelakangi cahaya.\n2. Lepaskan kacamata, masker, atau topi saat pemindaian wajah.\n3. Pastikan aplikasi Shopee sudah diperbarui ke versi terbaru dan koneksi internet stabil.\n\nApabila kendala masih berlanjut, silakan lampirkan rekaman layar kendala agar dapat kami bantu tindak lanjuti.\n\nSalam hangat,\nCustomer Service PT Commerce Finance"
+      }
+    ];
+
+    // --- 3. APPLICATION STATE ---
+    let currentScenarioIndex = 0;
+    let currentState = null;
+    let isEditMode = false;
+    let currentTimelineFilter = "All";
+    let isCallActive = false;
+    let isCallMuted = false;
+    let callSeconds = 0;
+    let callTimerInterval = null;
+    let selectedLoginTab = "agent";
+    let currentSession = {
+      isLoggedIn: false,
+      role: "agent",
+      name: "Trainee L1 Agent",
+      teamTitle: "Agent L1 Call SPaylater",
+      teamCode: "ID - Credit - L1 - Call Credit - Agent"
+    };
+
+    window.onload = async function () {
+      loadSavedCustomScenarios();
+      populateStaticDropdowns();
+      loadScenario(0, true);
+      renderMacroList();
+      renderScenarioLists();
+      await syncFromGoogleSheet(false);
+    };
+
+    // --- LIVE GOOGLE SHEETS CSV PARSER & SYNC ---
+    function parseCsvLines(csvText) {
+      const rows = [];
+      let current = "";
+      let inQuotes = false;
+      let row = [];
+      for (let i = 0; i < csvText.length; i++) {
+        const ch = csvText[i];
+        const next = csvText[i + 1];
+        if (ch === '"' && inQuotes && next === '"') {
+          current += '"';
+          i++;
+        } else if (ch === '"') {
+          inQuotes = !inQuotes;
+        } else if (ch === ',' && !inQuotes) {
+          row.push(current.trim());
+          current = "";
+        } else if ((ch === '\n' || (ch === '\r' && next === '\n')) && !inQuotes) {
+          if (ch === '\r') i++;
+          row.push(current.trim());
+          if (row.some(cell => cell !== "")) rows.push(row);
+          row = [];
+          current = "";
+        } else {
+          current += ch;
+        }
+      }
+      if (current !== "" || row.length > 0) {
+        row.push(current.trim());
+        if (row.some(cell => cell !== "")) rows.push(row);
+      }
+      return rows;
+    }
+
+    async function syncFromGoogleSheet(manualNotify = false) {
+      const badge = document.getElementById("sheet-sync-badge");
+      if (badge) {
+        badge.innerHTML = `<i class="fa-solid fa-rotate fa-spin"></i> Syncing Sheet...`;
+        badge.className = "text-[10px] text-indigo-600 font-medium flex items-center gap-1";
+      }
+
+      try {
+        const rcUrl = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent("Master_Reason_Code")}`;
+        const mentorUrl = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent("Master_Mentor_ID")}`;
+
+        const [rcRes, mentorRes] = await Promise.all([
+          fetch(rcUrl),
+          fetch(mentorUrl)
+        ]);
+
+        let updatedRcCount = 0;
+        if (rcRes.ok) {
+          const rcText = await rcRes.text();
+          const rcRows = parseCsvLines(rcText);
+          // Skip header row if it contains L1 / Level
+          const dataRows = rcRows.filter((r, idx) => {
+            if (idx === 0 && /l1|level/i.test(r[0] || "")) return false;
+            return (r[0] && r[1] && r[2]);
+          });
+          if (dataRows.length > 0) {
+            MASTER_REASON_CODES = dataRows.map(r => ({
+              l1: r[0].trim(),
+              l2: r[1].trim(),
+              l3: r[2].trim()
+            }));
+            updatedRcCount = MASTER_REASON_CODES.length;
+            populateRcL1();
+          }
+        }
+
+        let updatedMentorCount = 0;
+        if (mentorRes.ok) {
+          const mText = await mentorRes.text();
+          const mRows = parseCsvLines(mText);
+          const dataRows = mRows.filter((r, idx) => {
+            if (idx === 0 && /id|mentor|nama|name/i.test((r[0] || "") + (r[1] || ""))) return false;
+            return (r[0] || r[1]);
+          });
+          if (dataRows.length > 0) {
+            MASTER_MENTORS = dataRows.map(r => ({
+              id: (r[0] || "").trim(),
+              name: (r[1] || r[0] || "").trim(),
+              team: (r[2] || "ID - Credit - L1 - Training & QA").trim()
+            }));
+            updatedMentorCount = MASTER_MENTORS.length;
+            populateMentorDatalist();
+          }
+        }
+
+        if (badge) {
+          badge.innerHTML = `<i class="fa-solid fa-circle-check"></i> Sheet Terhubung (${updatedRcCount} RC, ${updatedMentorCount} Mentor)`;
+          badge.className = "text-[10px] text-emerald-600 font-medium flex items-center gap-1";
+        }
+        if (manualNotify) {
+          showToast(`Berhasil sinkronisasi ${updatedRcCount} Reason Code & ${updatedMentorCount} Mentor ID dari Google Sheet!`, "success");
+        }
+      } catch (err) {
+        populateMentorDatalist();
+        if (badge) {
+          badge.innerHTML = `<i class="fa-solid fa-circle-info"></i> Mode Offline / Cached`;
+          badge.className = "text-[10px] text-amber-600 font-medium flex items-center gap-1";
+        }
+        if (manualNotify) {
+          showToast("Tidak dapat terhubung ke Google Sheet. Menggunakan data tersimpan.", "error");
+        }
+      }
+    }
+
+    function populateMentorDatalist() {
+      const dl = document.getElementById("mentor-id-datalist");
+      if (!dl) return;
+      dl.innerHTML = MASTER_MENTORS.map(m => {
+        const label = m.id && m.name && m.id !== m.name ? `${m.id} - ${m.name}` : (m.id || m.name);
+        return `<option value="${label}"></option>`;
+      }).join("");
+      const input = document.getElementById("login-mentor-id");
+      if (input && !input.value && MASTER_MENTORS.length > 0) {
+        const first = MASTER_MENTORS[0];
+        input.value = first.id && first.name && first.id !== first.name ? `${first.id} - ${first.name}` : (first.id || first.name);
+      }
+    }
+
+    // --- AUTH / LANDING LOGIN LOGIC ---
+    function selectLoginRole(role) {
+      selectedLoginTab = role;
+      const agentTab = document.getElementById("role-tab-agent");
+      const mentorTab = document.getElementById("role-tab-mentor");
+      const agentForm = document.getElementById("login-form-agent");
+      const mentorForm = document.getElementById("login-form-mentor");
+
+      if (role === "agent") {
+        agentTab.className = "py-2 rounded bg-white text-gray-800 shadow-2xs transition-all flex items-center justify-center gap-1.5";
+        mentorTab.className = "py-2 rounded text-gray-500 hover:text-gray-800 transition-all flex items-center justify-center gap-1.5";
+        agentForm.classList.remove("hidden");
+        mentorForm.classList.add("hidden");
+      } else {
+        mentorTab.className = "py-2 rounded bg-white text-gray-800 shadow-2xs transition-all flex items-center justify-center gap-1.5";
+        agentTab.className = "py-2 rounded text-gray-500 hover:text-gray-800 transition-all flex items-center justify-center gap-1.5";
+        mentorForm.classList.remove("hidden");
+        agentForm.classList.add("hidden");
+      }
+    }
+
+    function handleAppLogin() {
+      if (selectedLoginTab === "agent") {
+        const name = document.getElementById("login-agent-name").value.trim() || "Trainee L1 Agent";
+        const roleTitle = document.getElementById("login-agent-role").value;
+        const found = MASTER_AGENTS.find(a => a.name === roleTitle);
+        currentSession = {
+          isLoggedIn: true,
+          role: "agent",
+          name: name,
+          teamTitle: roleTitle,
+          teamCode: found ? found.team : "ID - Credit - L1 - Call Credit - Agent"
+        };
+      } else {
+        const rawInput = document.getElementById("login-mentor-id").value.trim();
+        const pin = document.getElementById("login-mentor-pin").value.trim();
+        if (!rawInput) {
+          showToast("Masukkan atau pilih Mentor ID dari Master_Mentor_ID!", "error");
+          return;
+        }
+        if (pin !== "1234") {
+          showToast("PIN Mentor salah! Gunakan PIN default: 1234", "error");
+          return;
+        }
+
+        // Match against Master_Mentor_ID from Google Sheet
+        const matchedMentor = MASTER_MENTORS.find(m => {
+          const combined = `${m.id} - ${m.name}`.toLowerCase();
+          const q = rawInput.toLowerCase();
+          return m.id.toLowerCase() === q || m.name.toLowerCase() === q || combined === q;
+        });
+
+        if (!matchedMentor && MASTER_MENTORS.length > 0) {
+          showToast("Mentor ID tidak terdaftar di tab Master_Mentor_ID sheet!", "error");
+          return;
+        }
+
+        const displayName = matchedMentor
+          ? (matchedMentor.name || matchedMentor.id)
+          : rawInput;
+
+        currentSession = {
+          isLoggedIn: true,
+          role: "mentor",
+          name: displayName,
+          mentorId: matchedMentor ? matchedMentor.id : rawInput,
+          teamTitle: matchedMentor ? `Mentor (${matchedMentor.id})` : "L1 CS Mentor & QA Evaluator",
+          teamCode: matchedMentor ? matchedMentor.team : "ID - Credit - L1 - Training & QA"
+        };
+      }
+
+      applySessionPermissions();
+      document.getElementById("login-screen").classList.add("hidden");
+      showToast(`Selamat datang, ${currentSession.name} (${currentSession.role === "mentor" ? "Mentor Mode" : "Agent Mode"})!`, "success");
+    }
+
+    function handleAppLogout() {
+      document.getElementById("profile-dropdown").classList.add("hidden");
+      document.getElementById("mentor-drawer").classList.add("translate-x-full");
+      document.getElementById("login-screen").classList.remove("hidden");
+      showToast("Anda telah logout. Silakan pilih peran untuk masuk kembali.", "info");
+    }
+
+    function applySessionPermissions() {
+      const isMentor = currentSession.role === "mentor";
+      const initials = currentSession.name.split(" ").map(p => p[0]).join("").slice(0, 2).toUpperCase() || "CS";
+
+      document.getElementById("header-avatar-initials").textContent = initials;
+      document.getElementById("header-user-name").textContent = currentSession.name;
+      document.getElementById("menu-user-fullname").textContent = currentSession.name;
+      document.getElementById("menu-user-role").textContent = currentSession.teamTitle;
+
+      const roleBadge = document.getElementById("header-role-badge");
+      if (isMentor) {
+        roleBadge.textContent = "MENTOR MODE";
+        roleBadge.className = "hidden sm:inline-block px-2 py-0.5 text-[10px] font-semibold bg-indigo-100 text-indigo-800 border border-indigo-200 rounded";
+      } else {
+        roleBadge.textContent = "AGENT TRAINEE";
+        roleBadge.className = "hidden sm:inline-block px-2 py-0.5 text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded";
+      }
+
+      // Toggle Mentor-only controls
+      document.getElementById("mentor-toggle-btn").classList.toggle("hidden", !isMentor);
+      document.getElementById("header-new-case-btn").classList.toggle("hidden", !isMentor);
+      document.getElementById("rail-mentor-btn").classList.toggle("hidden", !isMentor);
+      document.getElementById("rail-csv-btn").classList.toggle("hidden", !isMentor);
+      document.getElementById("tab-sim-reply-btn").classList.toggle("hidden", !isMentor);
+    }
+
+    function handleBuatKasusTabClick() {
+      if (currentSession.role === "mentor") {
+        openCreateScenarioModal();
+      } else {
+        createNewBlankCase();
+      }
+    }
+
+    function openCreateScenarioModal() {
+      const l3Sel = document.getElementById("new-sc-target-l3");
+      l3Sel.innerHTML = MASTER_REASON_CODES.map(r =>
+        `<option value="${r.l3}">${r.l1} / ${r.l2} / ${r.l3}</option>`
+      ).join("");
+      openModal("modal-create-scenario");
+    }
+
+    function saveNewCustomScenario() {
+      const title = document.getElementById("new-sc-title").value.trim() || "Skenario Custom Mentor";
+      const caseId = document.getElementById("new-sc-caseid").value.trim() || ("212376" + Math.floor(1000000000000 + Math.random() * 8999999999999));
+      const origin = document.getElementById("new-sc-origin").value;
+      const product = document.getElementById("new-sc-product").value;
+      const email = document.getElementById("new-sc-email").value.trim() || "nasabah@example.com";
+      const targetL3 = document.getElementById("new-sc-target-l3").value;
+      const msg = document.getElementById("new-sc-message").value.trim();
+      const blankMandatory = document.getElementById("new-sc-blank-mandatory").checked;
+
+      if (!msg) {
+        showToast("Pesan awal customer / kronologi wajib diisi!", "error");
+        return;
+      }
+
+      const rcObj = MASTER_REASON_CODES.find(r => r.l3 === targetL3) || MASTER_REASON_CODES[0];
+      const newSc = {
+        title: title,
+        difficulty: "Custom Mentor",
+        summary: msg,
+        caseId: caseId,
+        rcL1: blankMandatory ? "" : rcObj.l1,
+        rcL2: blankMandatory ? "" : rcObj.l2,
+        rcL3: blankMandatory ? "" : rcObj.l3,
+        status: "Open",
+        origin: origin,
+        createdTime: getFormattedNow(),
+        age: "0 hari 0 jam 5 menit",
+        ownerType: "Agent",
+        ownerValue: "Agent L1 Call SPaylater",
+        ownerTeam: "ID - Credit - L1 - Call Credit - Agent",
+        entryPoint: blankMandatory ? "" : "None",
+        priority: blankMandatory ? "" : "Medium",
+        caseSubject: blankMandatory ? "" : `${caseId} - ${rcObj.l3}`,
+        shopeeUserId: "8100" + Math.floor(10000 + Math.random() * 89999),
+        caseDescription: "",
+        modifiedTime: getFormattedNow(),
+        creditProduct: blankMandatory ? "" : product,
+        escalationReason: "",
+        sentiment: "",
+        hcType: "",
+        hcHashtag: "",
+        csUserId: "948877" + Math.floor(100000000 + Math.random() * 899999999),
+        requestEmail: email,
+        phonePrefix: "ID +62",
+        requestPhone: "812 334 455 66",
+        sosmedPlatform: "",
+        sosmedHandle: "",
+        userType: "Buyer",
+        bizType: "Shopee TuC",
+        bizValue: email.split("@")[0],
+        icNumber: "",
+        incomingContacts: 1,
+        expectedL3: rcObj.l3,
+        expectedProduct: product,
+        systemDetails: [
+          { label: "Nama Nasabah (KYC)", value: `${email.split("@")[0]} (Verified)` },
+          { label: "Produk Terkait", value: product },
+          { label: "Target L3 (Kunci Mentor)", value: rcObj.l3 }
+        ],
+        attachments: [],
+        timeline: [
+          {
+            id: Date.now(),
+            type: "Dialogue",
+            actor: `${email.split("@")[0]} (Customer)`,
+            badgeBg: "bg-blue-600",
+            icon: "fa-comment-dots",
+            title: `Inbound ${origin}`,
+            time: getFormattedNow(),
+            content: msg
+          }
+        ]
+      };
+
+      SCENARIOS.unshift(newSc);
+      try {
+        const saved = JSON.parse(localStorage.getItem("cf_custom_scenarios") || "[]");
+        saved.unshift(newSc);
+        localStorage.setItem("cf_custom_scenarios", JSON.stringify(saved));
+      } catch (e) {}
+
+      renderScenarioLists();
+      closeAllModals();
+      loadScenario(0);
+      showToast("Skenario baru berhasil dibuat & disimpan!", "success");
+    }
+
+    function loadSavedCustomScenarios() {
+      try {
+        const saved = JSON.parse(localStorage.getItem("cf_custom_scenarios") || "[]");
+        if (Array.isArray(saved) && saved.length > 0) {
+          SCENARIOS = [...saved, ...SCENARIOS];
+        }
+      } catch (e) {}
+    }
+
+    function loadSavedCsvSettings() {
+      try {
+        const savedRc = JSON.parse(localStorage.getItem("cf_csv_reason_codes") || "null");
+        if (Array.isArray(savedRc) && savedRc.length > 0) {
+          MASTER_REASON_CODES = savedRc;
+        }
+      } catch (e) {}
+    }
+
+    function populateStaticDropdowns() {
+      // Case Origin
+      const originSel = document.getElementById("edit-case-origin");
+      originSel.innerHTML = MASTER_CASE_ORIGINS.map(o => `<option value="${o}">${o}</option>`).join("");
+
+      // Hard Complaint Hashtags
+      const hcTagSel = document.getElementById("edit-hc-hashtag");
+      hcTagSel.innerHTML = `<option value="">Pilih</option>` +
+        MASTER_HCP_HASHTAGS.map(h => `<option value="${h.tag}">${h.tag}</option>`).join("");
+
+      // Escalation Modal Queues
+      const escSel = document.getElementById("esc-target-team");
+      escSel.innerHTML = MASTER_QUEUES.map(q => `<option value="${q.name}">${q.name}</option>`).join("");
+
+      // Reason Code L1
+      populateRcL1();
+    }
+
+    function loadScenario(index, silent = false) {
+      currentScenarioIndex = index;
+      currentState = JSON.parse(JSON.stringify(SCENARIOS[index]));
+      if (isEditMode) {
+        isEditMode = false;
+        applyEditModeUI(false);
+      }
+      syncStateToUI();
+      document.querySelectorAll(".qa-check").forEach(cb => cb.checked = false);
+      updateQaScore();
+      if (!silent) showToast(`Memuat ${currentState.title}`, "info");
+    }
+
+    function createNewBlankCase() {
+      const randomId = "21237400" + Math.floor(10000000000 + Math.random() * 89999999999);
+      currentState = {
+        title: "Latihan Kasus Baru (Input Mandatory Field)",
+        difficulty: "Practice",
+        summary: "Kasus baru kosong untuk melatih kecepatan dan ketepatan pengisian mandatory field L1.",
+        caseId: randomId,
+        rcL1: "",
+        rcL2: "",
+        rcL3: "",
+        status: "Open",
+        origin: "Call",
+        createdTime: getFormattedNow(),
+        age: "0 hari 0 jam 1 menit",
+        ownerType: "Agent",
+        ownerValue: "Agent L1 Call SPaylater",
+        ownerTeam: "ID - Credit - L1 - Call Credit - Agent",
+        entryPoint: "",
+        priority: "",
+        caseSubject: "",
+        shopeeUserId: "812349876",
+        caseDescription: "",
+        modifiedTime: getFormattedNow(),
+        creditProduct: "",
+        escalationReason: "",
+        sentiment: "",
+        hcType: "",
+        hcHashtag: "",
+        csUserId: "948877001122334",
+        requestEmail: "nasabah.latihan@example.com",
+        phonePrefix: "ID +62",
+        requestPhone: "812 3456 7890",
+        sosmedPlatform: "",
+        sosmedHandle: "",
+        userType: "Buyer",
+        bizType: "Shopee TuC",
+        bizValue: "user_latihan",
+        icNumber: "",
+        incomingContacts: 1,
+        expectedL3: "",
+        expectedProduct: "",
+        systemDetails: [
+          { label: "Nama Nasabah (KYC)", value: "Nasabah Latihan (Verified)" },
+          { label: "Status Akun", value: "ACTIVE" },
+          { label: "Limit SPayLater", value: "Rp 3.000.000" }
+        ],
+        attachments: [],
+        timeline: [
+          {
+            id: Date.now(),
+            type: "System",
+            actor: "System",
+            badgeBg: "bg-gray-600",
+            icon: "fa-plus",
+            title: "New Case Created",
+            time: getFormattedNow(),
+            content: "Tiket baru dibuat. Silakan klik ikon pensil pada panel Info Kasus untuk melengkapi seluruh mandatory field (*)."
+          }
+        ]
+      };
+      syncStateToUI();
+      if (!isEditMode) toggleEditCaseInfo();
+      showToast("Kasus kosong dibuat & Mode Edit Mandatory diaktifkan.", "info");
+    }
+
+    function resetCurrentScenario() {
+      loadScenario(currentScenarioIndex);
+      showToast("Skenario dikembalikan ke kondisi awal.", "success");
+    }
+
+    // --- 4. SYNC STATE TO READ & EDIT UI ---
+    function syncStateToUI() {
+      document.getElementById("global-search-input").value = currentState.caseId;
+      document.getElementById("tab-case-id").textContent = "..." + currentState.caseId.slice(-6);
+      document.getElementById("footer-scenario-name").textContent = currentState.title;
+
+      // Reason Code Read
+      document.getElementById("rc-l1-text").textContent = currentState.rcL1 ? `L1-${currentState.rcL1}` : "(Belum dipilih)";
+      document.getElementById("rc-l2-text").textContent = currentState.rcL2 ? `L2-${currentState.rcL2}` : "";
+      document.getElementById("rc-l3-text").textContent = currentState.rcL3 ? `L3-${currentState.rcL3}` : "";
+
+      // Basic Info Read
+      document.getElementById("disp-case-id").textContent = currentState.caseId;
+      updateStatusBadgeUI(currentState.status);
+      document.getElementById("read-case-origin").textContent = currentState.origin || "-";
+      document.getElementById("disp-created-time").textContent = currentState.createdTime;
+      document.getElementById("disp-case-age").textContent = currentState.age;
+      document.getElementById("disp-case-owner").textContent = currentState.ownerValue;
+      document.getElementById("read-owner-icon").className = currentState.ownerType === "Queue"
+        ? "fa-solid fa-users text-purple-600 mt-0.5"
+        : "fa-solid fa-user-tie text-emerald-600 mt-0.5";
+      document.getElementById("disp-owner-team").textContent = currentState.ownerTeam;
+      document.getElementById("read-entry-point").textContent = currentState.entryPoint || "-";
+      document.getElementById("read-case-priority").textContent = currentState.priority || "-";
+      document.getElementById("read-case-subject").textContent = currentState.caseSubject || "-";
+      document.getElementById("read-shopee-uid").textContent = currentState.shopeeUserId || "-";
+      document.getElementById("read-case-desc").textContent = currentState.caseDescription || "-";
+      document.getElementById("disp-modified-time").textContent = currentState.modifiedTime;
+      document.getElementById("read-credit-product").textContent = currentState.creditProduct || "-";
+      document.getElementById("read-escalation-reason").textContent = currentState.escalationReason || "-";
+      document.getElementById("read-sentiment").textContent = currentState.sentiment || "-";
+      document.getElementById("read-hc-type").textContent = currentState.hcType || "-";
+      document.getElementById("read-hc-hashtag").textContent = currentState.hcHashtag || "-";
+
+      // Customer Info Read
+      document.getElementById("disp-cs-uid").textContent = currentState.csUserId;
+      document.getElementById("read-req-email").textContent = currentState.requestEmail || "-";
+      document.getElementById("read-req-phone").textContent = currentState.requestPhone ? `${currentState.phonePrefix} ${currentState.requestPhone}` : "-";
+      document.getElementById("read-req-sosmed").textContent = (currentState.sosmedPlatform || currentState.sosmedHandle)
+        ? `${currentState.sosmedPlatform || 'Sosmed'}: ${currentState.sosmedHandle || '-'}`
+        : "-";
+      document.getElementById("read-user-type").textContent = currentState.userType || "-";
+      document.getElementById("read-biz-identity").textContent = currentState.bizValue ? `${currentState.bizType} : ${currentState.bizValue}` : currentState.bizType;
+      document.getElementById("read-ic-number").textContent = currentState.icNumber || "-";
+      document.getElementById("disp-incoming-contacts").textContent = currentState.incomingContacts;
+
+      // Sync Right Panel Composer
+      document.getElementById("composer-to-email").textContent = currentState.requestEmail || "customer@example.com";
+      document.getElementById("email-subject-input").value = currentState.caseSubject
+        ? `Re: ${currentState.caseSubject}`
+        : `Case #${currentState.caseId}`;
+      document.getElementById("call-customer-name").textContent = `${currentState.requestEmail.split('@')[0]} (${currentState.phonePrefix} ${currentState.requestPhone})`;
+
+      renderAttachments();
+      renderCustomerSystemDetails();
+      renderTimeline();
+    }
+
+    // --- 5. PENCIL EDIT MODE LOGIC (EXACT MATCH TO REFERENCE SCREENSHOT) ---
+    function toggleEditCaseInfo() {
+      isEditMode = !isEditMode;
+      applyEditModeUI(isEditMode);
+      if (isEditMode) {
+        populateEditFormFromState();
+      }
+    }
+
+    function applyEditModeUI(editing) {
+      const badge = document.getElementById("edit-mode-badge");
+      const footer = document.getElementById("left-edit-footer");
+      const editBtn = document.getElementById("edit-case-btn");
+
+      badge.classList.toggle("hidden", !editing);
+      footer.classList.toggle("hidden", !editing);
+      editBtn.classList.toggle("bg-orange-100", editing);
+      editBtn.classList.toggle("coral-text", editing);
+
+      // Stars (*)
+      document.getElementById("star-rc").classList.toggle("hidden", !editing);
+      document.querySelectorAll(".edit-star").forEach(el => el.classList.toggle("hidden", !editing));
+
+      // Toggle Read vs Edit elements
+      const pairs = [
+        ["rc-read-view", "rc-edit-view"],
+        ["read-case-status", "edit-case-status"],
+        ["read-case-origin", "edit-case-origin"],
+        ["read-case-owner", "edit-case-owner-wrap"],
+        ["read-entry-point", "edit-entry-point"],
+        ["read-case-priority", "edit-case-priority"],
+        ["read-case-subject", "edit-case-subject-wrap"],
+        ["read-shopee-uid", "edit-shopee-uid"],
+        ["read-case-desc", "edit-case-desc-wrap"],
+        ["read-credit-product", "edit-credit-product"],
+        ["read-escalation-reason", "edit-escalation-reason"],
+        ["read-sentiment", "edit-sentiment"],
+        ["read-hc-type", "edit-hc-type"],
+        ["read-hc-hashtag", "edit-hc-hashtag"],
+        ["read-offering-csat", "edit-offering-csat"],
+        ["read-remark-csat", "edit-remark-csat"],
+        ["read-req-email", "edit-req-email-wrap"],
+        ["read-req-phone", "edit-req-phone-wrap"],
+        ["read-req-sosmed", "edit-req-sosmed-wrap"],
+        ["read-user-type", "edit-user-type"],
+        ["read-biz-identity", "edit-biz-identity-wrap"],
+        ["read-ic-number", "edit-ic-number"]
+      ];
+
+      pairs.forEach(([readId, editId]) => {
+        document.getElementById(readId).classList.toggle("hidden", editing);
+        document.getElementById(editId).classList.toggle("hidden", !editing);
+      });
+    }
+
+    function populateEditFormFromState() {
+      // Clear previous error borders
+      document.querySelectorAll(".crm-input-error").forEach(el => el.classList.remove("crm-input-error"));
+
+      // Reason Code Cascading
+      populateRcL1();
+      if (currentState.rcL1) {
+        document.getElementById("rc-l1-select").value = currentState.rcL1;
+        onRcL1Change();
+        if (currentState.rcL2) {
+          document.getElementById("rc-l2-select").value = currentState.rcL2;
+          onRcL2Change();
+          if (currentState.rcL3) {
+            document.getElementById("rc-l3-select").value = currentState.rcL3;
+          }
+        }
+      }
+
+      document.getElementById("edit-case-status").value = currentState.status || "Open";
+      document.getElementById("edit-case-origin").value = currentState.origin || "Call";
+
+      document.getElementById("edit-owner-type").value = currentState.ownerType || "Agent";
+      onOwnerTypeChange();
+      document.getElementById("edit-owner-value").value = currentState.ownerValue;
+
+      document.getElementById("edit-entry-point").value = currentState.entryPoint || "None";
+      document.getElementById("edit-case-priority").value = currentState.priority || "Medium";
+
+      document.getElementById("edit-case-subject").value = currentState.caseSubject || "";
+      updateCharCounter("edit-case-subject", "subject-counter", 400);
+
+      document.getElementById("edit-shopee-uid").value = currentState.shopeeUserId || "";
+      document.getElementById("edit-case-desc").value = currentState.caseDescription || "";
+      updateCharCounter("edit-case-desc", "desc-counter", 400);
+
+      document.getElementById("edit-credit-product").value = currentState.creditProduct || "";
+      document.getElementById("edit-escalation-reason").value = currentState.escalationReason || "";
+      document.getElementById("edit-sentiment").value = currentState.sentiment || "";
+      document.getElementById("edit-hc-type").value = currentState.hcType || "";
+      document.getElementById("edit-hc-hashtag").value = currentState.hcHashtag || "";
+
+      document.getElementById("edit-req-email").value = currentState.requestEmail || "";
+      updateCharCounter("edit-req-email", "email-counter", 200);
+
+      document.getElementById("edit-phone-prefix").value = currentState.phonePrefix || "ID +62";
+      document.getElementById("edit-req-phone").value = currentState.requestPhone || "";
+
+      document.getElementById("edit-sosmed-platform").value = currentState.sosmedPlatform || "";
+      document.getElementById("edit-sosmed-handle").value = currentState.sosmedHandle || "";
+
+      document.getElementById("edit-user-type").value = currentState.userType || "Buyer";
+      document.getElementById("edit-biz-type").value = currentState.bizType || "Shopee TuC";
+      document.getElementById("edit-biz-value").value = currentState.bizValue || "";
+      document.getElementById("edit-ic-number").value = currentState.icNumber || "";
+    }
+
+    function cancelEditCaseInfo() {
+      isEditMode = false;
+      applyEditModeUI(false);
+      showToast("Perubahan dibatalkan.", "info");
+    }
+
+    function saveEditCaseInfo() {
+      // Clear error highlights
+      document.querySelectorAll(".crm-input-error").forEach(el => el.classList.remove("crm-input-error"));
+
+      const l1 = document.getElementById("rc-l1-select").value;
+      const l2 = document.getElementById("rc-l2-select").value;
+      const l3 = document.getElementById("rc-l3-select").value;
+      const status = document.getElementById("edit-case-status").value;
+      const origin = document.getElementById("edit-case-origin").value;
+      const ownerType = document.getElementById("edit-owner-type").value;
+      const ownerValue = document.getElementById("edit-owner-value").value;
+      const entryPoint = document.getElementById("edit-entry-point").value;
+      const priority = document.getElementById("edit-case-priority").value;
+      const subject = document.getElementById("edit-case-subject").value.trim();
+      const creditProduct = document.getElementById("edit-credit-product").value;
+
+      // Validate Mandatory Fields (*)
+      const errors = [];
+      if (!l1 || !l2 || !l3) {
+        errors.push("Reason Code (L1-L3)");
+        document.getElementById("rc-l3-select").classList.add("crm-input-error");
+      }
+      if (!status) {
+        errors.push("Case Status");
+        document.getElementById("edit-case-status").classList.add("crm-input-error");
+      }
+      if (!origin) {
+        errors.push("Case Origin");
+        document.getElementById("edit-case-origin").classList.add("crm-input-error");
+      }
+      if (!ownerValue) {
+        errors.push("Case Owner");
+        document.getElementById("edit-owner-value").classList.add("crm-input-error");
+      }
+      if (!entryPoint) {
+        errors.push("Entry Point");
+        document.getElementById("edit-entry-point").classList.add("crm-input-error");
+      }
+      if (!priority) {
+        errors.push("Case Priority");
+        document.getElementById("edit-case-priority").classList.add("crm-input-error");
+      }
+      if (!subject || subject.length > 400) {
+        errors.push("Case Subject (1-400 karakter)");
+        document.getElementById("edit-case-subject").classList.add("crm-input-error");
+      }
+      if (!creditProduct) {
+        errors.push("Credit Product");
+        document.getElementById("edit-credit-product").classList.add("crm-input-error");
+      }
+
+      if (errors.length > 0) {
+        showToast(`Gagal Simpan! Mandatory field wajib diisi: ${errors.join(", ")}`, "error");
+        return;
+      }
+
+      // Track changes for timeline log
+      const changes = [];
+      if (currentState.rcL3 !== l3) changes.push(`Reason Code: ${l1} / ${l2} / ${l3}`);
+      if (currentState.status !== status) changes.push(`Case Status: ${currentState.status} → ${status}`);
+      if (currentState.ownerValue !== ownerValue) changes.push(`Case Owner (${ownerType}): ${ownerValue}`);
+      if (currentState.creditProduct !== creditProduct) changes.push(`Credit Product: ${creditProduct}`);
+      if (currentState.sentiment !== document.getElementById("edit-sentiment").value) {
+        changes.push(`Sentiment: ${document.getElementById("edit-sentiment").value || '-'}`);
+      }
+      if (currentState.hcHashtag !== document.getElementById("edit-hc-hashtag").value) {
+        changes.push(`Hard Complaint Hashtag: ${document.getElementById("edit-hc-hashtag").value || '-'}`);
+      }
+
+      // Save all fields to state
+      currentState.rcL1 = l1;
+      currentState.rcL2 = l2;
+      currentState.rcL3 = l3;
+      currentState.status = status;
+      currentState.origin = origin;
+      currentState.ownerType = ownerType;
+      currentState.ownerValue = ownerValue;
+      currentState.ownerTeam = document.getElementById("disp-owner-team").textContent;
+      currentState.entryPoint = entryPoint;
+      currentState.priority = priority;
+      currentState.caseSubject = subject;
+      currentState.shopeeUserId = document.getElementById("edit-shopee-uid").value.trim();
+      currentState.caseDescription = document.getElementById("edit-case-desc").value.trim();
+      currentState.modifiedTime = getFormattedNow();
+      currentState.creditProduct = creditProduct;
+      currentState.escalationReason = document.getElementById("edit-escalation-reason").value;
+      currentState.sentiment = document.getElementById("edit-sentiment").value;
+      currentState.hcType = document.getElementById("edit-hc-type").value;
+      currentState.hcHashtag = document.getElementById("edit-hc-hashtag").value;
+
+      currentState.requestEmail = document.getElementById("edit-req-email").value.trim();
+      currentState.phonePrefix = document.getElementById("edit-phone-prefix").value;
+      currentState.requestPhone = document.getElementById("edit-req-phone").value.trim();
+      currentState.sosmedPlatform = document.getElementById("edit-sosmed-platform").value;
+      currentState.sosmedHandle = document.getElementById("edit-sosmed-handle").value.trim();
+      currentState.userType = document.getElementById("edit-user-type").value;
+      currentState.bizType = document.getElementById("edit-biz-type").value;
+      currentState.bizValue = document.getElementById("edit-biz-value").value.trim();
+      currentState.icNumber = document.getElementById("edit-ic-number").value.trim();
+
+      isEditMode = false;
+      applyEditModeUI(false);
+      syncStateToUI();
+
+      if (changes.length > 0) {
+        addTimelineEvent({
+          type: "System",
+          actor: "Trainee L1 Agent (You)",
+          badgeBg: "bg-gray-700",
+          icon: "fa-pen-to-square",
+          title: "Info Kasus Updated",
+          content: changes.join("\n")
+        });
+      }
+
+      showToast("Info Kasus berhasil disimpan!", "success");
+    }
+
+    // --- 6. CASCADING REASON CODE & OWNER DROPDOWN HELPERS ---
+    function populateRcL1() {
+      const l1List = [...new Set(MASTER_REASON_CODES.map(r => r.l1))];
+      const sel = document.getElementById("rc-l1-select");
+      sel.innerHTML = `<option value="">Pilih Level 1</option>` + l1List.map(v => `<option value="${v}">${v}</option>`).join("");
+      document.getElementById("rc-l2-select").innerHTML = `<option value="">Pilih Level 2</option>`;
+      document.getElementById("rc-l3-select").innerHTML = `<option value="">Pilih Level 3</option>`;
+    }
+
+    function onRcL1Change() {
+      const l1 = document.getElementById("rc-l1-select").value;
+      const l2List = [...new Set(MASTER_REASON_CODES.filter(r => r.l1 === l1).map(r => r.l2))];
+      const sel2 = document.getElementById("rc-l2-select");
+      sel2.innerHTML = `<option value="">Pilih Level 2</option>` + l2List.map(v => `<option value="${v}">${v}</option>`).join("");
+      document.getElementById("rc-l3-select").innerHTML = `<option value="">Pilih Level 3</option>`;
+      if (l2List.length === 1) {
+        sel2.value = l2List[0];
+        onRcL2Change();
+      }
+    }
+
+    function onRcL2Change() {
+      const l1 = document.getElementById("rc-l1-select").value;
+      const l2 = document.getElementById("rc-l2-select").value;
+      const l3List = MASTER_REASON_CODES.filter(r => r.l1 === l1 && r.l2 === l2).map(r => r.l3);
+      const sel3 = document.getElementById("rc-l3-select");
+      sel3.innerHTML = `<option value="">Pilih Level 3</option>` + l3List.map(v => `<option value="${v}">${v}</option>`).join("");
+      if (l3List.length === 1) {
+        sel3.value = l3List[0];
+      }
+    }
+
+    function filterReasonCodeCombined(query) {
+      const q = query.trim().toLowerCase();
+      if (!q) return;
+      const match = MASTER_REASON_CODES.find(r =>
+        r.l3.toLowerCase().includes(q) || r.l2.toLowerCase().includes(q)
+      );
+      if (match) {
+        document.getElementById("rc-l1-select").value = match.l1;
+        onRcL1Change();
+        document.getElementById("rc-l2-select").value = match.l2;
+        onRcL2Change();
+        document.getElementById("rc-l3-select").value = match.l3;
+      }
+    }
+
+    function onOwnerTypeChange() {
+      const type = document.getElementById("edit-owner-type").value;
+      const valSel = document.getElementById("edit-owner-value");
+      if (type === "Agent") {
+        valSel.innerHTML = MASTER_AGENTS.map(a => `<option value="${a.name}">${a.name}</option>`).join("");
+      } else {
+        valSel.innerHTML = MASTER_QUEUES.map(q => `<option value="${q.name}">${q.name}</option>`).join("");
+      }
+      onOwnerValueChange();
+    }
+
+    function onOwnerValueChange() {
+      const type = document.getElementById("edit-owner-type").value;
+      const val = document.getElementById("edit-owner-value").value;
+      if (type === "Agent") {
+        const found = MASTER_AGENTS.find(a => a.name === val);
+        if (found) document.getElementById("disp-owner-team").textContent = found.team;
+      } else {
+        const found = MASTER_QUEUES.find(q => q.name === val);
+        if (found) document.getElementById("disp-owner-team").textContent = found.team;
+      }
+    }
+
+    function onSentimentChange() {
+      const sent = document.getElementById("edit-sentiment").value;
+      if (sent === "Hard Complaint" && !document.getElementById("edit-hc-type").value) {
+        document.getElementById("edit-hc-type").value = "HCP1";
+        onHcTypeChange();
+      }
+    }
+
+    function onHcTypeChange() {
+      const hcType = document.getElementById("edit-hc-type").value;
+      const tagSel = document.getElementById("edit-hc-hashtag");
+      const filtered = hcType && hcType.startsWith("HCP")
+        ? MASTER_HCP_HASHTAGS.filter(h => h.type === hcType)
+        : MASTER_HCP_HASHTAGS;
+      tagSel.innerHTML = `<option value="">Pilih</option>` +
+        filtered.map(h => `<option value="${h.tag}">${h.tag}</option>`).join("");
+    }
+
+    function assignToMe() {
+      const me = `${currentSession.name} | ${currentSession.teamTitle}`;
+      const team = currentSession.teamCode;
+      currentState.ownerType = "Agent";
+      currentState.ownerValue = me;
+      currentState.ownerTeam = team;
+
+      if (isEditMode) {
+        const valSel = document.getElementById("edit-owner-value");
+        document.getElementById("edit-owner-type").value = "Agent";
+        onOwnerTypeChange();
+        if (!Array.from(valSel.options).some(o => o.value === me)) {
+          valSel.insertAdjacentHTML("afterbegin", `<option value="${me}">${me}</option>`);
+        }
+        valSel.value = me;
+        document.getElementById("disp-owner-team").textContent = team;
+      } else {
+        syncStateToUI();
+        addTimelineEvent({
+          type: "System",
+          actor: currentSession.name,
+          badgeBg: "bg-indigo-600",
+          icon: "fa-user-check",
+          title: "Case Assigned",
+          content: `Case Owner di-assign ke: ${me}`
+        });
+      }
+      showToast(`Case di-assign ke ${currentSession.name}.`, "success");
+    }
+
+    // --- 7. MENTOR MANDATORY FIELD AUDIT & QA ---
+    function runMandatoryAudit() {
+      const checks = [
+        { label: "Reason Code (L1-L3)", ok: !!(currentState.rcL1 && currentState.rcL2 && currentState.rcL3), val: currentState.rcL3 || "Kosong" },
+        { label: "Case Status", ok: !!currentState.status, val: currentState.status || "Kosong" },
+        { label: "Case Origin", ok: !!currentState.origin, val: currentState.origin || "Kosong" },
+        { label: "Case Owner", ok: !!currentState.ownerValue, val: currentState.ownerValue || "Kosong" },
+        { label: "Entry Point", ok: !!currentState.entryPoint, val: currentState.entryPoint || "Kosong" },
+        { label: "Case Priority", ok: !!currentState.priority, val: currentState.priority || "Kosong" },
+        { label: "Case Subject", ok: !!(currentState.caseSubject && currentState.caseSubject.length > 0), val: currentState.caseSubject ? "Terisi" : "Kosong" },
+        { label: "Credit Product", ok: !!currentState.creditProduct, val: currentState.creditProduct || "Kosong" }
+      ];
+
+      if (currentState.expectedL3) {
+        checks.push({
+          label: "Akurasi L3 Skenario",
+          ok: currentState.rcL3 === currentState.expectedL3,
+          val: currentState.rcL3 === currentState.expectedL3 ? "Sesuai SOP" : `Seharusnya: ${currentState.expectedL3}`
+        });
+      }
+
+      const container = document.getElementById("mandatory-audit-result");
+      container.innerHTML = checks.map(c => `
+        <div class="flex items-center justify-between py-1 border-b border-indigo-100 last:border-b-0">
+          <span class="font-medium">${c.ok ? '<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i>' : '<i class="fa-solid fa-circle-xmark text-red-500 mr-1"></i>'}${c.label}</span>
+          <span class="${c.ok ? 'text-emerald-700' : 'text-red-600 font-semibold'} truncate max-w-[165px]">${c.val}</span>
+        </div>
+      `).join("");
+    }
+
+    function renderScenarioLists() {
+      const html = SCENARIOS.map((sc, idx) => `
+        <div onclick="loadScenario(${idx}); closeAllModals();" class="p-3 border border-gray-200 hover:border-[#EE4D2D] rounded-md cursor-pointer transition-all bg-white">
+          <div class="flex items-center justify-between mb-1">
+            <span class="font-bold text-gray-800">${sc.title}</span>
+            <span class="px-2 py-0.5 bg-orange-50 coral-text rounded text-[10px] font-semibold">${sc.difficulty}</span>
+          </div>
+          <p class="text-gray-600 text-[11px]">${sc.summary}</p>
+        </div>
+      `).join("");
+      document.getElementById("modal-scenario-list").innerHTML = html;
+
+      document.getElementById("drawer-scenario-list").innerHTML = SCENARIOS.map((sc, idx) => `
+        <button onclick="loadScenario(${idx})" class="w-full text-left p-2 rounded border border-gray-200 bg-white hover:border-indigo-400 transition-all">
+          <div class="font-semibold text-gray-800 truncate">${sc.title}</div>
+          <div class="text-[10px] text-gray-500">Product: ${sc.creditProduct} • L3: ${sc.rcL3}</div>
+        </button>
+      `).join("");
+    }
+
+    // --- 8. GOOGLE SHEETS CSV LIVE SYNC (OPTIONAL MENTOR TOOL) ---
+    function openCsvSyncModal() {
+      document.getElementById("generic-modal-title").textContent = "Sync Base Data dari Google Sheets (CSV)";
+      document.getElementById("generic-modal-body").innerHTML = `
+        <p class="text-gray-600 leading-relaxed">
+          Web app ini sudah memuat seluruh <strong>45 Reason Code</strong>, <strong>Case Origin</strong>, <strong>Queue</strong>, dan <strong>HCP Hashtag</strong> dari sheet milikmu.
+          Jika nanti kamu menambah baris baru di Google Sheets (<em>File &gt; Share &gt; Publish to web &gt; CSV</em>), tempel tautan CSV tab <code>Master_Reason_Code</code> di bawah ini:
+        </p>
+        <input id="csv-url-input" type="url" placeholder="https://docs.google.com/spreadsheets/d/.../pub?gid=0&single=true&output=csv" class="crm-input" />
+        <div class="flex justify-end gap-2 pt-2">
+          <button onclick="closeAllModals()" class="px-3 py-1.5 rounded border border-gray-300">Tutup</button>
+          <button onclick="fetchCsvReasonCodes()" class="px-4 py-1.5 rounded coral-bg text-white font-medium">Muat Data CSV</button>
+        </div>
+      `;
+      openModal("modal-generic");
+    }
+
+    async function fetchCsvReasonCodes() {
+      const url = document.getElementById("csv-url-input").value.trim();
+      if (!url) {
+        showToast("Masukkan URL CSV Google Sheets terlebih dahulu.", "error");
+        return;
+      }
+      try {
+        const res = await fetch(url);
+        const text = await res.text();
+        const rows = text.split(/\r?\n/).slice(1).filter(r => r.trim());
+        const parsed = rows.map(line => {
+          const cols = line.split(",");
+          return {
+            l1: (cols[0] || "").replace(/^"|"$/g, "").trim(),
+            l2: (cols[1] || "").replace(/^"|"$/g, "").trim(),
+            l3: (cols[2] || "").replace(/^"|"$/g, "").trim()
+          };
+        }).filter(r => r.l1 && r.l2 && r.l3);
+
+        if (parsed.length > 0) {
+          MASTER_REASON_CODES = parsed;
+          try { localStorage.setItem("cf_csv_reason_codes", JSON.stringify(parsed)); } catch (e) {}
+          populateRcL1();
+          closeAllModals();
+          showToast(`Berhasil memuat & menyimpan ${parsed.length} Reason Code dari Google Sheets!`, "success");
+        } else {
+          showToast("Format CSV tidak sesuai atau kosong.", "error");
+        }
+      } catch (err) {
+        showToast("Gagal menarik CSV. Pastikan sheet sudah di-Publish to web sebagai CSV.", "error");
+      }
+    }
+
+    function renderAttachments() {
+      const list = document.getElementById("attachments-list");
+      const atts = currentState.attachments || [];
+      document.getElementById("att-count").textContent = atts.length;
+      if (atts.length === 0) {
+        list.innerHTML = `<div class="text-[11px] text-gray-400 italic">Tidak ada lampiran.</div>`;
+        return;
+      }
+      list.innerHTML = atts.map((att, idx) => `
+        <div onclick="previewAttachment(${idx})" class="flex items-center justify-between p-2 rounded border border-gray-200 hover:bg-gray-50 cursor-pointer">
+          <div class="flex items-center gap-2 truncate">
+            <i class="fa-solid ${att.type === 'pdf' ? 'fa-file-pdf text-red-500' : 'fa-image text-blue-500'}"></i>
+            <span class="truncate text-gray-700 font-medium">${att.name}</span>
+          </div>
+          <span class="text-[10px] text-gray-400 shrink-0 ml-2">${att.size}</span>
+        </div>
+      `).join("");
+    }
+
+    function renderCustomerSystemDetails() {
+      const container = document.getElementById("customer-system-details");
+      container.innerHTML = currentState.systemDetails.map(item => `
+        <div class="bg-white p-2.5 rounded border border-gray-200">
+          <div class="text-[11px] text-gray-400 mb-0.5">${item.label}</div>
+          <div class="${item.highlight || 'text-gray-800 font-medium'}">${item.value}</div>
+        </div>
+      `).join("");
+    }
+
+    function renderTimeline() {
+      const feed = document.getElementById("timeline-feed");
+      const filtered = currentTimelineFilter === "All"
+        ? currentState.timeline
+        : currentState.timeline.filter(ev => ev.type === currentTimelineFilter);
+
+      if (filtered.length === 0) {
+        feed.innerHTML = `<div class="text-center py-8 text-gray-400">Belum ada aktivitas pada kategori <strong>${currentTimelineFilter}</strong>.</div>`;
+        return;
+      }
+
+      feed.innerHTML = filtered.map(ev => `
+        <div class="border-b border-gray-100 pb-3.5 last:border-b-0">
+          <div class="flex items-start justify-between gap-2">
+            <div class="flex items-start gap-2.5">
+              <div class="w-7 h-7 rounded-full ${ev.badgeBg} text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                <i class="fa-solid ${ev.icon} text-xs"></i>
+              </div>
+              <div>
+                <div class="font-semibold text-gray-800">${ev.actor}</div>
+                <div class="text-[11px] text-gray-500 flex items-center gap-1.5 mt-0.5">
+                  <i class="fa-regular fa-rectangle-list text-gray-400"></i>
+                  <span>${ev.title}</span>
+                </div>
+              </div>
+            </div>
+            <div class="text-[11px] text-gray-400 flex items-center gap-1 shrink-0">
+              <span>${ev.time}</span>
+              <i class="fa-solid fa-chevron-up text-[9px]"></i>
+            </div>
+          </div>
+          <div class="ml-9 mt-2 text-gray-700 whitespace-pre-line leading-relaxed bg-gray-50/70 p-2.5 rounded border border-gray-100">
+            ${escapeHtml(ev.content)}
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderMacroList() {
+      document.getElementById("macro-list-container").innerHTML = MACROS.map((m, idx) => `
+        <div class="p-3 border border-gray-200 rounded-md hover:border-[#EE4D2D] transition-colors space-y-1.5">
+          <div class="flex items-center justify-between">
+            <span class="font-semibold text-gray-800">${m.title}</span>
+            <span class="px-2 py-0.5 bg-gray-100 text-gray-600 rounded text-[10px]">${m.category}</span>
+          </div>
+          <p class="text-gray-500 line-clamp-2 text-[11px]">${m.body}</p>
+          <div class="pt-1 flex justify-end">
+            <button onclick="applyMacro(${idx})" class="px-3 py-1 rounded coral-bg text-white text-[11px] font-medium">
+              Gunakan Template Ini
+            </button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function applyMacro(idx) {
+      const m = MACROS[idx];
+      const custName = (currentState.requestEmail || "Nasabah").split("@")[0];
+      switchChannelTab("email");
+      document.getElementById("email-subject-input").value = m.subject.replace(/\[CASE_ID\]/g, currentState.caseId);
+      document.getElementById("email-body-input").value = m.body
+        .replace(/\[CUSTOMER_NAME\]/g, custName)
+        .replace(/\[CASE_ID\]/g, currentState.caseId);
+      updateSendButtonsState();
+      closeAllModals();
+      showToast(`Macro diterapkan ke editor email.`, "success");
+    }
+
+    function switchChannelTab(tabName) {
+      document.querySelectorAll(".channel-tab").forEach(btn => {
+        btn.classList.remove("coral-border", "coral-text");
+        btn.classList.add("border-transparent");
+      });
+      const active = document.getElementById(`tab-btn-${tabName}`);
+      if (active) {
+        active.classList.remove("border-transparent");
+        active.classList.add("coral-border", "coral-text");
+      }
+      document.querySelectorAll(".composer-pane").forEach(p => p.classList.add("hidden"));
+      const pane = document.getElementById(`composer-${tabName}`);
+      if (pane) pane.classList.remove("hidden");
+    }
+
+    function updateSendButtonsState() {
+      const body = document.getElementById("email-body-input").value.trim();
+      const btnSolve = document.getElementById("btn-send-solve");
+      if (body.length > 0) {
+        btnSolve.disabled = false;
+        btnSolve.className = "px-3 py-1.5 rounded border border-[#EE4D2D] text-[#EE4D2D] hover:bg-orange-50 text-xs font-medium cursor-pointer transition-all";
+      } else {
+        btnSolve.disabled = true;
+        btnSolve.className = "px-3 py-1.5 rounded border border-gray-200 bg-gray-100 text-gray-400 text-xs font-medium cursor-not-allowed transition-all";
+      }
+    }
+
+    function sendEmailReply(andSolve) {
+      const subject = document.getElementById("email-subject-input").value.trim() || "(No Subject)";
+      const body = document.getElementById("email-body-input").value.trim();
+      if (!body) {
+        showToast("Silakan isi pesan email terlebih dahulu.", "error");
+        return;
+      }
+      addTimelineEvent({
+        type: "Dialogue",
+        actor: "Trainee L1 Agent (You)",
+        badgeBg: "bg-[#EE4D2D]",
+        icon: "fa-paper-plane",
+        title: `Outbound Email • Subject: ${subject}`,
+        content: body
+      });
+      document.getElementById("email-body-input").value = "";
+      updateSendButtonsState();
+
+      if (andSolve) {
+        quickChangeStatus("Solved");
+        showToast("Email terkirim & status kasus diubah ke Solved!", "success");
+      } else {
+        showToast("Email berhasil dikirim.", "success");
+      }
+    }
+
+    function sendSocialReply() {
+      const body = document.getElementById("social-body-input").value.trim();
+      if (!body) return;
+      addTimelineEvent({
+        type: "Dialogue",
+        actor: "Trainee L1 Agent (You)",
+        badgeBg: "bg-emerald-600",
+        icon: "fa-comments",
+        title: "Outbound Social / Live Chat",
+        content: body
+      });
+      document.getElementById("social-body-input").value = "";
+      showToast("Pesan berhasil dikirim.", "success");
+    }
+
+    function addInternalNote() {
+      const note = document.getElementById("internal-note-input").value.trim();
+      if (!note) {
+        showToast("Internal Note tidak boleh kosong.", "error");
+        return;
+      }
+      addTimelineEvent({
+        type: "Notes",
+        actor: "Trainee L1 Agent (You)",
+        badgeBg: "bg-amber-500",
+        icon: "fa-note-sticky",
+        title: "Internal Note",
+        content: note
+      });
+      document.getElementById("internal-note-input").value = "";
+      showToast("Internal Note ditambahkan.", "success");
+    }
+
+    function fillNoteTemplate() {
+      document.getElementById("internal-note-input").value =
+        `[L1 HANDOVER SUMMARY]\n` +
+        `- Credit Product: ${currentState.creditProduct || '-'}\n` +
+        `- Reason Code L3: ${currentState.rcL3 || '-'}\n` +
+        `- Hasil Verifikasi Data: Valid\n` +
+        `- Kronologi Kendala: \n` +
+        `- Next Action: `;
+    }
+
+    function submitEscalation() {
+      const queueName = document.getElementById("esc-target-team").value;
+      const reason = document.getElementById("esc-reason").value;
+      const note = document.getElementById("esc-note").value.trim();
+      if (!note) {
+        showToast("Handover Note wajib diisi sebelum eskalasi!", "error");
+        return;
+      }
+
+      const prevOwner = currentState.ownerValue;
+      const qObj = MASTER_QUEUES.find(q => q.name === queueName);
+      currentState.ownerType = "Queue";
+      currentState.ownerValue = queueName;
+      currentState.ownerTeam = qObj ? qObj.team : queueName;
+      currentState.escalationReason = reason;
+      syncStateToUI();
+
+      addTimelineEvent({
+        type: "System",
+        actor: "Trainee L1 Agent (You)",
+        badgeBg: "bg-purple-600",
+        icon: "fa-share-nodes",
+        title: "Case Escalation",
+        content: `Case Owner: ${prevOwner} → ${queueName}\nEscalation Reason: ${reason}\nHandover Note: ${note}`
+      });
+
+      document.getElementById("esc-note").value = "";
+      closeAllModals();
+      showToast(`Kasus berhasil dieskalasi ke ${queueName}`, "success");
+    }
+
+    function quickChangeStatus(newStatus) {
+      const oldStatus = currentState.status;
+      currentState.status = newStatus;
+      updateStatusBadgeUI(newStatus);
+      document.getElementById("case-status-menu").classList.add("hidden");
+
+      addTimelineEvent({
+        type: "System",
+        actor: "Trainee L1 Agent (You)",
+        badgeBg: "bg-gray-700",
+        icon: "fa-sliders",
+        title: "Case Status Changed",
+        content: `Status tiket diubah: ${oldStatus} → ${newStatus}`
+      });
+      showToast(`Status kasus: ${newStatus}`, "info");
+    }
+
+    function updateStatusBadgeUI(status) {
+      const badge = document.getElementById("badge-case-status");
+      badge.textContent = status;
+      badge.className = "inline-block px-2 py-0.5 rounded text-[11px] font-medium border ";
+      if (status === "Solved") badge.className += "bg-emerald-50 text-emerald-600 border-emerald-200";
+      else if (status === "Pending") badge.className += "bg-amber-50 text-amber-600 border-amber-200";
+      else if (status === "On Hold") badge.className += "bg-purple-50 text-purple-600 border-purple-200";
+      else badge.className += "bg-red-50 text-red-500 border-red-100";
+    }
+
+    // --- 10. CALL, INJECTOR, QA & UTILITY HELPERS ---
+    function togglePhoneWidget() {
+      switchChannelTab("call");
+    }
+
+    function toggleCallSession() {
+      const btn = document.getElementById("btn-toggle-call");
+      const statusText = document.getElementById("call-status-text");
+      const ring = document.getElementById("call-avatar-ring");
+      if (!isCallActive) {
+        isCallActive = true;
+        callSeconds = 0;
+        btn.innerHTML = `<i class="fa-solid fa-phone-slash"></i> <span>Akhiri Call</span>`;
+        btn.className = "px-3 py-1.5 rounded bg-red-600 hover:bg-red-700 text-white font-medium flex items-center gap-1.5";
+        statusText.textContent = "In Call (Connected)";
+        ring.classList.add("animate-ring");
+        callTimerInterval = setInterval(() => {
+          callSeconds++;
+          const m = String(Math.floor(callSeconds / 60)).padStart(2, "0");
+          const s = String(callSeconds % 60).padStart(2, "0");
+          document.getElementById("call-timer").textContent = `${m}:${s}`;
+        }, 1000);
+      } else {
+        isCallActive = false;
+        clearInterval(callTimerInterval);
+        btn.innerHTML = `<i class="fa-solid fa-phone"></i> <span>Mulai Call</span>`;
+        btn.className = "px-3 py-1.5 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-medium flex items-center gap-1.5";
+        statusText.textContent = "Call Ended";
+        ring.classList.remove("animate-ring");
+      }
+    }
+
+    function toggleMuteCall() {
+      isCallMuted = !isCallMuted;
+      document.getElementById("btn-mute-call").innerHTML = isCallMuted
+        ? `<i class="fa-solid fa-microphone-slash text-red-500"></i> Unmute`
+        : `<i class="fa-solid fa-microphone"></i> Mute`;
+    }
+
+    function logCallRecord() {
+      const disp = document.getElementById("call-disposition").value;
+      const verif = document.getElementById("call-verification").value;
+      const notes = document.getElementById("call-notes-input").value.trim() || "-";
+      const duration = document.getElementById("call-timer").textContent;
+      addTimelineEvent({
+        type: "Dialogue",
+        actor: "Trainee L1 Agent (You)",
+        badgeBg: "bg-emerald-600",
+        icon: "fa-phone",
+        title: `Call Log (${duration}) • ${disp}`,
+        content: `Verifikasi: ${verif}\nRingkasan: ${notes}`
+      });
+      document.getElementById("call-notes-input").value = "";
+      showToast("Call Log disimpan.", "success");
+    }
+
+    function injectQuickCustomerReply(msg) {
+      addTimelineEvent({
+        type: "Dialogue",
+        actor: "Customer (Roleplay)",
+        badgeBg: "bg-blue-600",
+        icon: "fa-envelope-open-text",
+        title: "Inbound Customer Message",
+        content: msg
+      });
+      showToast("Pesan simulasi customer masuk ke timeline!", "success");
+    }
+
+    function submitCustomCustomerReply() {
+      const ch = document.getElementById("sim-cust-channel").value;
+      const msg = document.getElementById("sim-cust-message").value.trim();
+      if (!msg) return;
+      addTimelineEvent({
+        type: "Dialogue",
+        actor: "Customer (Roleplay)",
+        badgeBg: "bg-blue-600",
+        icon: "fa-comment-dots",
+        title: ch,
+        content: msg
+      });
+      document.getElementById("sim-cust-message").value = "";
+      closeAllModals();
+      showToast("Balasan customer ditambahkan.", "success");
+    }
+
+    function updateQaScore() {
+      const checks = document.querySelectorAll(".qa-check");
+      const count = Array.from(checks).filter(c => c.checked).length;
+      document.getElementById("qa-score-pill").textContent = `${count}/6`;
+      document.getElementById("drawer-qa-score").textContent = `Skor: ${count} / 6`;
+    }
+
+    function postQaEvaluation() {
+      const checks = document.querySelectorAll(".qa-check");
+      const count = Array.from(checks).filter(c => c.checked).length;
+      const feedback = document.getElementById("mentor-feedback-note").value.trim() || "Evaluasi roleplay L1 selesai.";
+      addTimelineEvent({
+        type: "System",
+        actor: "Mentor QA Evaluator",
+        badgeBg: "bg-indigo-700",
+        icon: "fa-award",
+        title: `QA Roleplay Score: ${count}/6 (${Math.round((count / 6) * 100)}%)`,
+        content: `Feedback Mentor: ${feedback}`
+      });
+      toggleMentorDrawer();
+      showToast("Hasil QA tercatat di timeline.", "success");
+    }
+
+    function addTimelineEvent(ev) {
+      currentState.timeline.unshift({
+        id: Date.now(),
+        time: getFormattedNow(),
+        ...ev
+      });
+      renderTimeline();
+    }
+
+    function filterTimeline(cat) {
+      currentTimelineFilter = cat;
+      document.querySelectorAll(".tl-filter-tab").forEach(b => {
+        b.classList.remove("coral-border", "coral-text");
+        b.classList.add("border-transparent");
+      });
+      const el = document.getElementById(`tl-tab-${cat}`);
+      if (el) {
+        el.classList.remove("border-transparent");
+        el.classList.add("coral-border", "coral-text");
+      }
+      renderTimeline();
+    }
+
+    function refreshTimeline() {
+      renderTimeline();
+      showToast("Timeline diperbarui.", "info");
+    }
+
+    function createInlineTask() {
+      const title = document.getElementById("task-title-input").value.trim();
+      const due = document.getElementById("task-due-input").value.trim();
+      if (!title) return;
+      addTimelineEvent({
+        type: "Task",
+        actor: "Trainee L1 Agent (You)",
+        badgeBg: "bg-teal-600",
+        icon: "fa-list-check",
+        title: `Task Created • Due: ${due}`,
+        content: title
+      });
+      document.getElementById("task-title-input").value = "";
+      showToast("Task berhasil dibuat.", "success");
+    }
+
+    function openModal(id) {
+      document.getElementById("modal-backdrop").classList.remove("hidden");
+      ["modal-macro", "modal-escalation", "modal-scenario", "modal-customer-reply", "modal-generic", "modal-create-scenario"].forEach(m => {
+        const el = document.getElementById(m);
+        if (el) el.classList.add("hidden");
+      });
+      document.getElementById(id).classList.remove("hidden");
+    }
+    function closeAllModals() { document.getElementById("modal-backdrop").classList.add("hidden"); }
+    function openMacroModal() { openModal("modal-macro"); }
+    function openEscalationModal() { openModal("modal-escalation"); }
+    function openScenarioModal() { openModal("modal-scenario"); }
+    function openCustomerReplyModal() { openModal("modal-customer-reply"); }
+
+    function openApprovalModal() {
+      document.getElementById("generic-modal-title").textContent = "Create Approval Request";
+      document.getElementById("generic-modal-body").innerHTML = `
+        <div>
+          <label class="text-gray-600 block mb-1">Jenis Approval</label>
+          <select id="app-type" class="crm-input">
+            <option value="Permintaan penghapusan biaya / denda">Permintaan penghapusan biaya / denda</option>
+            <option value="Priority Unfreeze Request">Priority Unfreeze Request</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-gray-600 block mb-1">Alasan Pengajuan</label>
+          <textarea id="app-reason" rows="3" placeholder="Jelaskan kronologi untuk Team Leader..." class="crm-input"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button onclick="closeAllModals()" class="px-3 py-1.5 rounded border border-gray-300">Batal</button>
+          <button onclick="submitApproval()" class="px-4 py-1.5 rounded coral-bg text-white font-medium">Kirim Approval</button>
+        </div>
+      `;
+      openModal("modal-generic");
+    }
+
+    function submitApproval() {
+      const type = document.getElementById("app-type").value;
+      const reason = document.getElementById("app-reason").value.trim() || "Sesuai pengecekan L1.";
+      addTimelineEvent({
+        type: "Approvals",
+        actor: "Trainee L1 Agent (You)",
+        badgeBg: "bg-blue-700",
+        icon: "fa-stamp",
+        title: `Approval Submitted: ${type}`,
+        content: reason
+      });
+      closeAllModals();
+      showToast("Approval dikirim.", "success");
+    }
+
+    function openReminderModal() {
+      document.getElementById("generic-modal-title").textContent = "Reminder Set";
+      document.getElementById("generic-modal-body").innerHTML = `
+        <div>
+          <label class="text-gray-600 block mb-1">Waktu Reminder</label>
+          <input id="rem-time" type="text" value="Besok, 10:00 WIB" class="crm-input" />
+        </div>
+        <div>
+          <label class="text-gray-600 block mb-1">Catatan</label>
+          <input id="rem-note" type="text" placeholder="Follow up dokumen nasabah..." class="crm-input" />
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button onclick="closeAllModals()" class="px-3 py-1.5 rounded border border-gray-300">Batal</button>
+          <button onclick="submitReminder()" class="px-4 py-1.5 rounded coral-bg text-white font-medium">Simpan</button>
+        </div>
+      `;
+      openModal("modal-generic");
+    }
+
+    function submitReminder() {
+      const time = document.getElementById("rem-time").value;
+      const note = document.getElementById("rem-note").value.trim() || "Follow up tiket";
+      addTimelineEvent({
+        type: "Notes",
+        actor: "Trainee L1 Agent (You)",
+        badgeBg: "bg-amber-600",
+        icon: "fa-clock",
+        title: `Reminder Set (${time})`,
+        content: note
+      });
+      closeAllModals();
+      showToast("Reminder dijadwalkan.", "success");
+    }
+
+    function openKnowledgeModal() {
+      document.getElementById("generic-modal-title").textContent = "Panduan Pengisian Mandatory Field L1";
+      document.getElementById("generic-modal-body").innerHTML = `
+        <div class="space-y-2.5 text-gray-700 leading-relaxed">
+          <div class="p-2.5 bg-orange-50 border border-orange-200 rounded">
+            <strong class="coral-text block mb-1">1. Mandatory Field (*) Wajib Diisi Saat Edit Pensil</strong>
+            Pastikan <em>Reason Code (L1-L3)</em>, <em>Case Status</em>, <em>Case Origin</em>, <em>Case Owner</em>, <em>Entry Point</em>, <em>Case Priority</em>, <em>Case Subject</em>, dan <em>Credit Product</em> sudah lengkap sebelum klik Simpan.
+          </div>
+          <div class="p-2.5 bg-red-50 border border-red-200 rounded">
+            <strong class="text-red-700 block mb-1">2. Aturan Hard Complaint (HCP1 / HCP2 / HCP3)</strong>
+            Jika nasabah mengancam lapor OJK/Polisi/Media (<strong>HCP1</strong>), mengancam viralkan/hapus akun (<strong>HCP2</strong>), atau berkata kasar/minta atasan (<strong>HCP3</strong>), wajib set <em>Sentiment = Hard Complaint</em>, pilih tipe & hashtag HCP yang sesuai, lalu eskalasi ke <code>ID L2 Credit - SWAT HCP</code>.
+          </div>
+          <div class="p-2.5 bg-gray-100 border border-gray-200 rounded">
+            <strong class="text-gray-800 block mb-1">3. Offering CSAT & Remark CSAT</strong>
+            Kedua kolom ini memang ditampilkan di form namun sengaja dikunci (<em>disabled</em>) karena tim L1 tidak perlu mengubahnya.
+          </div>
+        </div>
+      `;
+      openModal("modal-generic");
+    }
+
+    function previewAttachment(idx) {
+      const att = currentState.attachments[idx];
+      document.getElementById("generic-modal-title").textContent = `Preview: ${att.name}`;
+      document.getElementById("generic-modal-body").innerHTML = `
+        <div class="bg-gray-100 rounded-md p-6 flex flex-col items-center text-center border border-dashed border-gray-300">
+          <i class="fa-solid ${att.type === 'pdf' ? 'fa-file-pdf text-red-500' : 'fa-id-card text-blue-600'} text-4xl mb-2"></i>
+          <div class="font-semibold text-gray-800">${att.name}</div>
+          <div class="text-[11px] text-gray-500 mt-1">${att.desc}</div>
+        </div>
+      `;
+      openModal("modal-generic");
+    }
+
+    function toggleMentorDrawer() {
+      document.getElementById("mentor-drawer").classList.toggle("translate-x-full");
+    }
+    function toggleSection(bodyId, chevId) {
+      document.getElementById(bodyId).classList.toggle("hidden");
+      document.getElementById(chevId).classList.toggle("rotate-180");
+    }
+    function toggleCcRow() { document.getElementById("email-cc-row").classList.toggle("hidden"); }
+    function toggleStatusMenu() { document.getElementById("status-dropdown").classList.toggle("hidden"); }
+    function toggleStatusActionMenu() { document.getElementById("case-status-menu").classList.toggle("hidden"); }
+    function toggleProfileMenu() { document.getElementById("profile-dropdown").classList.toggle("hidden"); }
+
+    function setAgentStatus(label, dotClass) {
+      document.getElementById("status-label").textContent = label;
+      document.getElementById("status-dot").className = `w-2.5 h-2.5 rounded-full ${dotClass}`;
+      document.getElementById("status-dropdown").classList.add("hidden");
+      showToast(`Status Agent: ${label}`, "info");
+    }
+
+    function updateCharCounter(inputId, counterId, max) {
+      const len = document.getElementById(inputId).value.length;
+      document.getElementById(counterId).textContent = `${len} / ${max}`;
+    }
+
+    function copyTextValue(val, label) {
+      const temp = document.createElement("textarea");
+      temp.value = val;
+      document.body.appendChild(temp);
+      temp.select();
+      document.execCommand("copy");
+      document.body.removeChild(temp);
+      showToast(`${label} (${val}) disalin!`, "success");
+    }
+
+    function handleGlobalSearch() {
+      const q = document.getElementById("global-search-input").value.trim();
+      const idx = SCENARIOS.findIndex(s => s.caseId.includes(q) || s.shopeeUserId.includes(q));
+      if (idx !== -1 && idx !== currentScenarioIndex) loadScenario(idx);
+      else showToast(`Menampilkan kasus untuk "${q}"`, "info");
+    }
+
+    function attachDummyFile() {
+      const ta = document.getElementById("email-body-input");
+      ta.value += "\n[Lampiran: Panduan_Verifikasi_CMF.pdf]";
+      updateSendButtonsState();
+    }
+
+    function insertHelpLink() {
+      const ta = document.getElementById("email-body-input");
+      ta.value += " https://help.cmf.co.id/spaylater ";
+      updateSendButtonsState();
+    }
+
+    function getFormattedNow() {
+      const now = new Date();
+      const pad = n => String(n).padStart(2, "0");
+      return `${pad(now.getDate())}-${pad(now.getMonth() + 1)}-${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())} +0700`;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+
+    function showToast(message, type = "info") {
+      const container = document.getElementById("toast-container");
+      const toast = document.createElement("div");
+      const colors = {
+        success: "bg-emerald-600 text-white",
+        error: "bg-red-600 text-white",
+        info: "bg-gray-800 text-white"
+      };
+      toast.className = `${colors[type] || colors.info} px-3.5 py-2 rounded-md shadow-lg text-xs font-medium flex items-center gap-2 transition-opacity duration-300`;
+      toast.innerHTML = `<i class="fa-solid ${type === 'success' ? 'fa-circle-check' : type === 'error' ? 'fa-circle-exclamation' : 'fa-circle-info'}"></i><span>${message}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = "0";
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+  </script>
+</body>
+</html>
