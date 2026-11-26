@@ -166,24 +166,29 @@
         <button type="button" id="role-tab-agent" onclick="selectLoginRole('agent')"
           class="py-2 rounded bg-white text-gray-800 shadow-2xs transition-all flex items-center justify-center gap-1.5">
           <i class="fa-solid fa-headset coral-text"></i>
-          <span>Agent (Mentoring)</span>
+          <span>Agent (Peserta)</span>
         </button>
         <button type="button" id="role-tab-mentor" onclick="selectLoginRole('mentor')"
           class="py-2 rounded text-gray-500 hover:text-gray-800 transition-all flex items-center justify-center gap-1.5">
           <i class="fa-solid fa-chalkboard-user text-indigo-600"></i>
-          <span>Mentor</span>
+          <span>Mentor (Mock Admin)</span>
         </button>
       </div>
 
       <!-- AGENT LOGIN FIELDS -->
       <div id="login-form-agent" class="space-y-3 text-left text-xs mb-5">
         <div>
-          <label class="text-gray-600 font-medium block mb-1">Nama Lengkap Agent (Trainee)</label>
-          <input id="login-agent-name" type="text" placeholder="Contoh: Budi Santoso" class="crm-input py-2" />
+          <label class="text-gray-600 font-medium block mb-1">Kode Peserta (Dari Mentor)</label>
+          <input id="login-agent-code" type="text" value="" placeholder="Masukkan Kode Peserta..." class="crm-input py-2 font-mono uppercase" />
+        </div>
+        <div>
+          <label class="text-gray-600 font-medium block mb-1">Nama Lengkap Agent (Opsional jika kode terdaftar)</label>
+          <input id="login-agent-name" type="text" value="" placeholder="Masukkan Nama Lengkap..." class="crm-input py-2" />
         </div>
         <div>
           <label class="text-gray-600 font-medium block mb-1">Channel / Tim L1</label>
           <select id="login-agent-role" class="crm-input py-2">
+            <option value="">Pilih Channel / Tim L1...</option>
             <option value="Agent L1 Call SPaylater">Agent L1 Call SPaylater</option>
             <option value="Agent L1 Email SPaylater">Agent L1 Email SPaylater</option>
             <option value="Agent L1 CCS SPaylater">Agent L1 CCS SPaylater</option>
@@ -192,24 +197,23 @@
         </div>
       </div>
 
-      <!-- MENTOR LOGIN FIELDS -->
+      <!-- MENTOR LOGIN FIELDS (MASTER MENTOR ID FROM SHEET + PIN 1234) -->
       <div id="login-form-mentor" class="hidden space-y-3 text-left text-xs mb-5">
         <div>
           <div class="flex items-center justify-between mb-1">
-            <label class="text-gray-600 font-medium">Mentor ID / Nama Mentor</label>
+            <label class="text-gray-600 font-medium">Nama Mentor / Mentor ID</label>
             <span id="sheet-sync-badge" class="text-[10px] text-emerald-600 font-medium flex items-center gap-1">
               <i class="fa-solid fa-rotate fa-spin"></i> Syncing Sheet...
             </span>
           </div>
-          <input id="login-mentor-id" list="mentor-id-datalist" type="text" placeholder="Ketik atau pilih Mentor ID dari sheet..." class="crm-input py-2" />
+          <input id="login-mentor-id" list="mentor-id-datalist" type="text" value="" placeholder="Pilih atau ketik Nama Mentor (misal: SPLQA)..." class="crm-input py-2" />
           <datalist id="mentor-id-datalist"></datalist>
         </div>
         <div>
-          <div class="flex items-center justify-between mb-1">
-            <label class="text-gray-600 font-medium">PIN Akses Mentor</label>
-            <span class="text-[10px] text-gray-400">PIN default: 1234</span>
-          </div>
-          <input id="login-mentor-pin" type="password" value="1234" placeholder="Masukkan PIN Mentor..." class="crm-input py-2" />
+          <label class="text-gray-600 font-medium block mb-1">PIN Mentor</label>
+          <input id="login-mentor-pin" type="password" value="" placeholder="Masukkan PIN Mentor..."
+            onkeydown="if(event.key==='Enter') handleAppLogin()"
+            class="crm-input py-2" />
         </div>
       </div>
 
@@ -224,6 +228,282 @@
           <i class="fa-solid fa-cloud-arrow-down"></i> Refresh Data Sheet
         </button>
       </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 0B. DEDICATED MENTOR / MOCK ADMIN PORTAL (SEPARATE FROM AGENT UI)     -->
+  <!-- ===================================================================== -->
+  <div id="mentor-admin-portal" class="hidden fixed inset-0 bg-[#F5F6F8] z-[55] flex flex-col overflow-hidden text-xs">
+    <!-- Top C-Finance Coral/Orange Admin Header -->
+    <header class="h-12 bg-white border-b border-gray-200 text-gray-800 px-4 flex items-center justify-between shrink-0 shadow-2xs">
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-1.5 font-bold tracking-tight text-base">
+          <span class="w-6 h-6 rounded-full coral-bg flex items-center justify-center text-white text-xs">C</span>
+          <span class="text-gray-800">finance</span>
+        </div>
+        <span class="px-2 py-0.5 rounded coral-bg text-white font-bold text-[10px] uppercase tracking-wider">MOCK ADMIN</span>
+        <span id="admin-mentor-identity" class="hidden sm:inline text-[11px] text-gray-500">Mentor: Ifin Nur Primandiri</span>
+      </div>
+      <div class="flex items-center gap-4 text-[11px]">
+        <button onclick="openBankSkenarioModal()" class="text-gray-600 hover:text-[#EE4D2D] font-medium flex items-center gap-1">
+          <span>Bank Skenario</span> <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+        </button>
+        <button onclick="switchMentorToAgentPreview()" class="text-gray-600 hover:text-[#EE4D2D] font-medium flex items-center gap-1">
+          <span>Buka halaman peserta</span> <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+        </button>
+        <button onclick="handleAppLogout()" class="coral-text hover:underline font-semibold">
+          Keluar
+        </button>
+      </div>
+    </header>
+
+    <!-- Main 2-Column Admin Body -->
+    <div class="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden p-4 gap-4">
+      <!-- LEFT SIDEBAR: BUAT SESI, BANK SKENARIO, DAFTAR SESI -->
+      <aside class="w-full lg:w-72 shrink-0 flex flex-col gap-3 lg:overflow-y-auto pr-0.5">
+        <!-- Card 1: Buat Sesi Mock Test -->
+        <div class="bg-white rounded-md border border-gray-200 shadow-2xs p-3.5 space-y-2.5">
+          <h2 class="font-bold text-gray-800 text-sm">Buat Sesi Mock Test</h2>
+          <div>
+            <label class="text-[11px] text-gray-500 block mb-1">Nama sesi</label>
+            <input id="admin-new-session-name" type="text" placeholder="contoh: Roleplay L1 SPL — Batch 12" class="crm-input" />
+          </div>
+          <div>
+            <label class="text-[11px] text-gray-500 block mb-1">Channel / Project</label>
+            <select id="admin-new-session-project" class="crm-input">
+              <option value="L1 Call SPayLater">L1 Call SPayLater</option>
+              <option value="L1 Live Chat SPayLater">L1 Live Chat SPayLater</option>
+              <option value="L1 Email & CCS">L1 Email &amp; CCS</option>
+              <option value="Hard Complaint (HCP)">Hard Complaint (HCP)</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[11px] text-gray-500 block mb-1">Waktu pengerjaan (menit)</label>
+            <input id="admin-new-session-duration" type="number" value="20" min="0" class="crm-input" />
+            <p class="text-[10px] text-gray-400 mt-1 leading-snug">Mulai dihitung saat peserta membuka kasus pertama. 0 = tanpa batas waktu.</p>
+          </div>
+          <div>
+            <label class="text-[11px] text-gray-500 block mb-1">Catatan (opsional)</label>
+            <input id="admin-new-session-note" type="text" placeholder="Fokus SOP verifikasi & Reason Code" class="crm-input" />
+          </div>
+          <button onclick="createAdminMockSession()" class="w-full py-2 rounded coral-bg text-white font-semibold tracking-wide uppercase text-[11px]">
+            BUAT SESI
+          </button>
+        </div>
+
+        <!-- Card 2: Bank Skenario & Scorecard -->
+        <div class="bg-white rounded-md border border-gray-200 shadow-2xs p-3.5 space-y-2">
+          <h3 class="font-bold text-gray-800 text-[13px]">Bank Skenario &amp; Scorecard</h3>
+          <p id="admin-bank-summary" class="text-[11px] text-gray-500">45 Reason Code aktif • 6 atribut scorecard QA</p>
+          <button onclick="syncFromGoogleSheet(true)" class="w-full py-1.5 rounded border border-gray-300 hover:bg-orange-50/50 coral-text font-semibold text-[11px]">
+            IMPORT / PERBARUI DARI SHEET
+          </button>
+          <button onclick="openBankSkenarioModal()" class="w-full py-1.5 rounded border border-gray-300 hover:bg-orange-50/50 coral-text font-semibold text-[11px]">
+            <i class="fa-solid fa-book-open mr-1"></i> LIHAT BANK SKENARIO
+          </button>
+        </div>
+
+        <!-- Card 3: Daftar Sesi -->
+        <div class="bg-white rounded-md border border-gray-200 shadow-2xs p-3.5 space-y-2">
+          <h3 class="font-bold text-gray-800 text-[13px]">Daftar Sesi</h3>
+          <div id="admin-session-list" class="space-y-1.5 max-h-72 overflow-y-auto"></div>
+        </div>
+      </aside>
+
+      <!-- RIGHT WORKSPACE: ACTIVE SESSION DETAILS & 4 MANAGEMENT TABS -->
+      <main id="admin-session-workspace" class="flex-1 bg-white rounded-md border border-gray-200 shadow-2xs flex flex-col overflow-hidden">
+        <!-- Session Metadata Header Bar -->
+        <div class="p-4 border-b border-gray-200 bg-gray-50/40 shrink-0">
+          <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-end">
+            <div class="sm:col-span-4">
+              <label class="text-[10px] text-gray-500 block mb-1">Nama sesi</label>
+              <input id="admin-edit-ses-name" type="text" placeholder="Belum ada sesi terpilih" class="crm-input font-medium" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="text-[10px] text-gray-500 block mb-1">Project</label>
+              <select id="admin-edit-ses-project" class="crm-input">
+                <option value="L1 Call SPayLater">L1 Call SPayLater</option>
+                <option value="L1 Live Chat SPayLater">L1 Live Chat SPayLater</option>
+                <option value="L1 Email & CCS">L1 Email &amp; CCS</option>
+                <option value="Hard Complaint (HCP)">Hard Complaint (HCP)</option>
+              </select>
+            </div>
+            <div class="sm:col-span-3">
+              <label class="text-[10px] text-gray-500 block mb-1">Status</label>
+              <select id="admin-edit-ses-status" class="crm-input">
+                <option value="ACTIVE">ACTIVE (peserta bisa mengerjakan)</option>
+                <option value="DRAFT">DRAFT (belum dibuka)</option>
+                <option value="CLOSED">CLOSED (sesi ditutup)</option>
+              </select>
+            </div>
+            <div class="sm:col-span-2">
+              <label class="text-[10px] text-gray-500 block mb-1">Waktu (menit)</label>
+              <input id="admin-edit-ses-duration" type="number" min="0" class="crm-input" />
+            </div>
+            <div class="sm:col-span-1">
+              <button onclick="saveActiveAdminSessionMeta()" class="w-full py-1.5 rounded coral-bg text-white font-semibold text-[11px]">
+                SIMPAN
+              </button>
+            </div>
+          </div>
+          <div class="mt-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-gray-400">
+            <span id="admin-edit-ses-meta">ID S261125-L1A • dibuat 25 Nov 2026</span>
+            <button onclick="copySessionShareBundle()" class="coral-text hover:underline font-medium">
+              <i class="fa-solid fa-share-nodes mr-1"></i>Salin Paket Kode Sesi untuk Peserta
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Sub-Tabs: Peserta | Paket Kasus | Progres & Jawaban | Penilaian QA -->
+        <div class="px-4 border-b border-gray-200 flex items-center gap-6 text-xs font-semibold text-gray-600 shrink-0 overflow-x-auto">
+          <button onclick="switchAdminSubTab('peserta')" id="admin-tab-peserta" class="admin-sub-tab py-3 border-b-2 coral-border coral-text">
+            Peserta
+          </button>
+          <button onclick="switchAdminSubTab('paket')" id="admin-tab-paket" class="admin-sub-tab py-3 border-b-2 border-transparent hover:text-gray-900">
+            Paket Kasus
+          </button>
+          <button onclick="switchAdminSubTab('progres')" id="admin-tab-progres" class="admin-sub-tab py-3 border-b-2 border-transparent hover:text-gray-900">
+            Progres &amp; Jawaban
+          </button>
+          <button onclick="switchAdminSubTab('qa')" id="admin-tab-qa" class="admin-sub-tab py-3 border-b-2 border-transparent hover:text-gray-900">
+            Penilaian QA
+          </button>
+        </div>
+
+        <!-- SUB-TAB 1: PESERTA (CREATE AGENT ACCOUNTS / CODES) -->
+        <div id="admin-pane-peserta" class="admin-sub-pane p-4 flex-1 overflow-y-auto space-y-3">
+          <div class="bg-orange-50/70 border border-orange-200 rounded p-2.5 text-[11px] text-orange-950">
+            Tambah peserta: satu baris = satu peserta. Format <strong>KODE, Nama Lengkap</strong> — atau cukup <strong>Nama Lengkap</strong> (kode unik dibuat otomatis). Peserta login di halaman depan menggunakan Kode tersebut.
+          </div>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <textarea id="admin-bulk-agents-input" rows="3" placeholder="Format: KODE, Nama Lengkap (atau cukup Nama Lengkap per baris)..." class="crm-input flex-1 font-mono"></textarea>
+            <button onclick="addBulkSessionParticipants()" class="px-4 py-2 rounded coral-bg text-white font-semibold text-[11px] shrink-0 self-start">
+              TAMBAH PESERTA
+            </button>
+          </div>
+          <div class="flex items-center gap-3">
+            <button onclick="copyAllParticipantCodes()" class="px-3 py-1 rounded border border-gray-300 hover:bg-orange-50/50 coral-text font-semibold text-[11px]">
+              SALIN DAFTAR KODE
+            </button>
+            <span id="admin-participant-count" class="text-[11px] text-gray-500">0 peserta</span>
+          </div>
+          <div class="border border-gray-200 rounded overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="bg-gray-50 border-b border-gray-200 text-gray-500 text-[11px] uppercase">
+                  <th class="py-2 px-3">Kode</th>
+                  <th class="py-2 px-3">Nama Lengkap</th>
+                  <th class="py-2 px-3">Status</th>
+                  <th class="py-2 px-3">Mulai</th>
+                  <th class="py-2 px-3">Submit</th>
+                  <th class="py-2 px-3 text-right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="admin-participants-tbody" class="divide-y divide-gray-100"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SUB-TAB 2: PAKET KASUS (CREATE & ASSIGN SCENARIOS) -->
+        <div id="admin-pane-paket" class="admin-sub-pane hidden p-4 flex-1 overflow-y-auto space-y-4">
+          <div class="bg-orange-50/70 border border-orange-200 rounded p-3 flex flex-wrap items-center justify-between gap-2">
+            <div class="text-[11px] text-orange-950">
+              Susun paket kasus mock CRM untuk peserta pada sesi ini. Setiap kasus otomatis mendapat <strong>Case ID acak 19 digit</strong> dan langsung masuk ke <em>Open Cases</em> peserta.
+            </div>
+            <div class="flex gap-2">
+              <button onclick="openCreateScenarioModal()" class="px-3 py-1.5 rounded coral-bg text-white font-semibold text-[11px]">
+                + BUAT KASUS BARU
+              </button>
+              <button onclick="assignDefaultCasesToAllParticipants()" class="px-3 py-1.5 rounded border border-gray-300 bg-white hover:bg-gray-50 text-gray-700 font-semibold text-[11px]">
+                ASSIGN BANK SKENARIO KE SEMUA
+              </button>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <h4 class="font-bold text-gray-700 text-xs">Daftar Kasus dalam Sesi Ini (<span id="admin-session-cases-count">0</span> Kasus)</h4>
+            <div id="admin-session-cases-list" class="grid grid-cols-1 md:grid-cols-2 gap-2.5"></div>
+          </div>
+        </div>
+
+        <!-- SUB-TAB 3: PROGRES & JAWABAN -->
+        <div id="admin-pane-progres" class="admin-sub-pane hidden p-4 flex-1 overflow-y-auto space-y-3">
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <button onclick="renderAdminSessionDetail()" class="px-3 py-1 rounded border border-gray-300 hover:bg-orange-50/50 coral-text font-semibold text-[11px]">
+                REFRESH
+              </button>
+              <button onclick="runAutoQaForAllParticipants()" class="px-3 py-1 rounded coral-bg text-white font-semibold text-[11px]">
+                NILAI AUTO-QA SEMUA PESERTA
+              </button>
+            </div>
+            <span id="admin-progress-summary" class="text-[11px] text-gray-500">0 peserta</span>
+          </div>
+
+          <div class="border border-gray-200 rounded overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs min-w-[760px]">
+              <thead>
+                <tr class="bg-gray-50 border-b border-gray-200 text-gray-500 text-[11px] uppercase">
+                  <th class="py-2 px-3">Kode</th>
+                  <th class="py-2 px-3">Nama</th>
+                  <th class="py-2 px-3">Status</th>
+                  <th class="py-2 px-3">Selesai</th>
+                  <th class="py-2 px-3">Reason Code L3</th>
+                  <th class="py-2 px-3">Mandatory (*)</th>
+                  <th class="py-2 px-3">Skor Rata-Rata</th>
+                  <th class="py-2 px-3 text-right">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="admin-progress-tbody" class="divide-y divide-gray-100"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SUB-TAB 4: PENILAIAN QA -->
+        <div id="admin-pane-qa" class="admin-sub-pane hidden p-4 flex-1 overflow-y-auto space-y-3">
+          <!-- 5 Summary Cards -->
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+            <div class="border border-gray-200 border-t-2 border-t-[#EE4D2D] rounded p-2.5 bg-white">
+              <div id="qa-stat-submitted" class="text-lg font-bold text-gray-800">0/0</div>
+              <div class="text-[10px] text-gray-500 uppercase">Siap Dinilai (Submit)</div>
+            </div>
+            <div class="border border-gray-200 rounded p-2.5 bg-white">
+              <div id="qa-stat-ungraded" class="text-lg font-bold text-gray-800">0</div>
+              <div class="text-[10px] text-gray-500 uppercase">Belum Dinilai</div>
+            </div>
+            <div class="border border-gray-200 rounded p-2.5 bg-white">
+              <div id="qa-stat-waiting" class="text-lg font-bold text-gray-800">0</div>
+              <div class="text-[10px] text-gray-500 uppercase">Menunggu Koreksi QA</div>
+            </div>
+            <div class="border border-gray-200 rounded p-2.5 bg-white">
+              <div id="qa-stat-done" class="text-lg font-bold text-gray-800">0</div>
+              <div class="text-[10px] text-gray-500 uppercase">QA Selesai</div>
+            </div>
+            <div class="border border-gray-200 rounded p-2.5 bg-white">
+              <div id="qa-stat-avg" class="text-lg font-bold text-gray-800">—</div>
+              <div class="text-[10px] text-gray-500 uppercase">Rata-Rata Skor Akhir</div>
+            </div>
+          </div>
+
+          <div class="border border-gray-200 rounded overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs min-w-[760px]">
+              <thead>
+                <tr class="bg-gray-50 border-b border-gray-200 text-gray-500 text-[11px] uppercase">
+                  <th class="py-2 px-3">Kode</th>
+                  <th class="py-2 px-3">Nama</th>
+                  <th class="py-2 px-3">Status</th>
+                  <th class="py-2 px-3">Hasil Pengerjaan Kasus</th>
+                  <th class="py-2 px-3">Skor Akhir</th>
+                  <th class="py-2 px-3">Status QA</th>
+                  <th class="py-2 px-3 text-right">Penilaian</th>
+                </tr>
+              </thead>
+              <tbody id="admin-qa-tbody" class="divide-y divide-gray-100"></tbody>
+            </table>
+          </div>
+        </div>
+      </main>
     </div>
   </div>
 
@@ -315,9 +595,9 @@
 
     <!-- MODAL: CREATE CUSTOM SCENARIO (MENTOR BUILDER) -->
     <div id="modal-create-scenario" class="hidden bg-white rounded-lg shadow-xl w-full max-w-xl overflow-hidden">
-      <div class="px-4 py-3 bg-indigo-900 text-white flex items-center justify-between">
-        <h3 class="font-semibold text-sm"><i class="fa-solid fa-wand-magic-sparkles mr-1.5 text-indigo-300"></i>Buat Skenario Kasus Baru (Mentor Builder)</h3>
-        <button onclick="closeAllModals()" class="text-indigo-200 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+      <div class="px-4 py-3 coral-bg text-white flex items-center justify-between">
+        <h3 class="font-semibold text-sm"><i class="fa-solid fa-wand-magic-sparkles mr-1.5 text-orange-100"></i>Buat Skenario Kasus Baru (Mentor Builder)</h3>
+        <button onclick="closeAllModals()" class="text-orange-100 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="p-4 text-xs space-y-3 max-h-[82vh] overflow-y-auto">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -326,8 +606,13 @@
             <input id="new-sc-title" type="text" placeholder="Contoh: Skenario 4 - Kendala Refund" class="crm-input" />
           </div>
           <div>
-            <label class="text-gray-600 font-medium block mb-1">Case ID *</label>
-            <input id="new-sc-caseid" type="text" value="2123761161830707287" class="crm-input" />
+            <label class="text-gray-600 font-medium block mb-1">Case ID (Auto-Generated) *</label>
+            <div class="flex gap-1.5">
+              <input id="new-sc-caseid" type="text" class="crm-input font-mono" />
+              <button type="button" onclick="regenerateScenarioCaseId()" title="Generate Case ID Acak Baru" class="px-2.5 py-1 rounded border border-gray-300 hover:bg-gray-100 text-gray-600 shrink-0">
+                <i class="fa-solid fa-dice"></i>
+              </button>
+            </div>
           </div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -351,7 +636,7 @@
           </div>
           <div>
             <label class="text-gray-600 font-medium block mb-1">Email Nasabah (Dummy)</label>
-            <input id="new-sc-email" type="email" value="nasabah.roleplay@example.com" class="crm-input" />
+            <input id="new-sc-email" type="email" value="" placeholder="nasabah@example.com" class="crm-input" />
           </div>
         </div>
         <div>
@@ -393,11 +678,15 @@
 
       <!-- Ticket Tabs -->
       <div class="hidden md:flex items-center border-l border-gray-200 pl-3 gap-1.5">
+        <button onclick="showTodoDashboard()" class="flex items-center gap-1.5 px-2.5 py-1 rounded text-xs text-gray-600 hover:bg-gray-100 transition-colors" title="Kembali ke Item Pekerjaan - To Do">
+          <i class="fa-solid fa-list-check coral-text"></i>
+          <span>Item Pekerjaan</span>
+        </button>
         <button id="tab-buat-kasus" onclick="handleBuatKasusTabClick()" class="flex items-center gap-1.5 px-2.5 py-1 rounded text-xs text-gray-500 hover:bg-gray-100 transition-colors" title="Buat Kasus / Skenario Baru">
           <i class="fa-solid fa-file-circle-plus text-gray-400"></i>
           <span>Buat Kasus</span>
         </button>
-        <div class="flex items-center gap-2 px-2.5 py-1 rounded bg-orange-50/70 border-b-2 coral-border text-xs font-medium coral-text">
+        <div id="active-ticket-tab-chip" class="hidden flex items-center gap-2 px-2.5 py-1 rounded bg-orange-50/70 border-b-2 coral-border text-xs font-medium coral-text">
           <i class="fa-solid fa-ticket text-[11px]"></i>
           <span id="tab-case-id">...235025</span>
           <button onclick="resetCurrentScenario()" title="Reset Skenario" class="text-gray-400 hover:text-gray-700 ml-1">
@@ -429,6 +718,19 @@
       <span id="header-role-badge" class="hidden sm:inline-block px-2 py-0.5 text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded">
         AGENT TRAINEE
       </span>
+
+      <button id="back-to-admin-btn" onclick="returnToMentorAdminPortal()"
+        class="hidden flex items-center gap-1.5 px-2.5 py-1 rounded coral-bg text-white text-xs font-semibold transition-all">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>Kembali ke Mock Admin</span>
+      </button>
+
+      <button id="mentor-toggle-btn" onclick="toggleMentorDrawer()"
+        class="hidden flex items-center gap-1.5 px-2.5 py-1 rounded bg-orange-50 hover:bg-orange-100 coral-text border border-orange-200 text-xs font-semibold transition-all">
+        <i class="fa-solid fa-chalkboard-user"></i>
+        <span class="hidden lg:inline">Mentor Panel</span>
+        <span id="qa-score-pill" class="px-1.5 py-0.2 coral-bg text-white rounded-full text-[10px]">0/6</span>
+      </button>
 
       <button id="mentor-toggle-btn" onclick="toggleMentorDrawer()"
         class="hidden flex items-center gap-1.5 px-2.5 py-1 rounded bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-semibold transition-all">
@@ -495,8 +797,11 @@
 
     <!-- Far-Left Slim Icon Sidebar -->
     <aside class="w-11 bg-white border-r border-gray-200 flex flex-col items-center py-3 gap-4 text-gray-400 shrink-0 select-none">
-      <button onclick="openScenarioModal()" title="Daftar Skenario Roleplay" class="w-8 h-8 rounded bg-orange-50 coral-text flex items-center justify-center">
+      <button id="rail-todo-btn" onclick="showTodoDashboard()" title="Item Pekerjaan - To Do (Open Cases)" class="w-8 h-8 rounded bg-orange-50 coral-text flex items-center justify-center">
         <i class="fa-solid fa-inbox text-sm"></i>
+      </button>
+      <button onclick="openScenarioModal()" title="Daftar Skenario Roleplay" class="w-8 h-8 rounded hover:bg-gray-100 hover:text-gray-700 flex items-center justify-center">
+        <i class="fa-solid fa-chart-line text-sm"></i>
       </button>
       <button id="rail-mentor-btn" onclick="toggleMentorDrawer()" title="Mentor Panel & QA" class="hidden w-8 h-8 rounded hover:bg-gray-100 hover:text-gray-700 flex items-center justify-center">
         <i class="fa-solid fa-graduation-cap text-sm"></i>
@@ -508,6 +813,170 @@
         <i class="fa-regular fa-circle-question text-sm"></i>
       </button>
     </aside>
+
+    <!-- =================================================================== -->
+    <!-- VIEW A: ITEM PEKERJAAN - TO DO (AGENT QUEUE & OPEN CASES DASHBOARD) -->
+    <!-- =================================================================== -->
+    <section id="todo-dashboard-view" class="flex-1 bg-white flex flex-col overflow-hidden">
+      <div class="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+        <!-- Title & Import Scenario Code Bar (For Multi-Device Mentoring) -->
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <h1 class="text-base font-semibold text-gray-800">Item Pekerjaan - To Do</h1>
+            <i class="fa-solid fa-caret-down text-xs text-gray-500"></i>
+          </div>
+
+          <!-- Quick Case ID / Scenario Code Receiver -->
+          <div class="flex items-center gap-2">
+            <div class="flex items-center border border-gray-300 rounded overflow-hidden bg-gray-50 focus-within:bg-white focus-within:border-[#EE4D2D]">
+              <input id="receive-case-code-input" type="text" placeholder="Tempel Case ID / Kode Sesi Mentor..."
+                onkeydown="if(event.key==='Enter') importCaseFromMentorCode()"
+                class="px-2.5 py-1 text-xs bg-transparent outline-none w-56 sm:w-64 text-gray-700" />
+              <button onclick="importCaseFromMentorCode()" class="px-3 py-1 coral-bg text-white text-xs font-medium">
+                Ambil Kasus
+              </button>
+            </div>
+            <button id="agent-submit-session-btn" onclick="submitAgentMockSession()" class="px-3 py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold flex items-center gap-1.5">
+              <i class="fa-solid fa-paper-plane"></i> Submit Sesi Mock
+            </button>
+            <button id="todo-mentor-create-btn" onclick="openCreateScenarioModal()" class="hidden px-3 py-1 rounded coral-bg text-white text-xs font-semibold flex items-center gap-1.5">
+              <i class="fa-solid fa-plus"></i> Buat Skenario Baru
+            </button>
+          </div>
+        </div>
+
+        <!-- Channel Sub-Tabs (Kasus, Chat, Panggilan, Email, Webform, Tugas untuk Saya) -->
+        <div class="border-b border-gray-200 flex items-center gap-6 text-xs font-medium text-gray-600 overflow-x-auto whitespace-nowrap">
+          <button onclick="switchTodoTab('Kasus')" id="todo-tab-Kasus" class="todo-top-tab py-2.5 border-b-2 coral-border coral-text">
+            Kasus <span id="todo-tab-count-Kasus">0</span>
+          </button>
+          <button onclick="switchTodoTab('Chat')" id="todo-tab-Chat" class="todo-top-tab py-2.5 border-b-2 border-transparent hover:text-gray-900">
+            Chat <span id="todo-tab-count-Chat">0</span>
+          </button>
+          <button onclick="switchTodoTab('Panggilan')" id="todo-tab-Panggilan" class="todo-top-tab py-2.5 border-b-2 border-transparent hover:text-gray-900">
+            Panggilan <span id="todo-tab-count-Panggilan">0</span>
+          </button>
+          <button onclick="switchTodoTab('Email')" id="todo-tab-Email" class="todo-top-tab py-2.5 border-b-2 border-transparent hover:text-gray-900">
+            Email <span id="todo-tab-count-Email">0</span>
+          </button>
+          <button onclick="switchTodoTab('Webform')" id="todo-tab-Webform" class="todo-top-tab py-2.5 border-b-2 border-transparent hover:text-gray-900">
+            Webform <span id="todo-tab-count-Webform">0</span>
+          </button>
+          <button onclick="switchTodoTab('Tugas')" id="todo-tab-Tugas" class="todo-top-tab py-2.5 border-b-2 border-transparent hover:text-gray-900 flex items-center gap-1">
+            <span>Tugas untuk Saya 0</span>
+            <i class="fa-solid fa-caret-down text-[10px]"></i>
+          </button>
+        </div>
+
+        <!-- 7 Metric Summary Cards (Exact Match to Screenshot) -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
+          <div onclick="filterTodoMetric('Open')" id="metric-card-Open" class="todo-metric-card cursor-pointer rounded border border-gray-200 border-t-2 border-t-[#EE4D2D] bg-white p-3 shadow-2xs transition-all">
+            <div class="flex items-center justify-between text-[11px] text-gray-600 mb-2">
+              <span>Open Cases</span>
+              <i class="fa-solid fa-ellipsis-vertical text-gray-400 text-[10px]"></i>
+            </div>
+            <div id="metric-open-count" class="text-xl font-semibold text-gray-800">0</div>
+          </div>
+
+          <div onclick="filterTodoMetric('On Hold')" id="metric-card-OnHold" class="todo-metric-card cursor-pointer rounded border border-gray-200 bg-white p-3 hover:border-gray-300 transition-all">
+            <div class="flex items-center justify-between text-[11px] text-gray-600 mb-2">
+              <span>On Hold Cases</span>
+              <i class="fa-solid fa-ellipsis-vertical text-gray-400 text-[10px]"></i>
+            </div>
+            <div id="metric-onhold-count" class="text-xl font-semibold text-gray-800">0</div>
+          </div>
+
+          <div onclick="filterTodoMetric('All')" id="metric-card-All" class="todo-metric-card cursor-pointer rounded border border-gray-200 bg-white p-3 hover:border-gray-300 transition-all">
+            <div class="flex items-center justify-between text-[11px] text-gray-600 mb-2">
+              <span>Total Cases</span>
+              <i class="fa-solid fa-ellipsis-vertical text-gray-400 text-[10px]"></i>
+            </div>
+            <div id="metric-total-count" class="text-xl font-semibold text-gray-800">0</div>
+          </div>
+
+          <div onclick="filterTodoMetric('Updates')" class="todo-metric-card cursor-pointer rounded border border-gray-200 bg-white p-3 hover:border-gray-300 transition-all">
+            <div class="flex items-center justify-between text-[11px] text-gray-600 mb-2">
+              <span>Case with Updates</span>
+              <i class="fa-solid fa-ellipsis-vertical text-gray-400 text-[10px]"></i>
+            </div>
+            <div id="metric-updates-count" class="text-xl font-semibold text-gray-800">0</div>
+          </div>
+
+          <div onclick="filterTodoMetric('NearSLA')" class="todo-metric-card cursor-pointer rounded border border-gray-200 bg-white p-3 hover:border-gray-300 transition-all">
+            <div class="flex items-center justify-between text-[11px] text-gray-600 mb-2">
+              <span>Case Near SLA</span>
+              <i class="fa-solid fa-ellipsis-vertical text-gray-400 text-[10px]"></i>
+            </div>
+            <div id="metric-nearsla-count" class="text-xl font-semibold text-gray-800">0</div>
+          </div>
+
+          <div onclick="filterTodoMetric('OverSLA')" class="todo-metric-card cursor-pointer rounded border border-gray-200 bg-white p-3 hover:border-gray-300 transition-all">
+            <div class="flex items-center justify-between text-[11px] text-gray-600 mb-2">
+              <span>Case Over SLA</span>
+              <i class="fa-solid fa-ellipsis-vertical text-gray-400 text-[10px]"></i>
+            </div>
+            <div id="metric-oversla-count" class="text-xl font-semibold text-gray-800">0</div>
+          </div>
+
+          <div onclick="filterTodoMetric('OverdueTask')" class="todo-metric-card cursor-pointer rounded border border-gray-200 bg-white p-3 hover:border-gray-300 transition-all">
+            <div class="flex items-center justify-between text-[11px] text-gray-600 mb-1 leading-tight">
+              <span>Case with Overdue Task</span>
+              <i class="fa-solid fa-ellipsis-vertical text-gray-400 text-[10px]"></i>
+            </div>
+            <div id="metric-overdue-count" class="text-xl font-semibold text-gray-800">0</div>
+          </div>
+        </div>
+
+        <!-- Table Meta Info & Action Toolbar -->
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs">
+          <div class="text-gray-500 text-[11px]">
+            <span id="todo-total-label">0 Total Item</span>, Display the data within 1 year, Last Updated:<span id="todo-last-updated">24-11-2026 13:04:39 +0700</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button onclick="openSelectedTodoCase()" class="px-3 py-1 rounded border border-[#EE4D2D]/50 text-[#EE4D2D] hover:bg-orange-50 text-xs font-medium">
+              Buka Massal Item
+            </button>
+            <button onclick="refreshTodoTable()" title="Refresh Daftar Kasus" class="w-7 h-7 rounded border border-gray-200 hover:bg-gray-50 text-gray-600 flex items-center justify-center">
+              <i class="fa-solid fa-rotate-right text-xs"></i>
+            </button>
+            <button onclick="showToast('Pengaturan kolom tabel standar L1 aktif.', 'info')" title="Pengaturan Kolom" class="w-7 h-7 rounded border border-gray-200 hover:bg-gray-50 text-gray-600 flex items-center justify-center">
+              <i class="fa-solid fa-gear text-xs"></i>
+            </button>
+            <button onclick="filterTodoMetric('All')" title="Reset Filter" class="w-7 h-7 rounded border border-gray-200 hover:bg-gray-50 text-gray-600 flex items-center justify-center">
+              <i class="fa-solid fa-filter text-xs"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Cases Data Table -->
+        <div class="border border-gray-200 rounded overflow-x-auto bg-white">
+          <table class="w-full text-left border-collapse text-xs min-w-[920px]">
+            <thead>
+              <tr class="bg-gray-50 border-b border-gray-200 text-gray-600 font-medium">
+                <th class="py-2.5 px-3 w-8"><input type="checkbox" onclick="toggleAllTodoCheckboxes(this)" class="rounded border-gray-300" /></th>
+                <th class="py-2.5 px-3">New Update&amp;Nudge</th>
+                <th class="py-2.5 px-3">Case ID</th>
+                <th class="py-2.5 px-3">Case Subject <i class="fa-solid fa-sort text-gray-400 ml-1 text-[10px]"></i></th>
+                <th class="py-2.5 px-3">Reminder Time&amp;Description <i class="fa-solid fa-sort text-gray-400 ml-1 text-[10px]"></i></th>
+                <th class="py-2.5 px-3">SLA <i class="fa-solid fa-sort text-gray-400 ml-1 text-[10px]"></i></th>
+                <th class="py-2.5 px-3">ID Tugas</th>
+                <th class="py-2.5 px-3">Subjek Tugas</th>
+                <th class="py-2.5 px-3">Status Tugas</th>
+                <th class="py-2.5 px-3">Eskalasi Wilayah</th>
+              </tr>
+            </thead>
+            <tbody id="todo-table-body" class="divide-y divide-gray-100">
+              <!-- Populated dynamically; shows "No data" state when empty -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- VIEW B: CASE DETAIL WORKSPACE (LEFT CASE INFO + RIGHT COMPOSER)     -->
+    <!-- =================================================================== -->
+    <div id="case-detail-workspace" class="hidden flex-1 flex overflow-hidden">
 
     <!-- =================================================================== -->
     <!-- LEFT COLUMN: INFO KASUS (READ MODE & FULL PENCIL EDIT MODE)         -->
@@ -1093,30 +1562,32 @@
       </div>
     </main>
 
+    </div><!-- End of #case-detail-workspace -->
+
     <!-- =================================================================== -->
     <!-- SLIDE-OVER MENTOR CONTROL & MANDATORY FIELD AUDIT DRAWER            -->
     <!-- =================================================================== -->
     <aside id="mentor-drawer" class="fixed top-12 right-0 bottom-12 w-full sm:w-96 bg-white border-l border-gray-200 shadow-2xl z-40 transform translate-x-full transition-transform duration-200 flex flex-col">
-      <div class="px-4 py-3 bg-indigo-900 text-white flex items-center justify-between">
+      <div class="px-4 py-3 coral-bg text-white flex items-center justify-between">
         <div>
           <h3 class="font-semibold text-sm flex items-center gap-1.5">
-            <i class="fa-solid fa-chalkboard-user text-indigo-300"></i> Mentor Control & QA
+            <i class="fa-solid fa-chalkboard-user text-orange-100"></i> Mentor Control & QA
           </h3>
-          <p class="text-[11px] text-indigo-200">Audit Mandatory Field & Evaluasi L1</p>
+          <p class="text-[11px] text-orange-100">Audit Mandatory Field & Evaluasi L1</p>
         </div>
-        <button onclick="toggleMentorDrawer()" class="text-indigo-200 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
+        <button onclick="toggleMentorDrawer()" class="text-orange-100 hover:text-white"><i class="fa-solid fa-xmark text-base"></i></button>
       </div>
 
       <div class="p-4 flex-1 overflow-y-auto space-y-4 text-xs">
         <!-- Mandatory Field Audit Box -->
-        <div class="bg-indigo-50 border border-indigo-200 rounded-md p-3 space-y-2">
+        <div class="bg-orange-50 border border-orange-200 rounded-md p-3 space-y-2">
           <div class="flex items-center justify-between">
-            <span class="font-semibold text-indigo-900">Audit Mandatory Field (*)</span>
-            <button onclick="runMandatoryAudit()" class="px-2 py-0.5 bg-indigo-600 text-white rounded text-[10px] font-medium hover:bg-indigo-700">
+            <span class="font-semibold text-orange-950">Audit Mandatory Field (*)</span>
+            <button onclick="runMandatoryAudit()" class="px-2 py-0.5 coral-bg text-white rounded text-[10px] font-medium">
               Cek Sekarang
             </button>
           </div>
-          <div id="mandatory-audit-result" class="text-[11px] text-indigo-800 space-y-1">
+          <div id="mandatory-audit-result" class="text-[11px] text-orange-900 space-y-1">
             Klik "Cek Sekarang" untuk memeriksa kelengkapan mandatory field trainee.
           </div>
         </div>
@@ -1187,9 +1658,9 @@
   </div>
 
   <!-- ===================================================================== -->
-  <!-- 3. STICKY BOTTOM ACTION BAR                                           -->
+  <!-- 3. STICKY BOTTOM ACTION BAR (SHOWN IN CASE DETAIL WORKSPACE)          -->
   <!-- ===================================================================== -->
-  <footer class="h-12 bg-white border-t border-gray-200 px-4 flex items-center justify-between shrink-0 z-30">
+  <footer id="case-action-footer" class="hidden h-12 bg-white border-t border-gray-200 px-4 flex items-center justify-between shrink-0 z-30">
     <div class="hidden md:flex items-center gap-2 text-[11px] text-gray-500">
       <span class="px-2 py-0.5 bg-gray-100 rounded font-medium text-gray-700" id="footer-scenario-name">Skenario 1</span>
       <span>•</span>
@@ -1236,6 +1707,7 @@
     // --- 0. GOOGLE SHEET LIVE CONNECTION CONFIG ---
     const GOOGLE_SHEET_ID = "1lVXQbUgl8Y6vv5CHD5H7V86FUka8BNrYSIVz7SHupxQ";
     let MASTER_MENTORS = [
+      { id: "SPLQA", name: "SPLQA", team: "ID - Credit - L1 - Training & QA" },
       { id: "MTR-001", name: "Ifin Nur Primandiri", team: "ID - Credit - L1 - Training & QA" }
     ];
 
@@ -1478,65 +1950,6 @@
             content: "Min gimana sih sistemnya! Saya bayar tagihan SPayLater Limit Xtra Rp 1,5 juta tapi terpotong 2 kali jadi Rp 3 juta! Kalau hari ini tidak dikembalikan saya lapor ke OJK dan viralkan di IG saya!"
           }
         ]
-      },
-      {
-        title: "Skenario 3: Tertahan di Pengecekan Liveness (Aktivasi / KYC)",
-        difficulty: "Easy",
-        summary: "Nasabah gagal verifikasi wajah (liveness check) saat aktivasi Cicilan Motor by SPayLater.",
-        caseId: "2123740055443322110",
-        rcL1: "SPayLater & Kredit Lainnya",
-        rcL2: "Aktivasi / KYC",
-        rcL3: "Tertahan di pengecekan liveness",
-        status: "Open",
-        origin: "Chat",
-        createdTime: "22-11-2026 11:20 +0700",
-        age: "0 hari 2 jam 55 menit",
-        ownerType: "Agent",
-        ownerValue: "Agent L1 Live Chat",
-        ownerTeam: "ID - Credit - L1 - Live Chat Credit - Agent",
-        entryPoint: "None",
-        priority: "Medium",
-        caseSubject: "2123740055443322110 - Kendala liveness check aktivasi Cicilan Motor",
-        shopeeUserId: "774411223",
-        caseDescription: "Gagal verifikasi wajah berkali-kali",
-        modifiedTime: "22-11-2026 11:25 +0700",
-        creditProduct: "Cicilan Motor by SPaylater",
-        escalationReason: "",
-        sentiment: "Non Complaint",
-        hcType: "",
-        hcHashtag: "",
-        csUserId: "948877112233445",
-        requestEmail: "siti.aminah88@example.com",
-        phonePrefix: "ID +62",
-        requestPhone: "857 123 456 78",
-        sosmedPlatform: "",
-        sosmedHandle: "",
-        userType: "Buyer",
-        bizType: "Shopee TuC",
-        bizValue: "sitiaminah88",
-        icNumber: "",
-        incomingContacts: 1,
-        expectedL3: "Tertahan di pengecekan liveness",
-        expectedProduct: "Cicilan Motor by SPaylater",
-        systemDetails: [
-          { label: "Nama Nasabah (KYC)", value: "Siti Aminah" },
-          { label: "Produk Diajukan", value: "Cicilan Motor by SPaylater" },
-          { label: "Status Liveness", value: "Failed 3x (Low Light / Blur)", highlight: "text-amber-600 font-bold" },
-          { label: "SOP L1", value: "Edukasi pencahayaan, koneksi stabil, lepas kacamata/masker, & update aplikasi." }
-        ],
-        attachments: [],
-        timeline: [
-          {
-            id: 31,
-            type: "Dialogue",
-            actor: "Siti Aminah",
-            badgeBg: "bg-emerald-600",
-            icon: "fa-comments",
-            title: "In-App Live Chat Inbound",
-            time: "22-11-2026 11:20 +0700",
-            content: "Kak, saya mau aktifkan Cicilan Motor by SPayLater tapi pas tahap verifikasi wajah (liveness) gagal terus padahal KTP sudah jelas. Mohon solusinya."
-          }
-        ]
       }
     ];
 
@@ -1571,55 +1984,89 @@
     let callSeconds = 0;
     let callTimerInterval = null;
     let selectedLoginTab = "agent";
+    let currentTodoTab = "Kasus";
+    let currentTodoMetricFilter = "Open";
     let currentSession = {
       isLoggedIn: false,
       role: "agent",
+      agentCode: "L1-DEMO1",
       name: "Trainee L1 Agent",
       teamTitle: "Agent L1 Call SPaylater",
       teamCode: "ID - Credit - L1 - Call Credit - Agent"
     };
 
+    // --- MOCK ADMIN SESSIONS STORE (PERSISTED IN LOCALSTORAGE) ---
+    let MOCK_SESSIONS = [];
+    let activeAdminSessionId = null;
+
+    function initMockSessionsStore() {
+      try {
+        const saved = JSON.parse(localStorage.getItem("cf_mock_sessions_v2") || "null");
+        if (Array.isArray(saved)) {
+          MOCK_SESSIONS = saved;
+          activeAdminSessionId = MOCK_SESSIONS.length > 0 ? MOCK_SESSIONS[0].id : null;
+          return;
+        }
+      } catch (e) {}
+
+      // Default kosong (0 sesi) agar Mentor membuat sesi baru dari awal
+      MOCK_SESSIONS = [];
+      activeAdminSessionId = null;
+      saveMockSessionsStore();
+    }
+
+    function saveMockSessionsStore() {
+      try {
+        localStorage.setItem("cf_mock_sessions_v2", JSON.stringify(MOCK_SESSIONS));
+      } catch (e) {}
+    }
+
     window.onload = async function () {
+      initMockSessionsStore();
       loadSavedCustomScenarios();
       populateStaticDropdowns();
       loadScenario(0, true);
       renderMacroList();
       renderScenarioLists();
+      renderTodoDashboard();
       await syncFromGoogleSheet(false);
     };
 
-    // --- LIVE GOOGLE SHEETS CSV PARSER & SYNC ---
-    function parseCsvLines(csvText) {
-      const rows = [];
-      let current = "";
-      let inQuotes = false;
-      let row = [];
-      for (let i = 0; i < csvText.length; i++) {
-        const ch = csvText[i];
-        const next = csvText[i + 1];
-        if (ch === '"' && inQuotes && next === '"') {
-          current += '"';
-          i++;
-        } else if (ch === '"') {
-          inQuotes = !inQuotes;
-        } else if (ch === ',' && !inQuotes) {
-          row.push(current.trim());
-          current = "";
-        } else if ((ch === '\n' || (ch === '\r' && next === '\n')) && !inQuotes) {
-          if (ch === '\r') i++;
-          row.push(current.trim());
-          if (row.some(cell => cell !== "")) rows.push(row);
-          row = [];
-          current = "";
-        } else {
-          current += ch;
+    // Listen for changes in another browser tab (so Mentor creating a case updates Agent's Open Cases live!)
+    window.addEventListener("storage", function (e) {
+      if (e.key === "cf_custom_scenarios" || e.key === "cf_mock_sessions_v2") {
+        initMockSessionsStore();
+        SCENARIOS = SCENARIOS.filter(s => !s.isCustomMentor);
+        loadSavedCustomScenarios();
+        renderScenarioLists();
+        renderTodoDashboard();
+        if (currentSession.role === "mentor" && currentSession.isLoggedIn) {
+          renderAdminPortal();
         }
+        showToast("Data sesi / skenario dari Mentor diperbarui!", "info");
       }
-      if (current !== "" || row.length > 0) {
-        row.push(current.trim());
-        if (row.some(cell => cell !== "")) rows.push(row);
-      }
-      return rows;
+    });
+
+    function parseCsvLines(text) {
+      const lines = text.split(/\r?\n/).filter(l => l.trim());
+      return lines.map(line => {
+        const result = [];
+        let cur = "";
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+          const ch = line[i];
+          if (ch === '"') {
+            inQuotes = !inQuotes;
+          } else if (ch === ',' && !inQuotes) {
+            result.push(cur);
+            cur = "";
+          } else {
+            cur += ch;
+          }
+        }
+        result.push(cur);
+        return result;
+      });
     }
 
     async function syncFromGoogleSheet(manualNotify = false) {
@@ -1630,22 +2077,18 @@
       }
 
       try {
-        const rcUrl = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent("Master_Reason_Code")}`;
-        const mentorUrl = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent("Master_Mentor_ID")}`;
+        const rcUrl = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&sheet=Master_Reason_Code`;
+        const mentorUrl = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&gid=2036146189`;
 
-        const [rcRes, mentorRes] = await Promise.all([
-          fetch(rcUrl),
-          fetch(mentorUrl)
-        ]);
+        const [rcRes, mentorRes] = await Promise.all([fetch(rcUrl), fetch(mentorUrl)]);
 
-        let updatedRcCount = 0;
+        let updatedRcCount = MASTER_REASON_CODES.length;
         if (rcRes.ok) {
           const rcText = await rcRes.text();
           const rcRows = parseCsvLines(rcText);
-          // Skip header row if it contains L1 / Level
           const dataRows = rcRows.filter((r, idx) => {
-            if (idx === 0 && /l1|level/i.test(r[0] || "")) return false;
-            return (r[0] && r[1] && r[2]);
+            if (idx === 0 && /l1/i.test(r[0] || "")) return false;
+            return r[0] && r[1] && r[2];
           });
           if (dataRows.length > 0) {
             MASTER_REASON_CODES = dataRows.map(r => ({
@@ -1667,11 +2110,16 @@
             return (r[0] || r[1]);
           });
           if (dataRows.length > 0) {
-            MASTER_MENTORS = dataRows.map(r => ({
+            const sheetMentors = dataRows.map(r => ({
               id: (r[0] || "").trim(),
               name: (r[1] || r[0] || "").trim(),
               team: (r[2] || "ID - Credit - L1 - Training & QA").trim()
             }));
+            // Keep SPLQA available even if sheet uses a different column layout
+            if (!sheetMentors.some(m => (m.id || "").toUpperCase() === "SPLQA" || (m.name || "").toUpperCase() === "SPLQA")) {
+              sheetMentors.unshift({ id: "SPLQA", name: "SPLQA", team: "ID - Credit - L1 - Training & QA" });
+            }
+            MASTER_MENTORS = sheetMentors;
             updatedMentorCount = MASTER_MENTORS.length;
             populateMentorDatalist();
           }
@@ -1703,11 +2151,6 @@
         const label = m.id && m.name && m.id !== m.name ? `${m.id} - ${m.name}` : (m.id || m.name);
         return `<option value="${label}"></option>`;
       }).join("");
-      const input = document.getElementById("login-mentor-id");
-      if (input && !input.value && MASTER_MENTORS.length > 0) {
-        const first = MASTER_MENTORS[0];
-        input.value = first.id && first.name && first.id !== first.name ? `${first.id} - ${first.name}` : (first.id || first.name);
-      }
     }
 
     // --- AUTH / LANDING LOGIN LOGIC ---
@@ -1733,127 +2176,860 @@
 
     function handleAppLogin() {
       if (selectedLoginTab === "agent") {
-        const name = document.getElementById("login-agent-name").value.trim() || "Trainee L1 Agent";
-        const roleTitle = document.getElementById("login-agent-role").value;
-        const found = MASTER_AGENTS.find(a => a.name === roleTitle);
+        const codeInput = document.getElementById("login-agent-code").value.trim().toUpperCase();
+        const nameInput = document.getElementById("login-agent-name").value.trim();
+        const roleTitle = document.getElementById("login-agent-role").value || "Agent L1 Call SPaylater";
+        const foundTeam = MASTER_AGENTS.find(a => a.name === roleTitle);
+
+        if (!codeInput && !nameInput) {
+          showToast("Masukkan Kode Peserta dari Mentor atau Nama Lengkap Agent!", "error");
+          return;
+        }
+
+        // Search participant across active mock sessions
+        let matchedParticipant = null;
+        let matchedSession = null;
+        for (const ses of MOCK_SESSIONS) {
+          const p = (ses.participants || []).find(pt => pt.code.toUpperCase() === codeInput);
+          if (p) {
+            matchedParticipant = p;
+            matchedSession = ses;
+            break;
+          }
+        }
+
+        if (matchedSession && matchedSession.status === "CLOSED") {
+          showToast(`Sesi "${matchedSession.name}" sudah ditutup (CLOSED) oleh Mentor.`, "error");
+          return;
+        }
+
+        const finalName = matchedParticipant ? matchedParticipant.name : (nameInput || "Agent L1");
+        if (matchedParticipant && matchedParticipant.status === "BELUM MULAI") {
+          matchedParticipant.status = "WORKING";
+          matchedParticipant.startedAt = getFormattedNow();
+          saveMockSessionsStore();
+        }
+
+        // Load cases assigned to that session into Agent's Open Cases
+        if (matchedSession && Array.isArray(matchedSession.cases)) {
+          SCENARIOS = SCENARIOS.filter(s => !s.isCustomMentor);
+          matchedSession.cases.forEach(c => {
+            const copy = JSON.parse(JSON.stringify(c));
+            copy.isCustomMentor = true;
+            SCENARIOS.unshift(copy);
+          });
+        }
+
         currentSession = {
           isLoggedIn: true,
           role: "agent",
-          name: name,
+          agentCode: codeInput || "AGENT-L1",
+          sessionId: matchedSession ? matchedSession.id : null,
+          name: finalName,
           teamTitle: roleTitle,
-          teamCode: found ? found.team : "ID - Credit - L1 - Call Credit - Agent"
+          teamCode: foundTeam ? foundTeam.team : "ID - Credit - L1 - Call Credit - Agent"
         };
+
+        applySessionPermissions();
+        document.getElementById("login-screen").classList.add("hidden");
+        document.getElementById("mentor-admin-portal").classList.add("hidden");
+        showTodoDashboard();
+        showToast(`Selamat datang, ${currentSession.name}!`, "success");
       } else {
-        const rawInput = document.getElementById("login-mentor-id").value.trim();
+        const rawMentorInput = document.getElementById("login-mentor-id").value.trim();
         const pin = document.getElementById("login-mentor-pin").value.trim();
-        if (!rawInput) {
-          showToast("Masukkan atau pilih Mentor ID dari Master_Mentor_ID!", "error");
+        if (!rawMentorInput) {
+          showToast("Pilih atau masukkan Nama Mentor / Mentor ID terlebih dahulu!", "error");
+          return;
+        }
+        if (!pin) {
+          showToast("Masukkan PIN Mentor terlebih dahulu!", "error");
           return;
         }
         if (pin !== "1234") {
-          showToast("PIN Mentor salah! Gunakan PIN default: 1234", "error");
+          showToast("PIN Mentor salah! Gunakan PIN 1234.", "error");
           return;
         }
 
-        // Match against Master_Mentor_ID from Google Sheet
         const matchedMentor = MASTER_MENTORS.find(m => {
-          const combined = `${m.id} - ${m.name}`.toLowerCase();
-          const q = rawInput.toLowerCase();
-          return m.id.toLowerCase() === q || m.name.toLowerCase() === q || combined === q;
+          const combined = m.id && m.name && m.id !== m.name ? `${m.id} - ${m.name}` : (m.id || m.name);
+          return rawMentorInput.toLowerCase() === combined.toLowerCase() ||
+                 rawMentorInput.toLowerCase() === (m.id || "").toLowerCase() ||
+                 rawMentorInput.toLowerCase() === (m.name || "").toLowerCase();
         });
 
-        if (!matchedMentor && MASTER_MENTORS.length > 0) {
-          showToast("Mentor ID tidak terdaftar di tab Master_Mentor_ID sheet!", "error");
+        if (!matchedMentor) {
+          showToast("Nama Mentor / ID tidak terdaftar di sheet Master_Mentor_ID!", "error");
           return;
         }
-
-        const displayName = matchedMentor
-          ? (matchedMentor.name || matchedMentor.id)
-          : rawInput;
 
         currentSession = {
           isLoggedIn: true,
           role: "mentor",
-          name: displayName,
-          mentorId: matchedMentor ? matchedMentor.id : rawInput,
-          teamTitle: matchedMentor ? `Mentor (${matchedMentor.id})` : "L1 CS Mentor & QA Evaluator",
-          teamCode: matchedMentor ? matchedMentor.team : "ID - Credit - L1 - Training & QA"
+          name: matchedMentor.name || matchedMentor.id,
+          mentorId: matchedMentor.id || matchedMentor.name,
+          teamTitle: "L1 CS Mentor & QA Evaluator",
+          teamCode: matchedMentor.team || "ID - Credit - L1 - Training & QA"
         };
+
+        applySessionPermissions();
+        document.getElementById("login-screen").classList.add("hidden");
+        openMentorAdminPortal();
+        showToast(`Login Mock Admin berhasil (${currentSession.name})!`, "success");
       }
-
-      applySessionPermissions();
-      document.getElementById("login-screen").classList.add("hidden");
-      showToast(`Selamat datang, ${currentSession.name} (${currentSession.role === "mentor" ? "Mentor Mode" : "Agent Mode"})!`, "success");
     }
 
-    function handleAppLogout() {
-      document.getElementById("profile-dropdown").classList.add("hidden");
-      document.getElementById("mentor-drawer").classList.add("translate-x-full");
-      document.getElementById("login-screen").classList.remove("hidden");
-      showToast("Anda telah logout. Silakan pilih peran untuk masuk kembali.", "info");
+    // --- MENTOR / MOCK ADMIN PORTAL FUNCTIONS ---
+    function openMentorAdminPortal() {
+      document.getElementById("admin-mentor-identity").textContent = `Mentor: ${currentSession.name} (${currentSession.mentorId || "ADMIN"})`;
+      document.getElementById("mentor-admin-portal").classList.remove("hidden");
+      renderAdminPortal();
     }
 
-    function applySessionPermissions() {
-      const isMentor = currentSession.role === "mentor";
-      const initials = currentSession.name.split(" ").map(p => p[0]).join("").slice(0, 2).toUpperCase() || "CS";
+    function returnToMentorAdminPortal() {
+      document.getElementById("back-to-admin-btn").classList.add("hidden");
+      openMentorAdminPortal();
+    }
 
-      document.getElementById("header-avatar-initials").textContent = initials;
-      document.getElementById("header-user-name").textContent = currentSession.name;
-      document.getElementById("menu-user-fullname").textContent = currentSession.name;
-      document.getElementById("menu-user-role").textContent = currentSession.teamTitle;
+    function switchMentorToAgentPreview() {
+      const ses = getActiveAdminSession();
+      if (ses && Array.isArray(ses.cases)) {
+        SCENARIOS = SCENARIOS.filter(s => !s.isCustomMentor);
+        ses.cases.forEach(c => {
+          const copy = JSON.parse(JSON.stringify(c));
+          copy.isCustomMentor = true;
+          SCENARIOS.unshift(copy);
+        });
+      }
+      document.getElementById("mentor-admin-portal").classList.add("hidden");
+      document.getElementById("back-to-admin-btn").classList.remove("hidden");
+      showTodoDashboard();
+      showToast("Pratinjau halaman peserta (Agent View) aktif.", "info");
+    }
 
-      const roleBadge = document.getElementById("header-role-badge");
-      if (isMentor) {
-        roleBadge.textContent = "MENTOR MODE";
-        roleBadge.className = "hidden sm:inline-block px-2 py-0.5 text-[10px] font-semibold bg-indigo-100 text-indigo-800 border border-indigo-200 rounded";
+    function getActiveAdminSession() {
+      return MOCK_SESSIONS.find(s => s.id === activeAdminSessionId) || MOCK_SESSIONS[0];
+    }
+
+    function renderAdminPortal() {
+      document.getElementById("admin-bank-summary").textContent = `${MASTER_REASON_CODES.length} Reason Code aktif • 6 atribut scorecard QA`;
+      const listEl = document.getElementById("admin-session-list");
+      if (MOCK_SESSIONS.length === 0) {
+        listEl.innerHTML = `<div class="py-4 text-center text-[11px] text-gray-400">Belum ada sesi. Buat sesi baru di form atas.</div>`;
       } else {
-        roleBadge.textContent = "AGENT TRAINEE";
-        roleBadge.className = "hidden sm:inline-block px-2 py-0.5 text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded";
+        listEl.innerHTML = MOCK_SESSIONS.map(ses => {
+          const isSelected = ses.id === activeAdminSessionId;
+          const badgeColor = ses.status === "ACTIVE"
+            ? "bg-emerald-500 text-white"
+            : (ses.status === "DRAFT" ? "bg-gray-400 text-white" : "bg-red-500 text-white");
+          const submittedCount = (ses.participants || []).filter(p => p.status === "SUBMITTED").length;
+          return `
+            <div onclick="selectAdminSession('${ses.id}')" class="p-2.5 rounded border cursor-pointer transition-all ${isSelected ? 'border-[#EE4D2D] bg-orange-50/40' : 'border-gray-200 hover:bg-gray-50'}">
+              <div class="flex items-center justify-between gap-1 mb-1">
+                <span class="font-bold coral-text text-xs truncate">${escapeHtml(ses.name)}</span>
+                <span class="px-1.5 py-0.2 rounded text-[9px] font-bold ${badgeColor}">${ses.status}</span>
+              </div>
+              <div class="text-[10px] text-gray-500">
+                ${ses.project} • <i class="fa-regular fa-clock"></i> ${ses.duration} mnt • ${(ses.participants || []).length} peserta • ${submittedCount} submit • ${(ses.cases || []).length} kasus
+              </div>
+            </div>
+          `;
+        }).join("");
       }
 
-      // Toggle Mentor-only controls
-      document.getElementById("mentor-toggle-btn").classList.toggle("hidden", !isMentor);
-      document.getElementById("header-new-case-btn").classList.toggle("hidden", !isMentor);
-      document.getElementById("rail-mentor-btn").classList.toggle("hidden", !isMentor);
-      document.getElementById("rail-csv-btn").classList.toggle("hidden", !isMentor);
-      document.getElementById("tab-sim-reply-btn").classList.toggle("hidden", !isMentor);
+      renderAdminSessionDetail();
     }
 
-    function handleBuatKasusTabClick() {
-      if (currentSession.role === "mentor") {
-        openCreateScenarioModal();
-      } else {
-        createNewBlankCase();
+    function selectAdminSession(id) {
+      activeAdminSessionId = id;
+      renderAdminPortal();
+    }
+
+    function createAdminMockSession() {
+      const name = document.getElementById("admin-new-session-name").value.trim() || `Roleplay L1 — ${getFormattedNow().slice(0, 10)}`;
+      const project = document.getElementById("admin-new-session-project").value;
+      const duration = parseInt(document.getElementById("admin-new-session-duration").value || "20", 10);
+      const note = document.getElementById("admin-new-session-note").value.trim();
+      const newId = "S" + Math.floor(100000 + Math.random() * 899999) + "-L1";
+
+      const newSes = {
+        id: newId,
+        name,
+        project,
+        status: "ACTIVE",
+        duration: isNaN(duration) ? 20 : duration,
+        note,
+        createdAt: getFormattedNow(),
+        participants: [],
+        cases: []
+      };
+      MOCK_SESSIONS.unshift(newSes);
+      activeAdminSessionId = newId;
+      saveMockSessionsStore();
+      document.getElementById("admin-new-session-name").value = "";
+      document.getElementById("admin-new-session-note").value = "";
+      renderAdminPortal();
+      showToast(`Sesi "${name}" berhasil dibuat!`, "success");
+    }
+
+    function saveActiveAdminSessionMeta() {
+      const ses = getActiveAdminSession();
+      if (!ses) return;
+      ses.name = document.getElementById("admin-edit-ses-name").value.trim() || ses.name;
+      ses.project = document.getElementById("admin-edit-ses-project").value;
+      ses.status = document.getElementById("admin-edit-ses-status").value;
+      ses.duration = parseInt(document.getElementById("admin-edit-ses-duration").value || "20", 10);
+      saveMockSessionsStore();
+      renderAdminPortal();
+      showToast("Pengaturan sesi berhasil disimpan.", "success");
+    }
+
+    function switchAdminSubTab(tab) {
+      document.querySelectorAll(".admin-sub-tab").forEach(b => {
+        b.classList.remove("coral-border", "coral-text");
+        b.classList.add("border-transparent");
+      });
+      const activeBtn = document.getElementById(`admin-tab-${tab}`);
+      if (activeBtn) {
+        activeBtn.classList.remove("border-transparent");
+        activeBtn.classList.add("coral-border", "coral-text");
       }
+      document.querySelectorAll(".admin-sub-pane").forEach(p => p.classList.add("hidden"));
+      const pane = document.getElementById(`admin-pane-${tab}`);
+      if (pane) pane.classList.remove("hidden");
     }
 
-    function openCreateScenarioModal() {
-      const l3Sel = document.getElementById("new-sc-target-l3");
-      l3Sel.innerHTML = MASTER_REASON_CODES.map(r =>
-        `<option value="${r.l3}">${r.l1} / ${r.l2} / ${r.l3}</option>`
-      ).join("");
-      openModal("modal-create-scenario");
-    }
-
-    function saveNewCustomScenario() {
-      const title = document.getElementById("new-sc-title").value.trim() || "Skenario Custom Mentor";
-      const caseId = document.getElementById("new-sc-caseid").value.trim() || ("212376" + Math.floor(1000000000000 + Math.random() * 8999999999999));
-      const origin = document.getElementById("new-sc-origin").value;
-      const product = document.getElementById("new-sc-product").value;
-      const email = document.getElementById("new-sc-email").value.trim() || "nasabah@example.com";
-      const targetL3 = document.getElementById("new-sc-target-l3").value;
-      const msg = document.getElementById("new-sc-message").value.trim();
-      const blankMandatory = document.getElementById("new-sc-blank-mandatory").checked;
-
-      if (!msg) {
-        showToast("Pesan awal customer / kronologi wajib diisi!", "error");
+    function renderAdminSessionDetail() {
+      const ses = getActiveAdminSession();
+      if (!ses) {
+        document.getElementById("admin-edit-ses-name").value = "";
+        document.getElementById("admin-edit-ses-meta").textContent = "Belum ada sesi aktif. Silakan buat sesi di panel kiri.";
+        document.getElementById("admin-participant-count").textContent = "0 peserta";
+        document.getElementById("admin-participants-tbody").innerHTML = `<tr><td colspan="6" class="py-8 text-center text-gray-400">Belum ada sesi. Buat sesi baru di panel kiri terlebih dahulu.</td></tr>`;
+        document.getElementById("admin-session-cases-count").textContent = "0";
+        document.getElementById("admin-session-cases-list").innerHTML = `<div class="col-span-2 py-8 text-center text-gray-400 border border-dashed border-gray-200 rounded">Belum ada sesi aktif.</div>`;
+        document.getElementById("admin-progress-summary").textContent = "0 peserta";
+        document.getElementById("admin-progress-tbody").innerHTML = `<tr><td colspan="8" class="py-8 text-center text-gray-400">Belum ada data progres peserta.</td></tr>`;
+        document.getElementById("qa-stat-submitted").textContent = "0/0";
+        document.getElementById("qa-stat-ungraded").textContent = "0";
+        document.getElementById("qa-stat-waiting").textContent = "0";
+        document.getElementById("qa-stat-done").textContent = "0";
+        document.getElementById("qa-stat-avg").textContent = "—";
+        document.getElementById("admin-qa-tbody").innerHTML = `<tr><td colspan="7" class="py-8 text-center text-gray-400">Belum ada peserta untuk dinilai.</td></tr>`;
         return;
       }
 
-      const rcObj = MASTER_REASON_CODES.find(r => r.l3 === targetL3) || MASTER_REASON_CODES[0];
-      const newSc = {
+      document.getElementById("admin-edit-ses-name").value = ses.name;
+      document.getElementById("admin-edit-ses-project").value = ses.project;
+      document.getElementById("admin-edit-ses-status").value = ses.status;
+      document.getElementById("admin-edit-ses-duration").value = ses.duration;
+      document.getElementById("admin-edit-ses-meta").textContent = `ID ${ses.id} • dibuat ${ses.createdAt} • ${(ses.cases || []).length} paket kasus aktif`;
+
+      // 1. Render Peserta Table
+      const participants = ses.participants || [];
+      document.getElementById("admin-participant-count").textContent = `${participants.length} peserta`;
+      const pTbody = document.getElementById("admin-participants-tbody");
+      pTbody.innerHTML = participants.length === 0
+        ? `<tr><td colspan="6" class="py-8 text-center text-gray-400">Belum ada peserta. Tambahkan nama / kode agent di form atas.</td></tr>`
+        : participants.map((p, pIdx) => `
+          <tr class="hover:bg-gray-50">
+            <td class="py-2.5 px-3 font-mono font-bold text-gray-800">${p.code}</td>
+            <td class="py-2.5 px-3 text-gray-800 font-medium">${escapeHtml(p.name)}</td>
+            <td class="py-2.5 px-3">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold ${p.status === 'SUBMITTED' ? 'coral-bg text-white' : (p.status === 'WORKING' ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-600')}">
+                ${p.status}
+              </span>
+            </td>
+            <td class="py-2.5 px-3 text-gray-500">${p.startedAt || '-'}</td>
+            <td class="py-2.5 px-3 text-gray-500">${p.submittedAt || '-'}</td>
+            <td class="py-2.5 px-3 text-right">
+              <button onclick="copyTextValue('${p.code}', 'Kode Peserta')" class="coral-text hover:underline mr-2">Copy Kode</button>
+              <button onclick="removeSessionParticipant(${pIdx})" class="text-red-500 hover:underline">Hapus</button>
+            </td>
+          </tr>
+        `).join("");
+
+      // 2. Render Paket Kasus
+      const cases = ses.cases || [];
+      document.getElementById("admin-session-cases-count").textContent = cases.length;
+      const casesListEl = document.getElementById("admin-session-cases-list");
+      casesListEl.innerHTML = cases.length === 0
+        ? `<div class="col-span-2 py-8 text-center text-gray-400 border border-dashed border-gray-200 rounded">Belum ada kasus pada sesi ini. Klik <strong>+ BUAT KASUS BARU</strong> atau <strong>ASSIGN BANK SKENARIO KE SEMUA</strong>.</div>`
+        : cases.map((c, cIdx) => {
+          const shareCode = encodeScenarioShareCode(c);
+          return `
+            <div class="p-3 border border-gray-200 rounded bg-gray-50/40 space-y-1.5">
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-bold text-gray-800 truncate">${escapeHtml(c.title)}</span>
+                <span class="font-mono text-[10px] px-1.5 py-0.5 bg-orange-50 coral-text border border-orange-200 rounded">${c.caseId}</span>
+              </div>
+              <div class="text-[11px] text-gray-500">Origin: <strong>${c.origin}</strong> • Product: <strong>${c.expectedProduct || c.creditProduct || '-'}</strong></div>
+              <div class="text-[11px] text-orange-800">Kunci L3: <strong>${c.expectedL3 || c.rcL3 || '-'}</strong></div>
+              <div class="pt-1 flex items-center justify-between border-t border-gray-100">
+                <button onclick="copyTextValue('${shareCode}', 'Kode Skenario')" class="coral-text hover:underline font-medium text-[11px]">
+                  <i class="fa-regular fa-copy mr-1"></i>Copy Kode Skenario
+                </button>
+                <button onclick="removeSessionCase(${cIdx})" class="text-red-500 hover:underline text-[11px]">Hapus</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+
+      // 3. Render Progres & Jawaban
+      document.getElementById("admin-progress-summary").textContent = `${participants.length} peserta • ${participants.filter(p => p.status === 'SUBMITTED').length} sudah submit`;
+      const progTbody = document.getElementById("admin-progress-tbody");
+      progTbody.innerHTML = participants.length === 0
+        ? `<tr><td colspan="8" class="py-8 text-center text-gray-400">Belum ada data progres peserta.</td></tr>`
+        : participants.map((p, pIdx) => {
+          const sub = p.submission || null;
+          const totalC = cases.length || 1;
+          const doneC = sub ? sub.completedCount : 0;
+          const l3Match = sub ? `${sub.l3Matched}/${totalC} sesuai` : "—";
+          const mandMatch = sub ? `${sub.mandatoryComplete}/${totalC} lengkap` : "—";
+          const scoreBadge = p.qaScore !== null && p.qaScore !== undefined
+            ? `<span class="px-2 py-0.5 rounded font-bold ${p.qaScore >= 80 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-red-50 text-red-600 border border-red-200'}">${p.qaScore}</span>`
+            : `<span class="text-gray-400">—</span>`;
+
+          return `
+            <tr class="hover:bg-gray-50">
+              <td class="py-2.5 px-3 font-mono font-bold text-gray-800">${p.code}</td>
+              <td class="py-2.5 px-3 font-medium text-gray-800">${escapeHtml(p.name)}</td>
+              <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${p.status === 'SUBMITTED' ? 'coral-bg text-white' : 'bg-gray-100 text-gray-600'}">${p.status}</span></td>
+              <td class="py-2.5 px-3 text-gray-700">${doneC}/${totalC}</td>
+              <td class="py-2.5 px-3 text-gray-700">${l3Match}</td>
+              <td class="py-2.5 px-3 text-gray-700">${mandMatch}</td>
+              <td class="py-2.5 px-3">${scoreBadge}</td>
+              <td class="py-2.5 px-3 text-right space-x-1">
+                <button onclick="openParticipantReviewModal(${pIdx})" class="px-2.5 py-1 rounded coral-bg text-white text-[10px] font-semibold">LIHAT / NILAI</button>
+                <button onclick="unlockParticipantSubmission(${pIdx})" class="px-2 py-1 rounded bg-gray-500 text-white text-[10px] font-semibold">BUKA KUNCI</button>
+              </td>
+            </tr>
+          `;
+        }).join("");
+
+      // 4. Render Penilaian QA
+      const submittedList = participants.filter(p => p.status === "SUBMITTED");
+      const gradedList = participants.filter(p => p.qaScore !== null && p.qaScore !== undefined);
+      const avgScore = gradedList.length > 0
+        ? Math.round(gradedList.reduce((acc, p) => acc + p.qaScore, 0) / gradedList.length)
+        : "—";
+
+      document.getElementById("qa-stat-submitted").textContent = `${submittedList.length}/${participants.length}`;
+      document.getElementById("qa-stat-ungraded").textContent = participants.length - gradedList.length;
+      document.getElementById("qa-stat-waiting").textContent = submittedList.filter(p => p.qaScore === null || p.qaScore === undefined).length;
+      document.getElementById("qa-stat-done").textContent = gradedList.length;
+      document.getElementById("qa-stat-avg").textContent = avgScore;
+
+      const qaTbody = document.getElementById("admin-qa-tbody");
+      qaTbody.innerHTML = participants.length === 0
+        ? `<tr><td colspan="7" class="py-8 text-center text-gray-400">Belum ada peserta untuk dinilai.</td></tr>`
+        : participants.map((p, pIdx) => {
+          const sub = p.submission;
+          const detailText = sub
+            ? `${sub.completedCount} kasus dikerjakan • ${sub.actionsCount} aksi timeline`
+            : "Belum ada aktivitas pengerjaan";
+          const finalScoreHtml = p.qaScore !== null && p.qaScore !== undefined
+            ? `<span class="text-base font-bold ${p.qaScore >= 80 ? 'text-emerald-700' : 'text-red-600'}">${p.qaScore}</span>`
+            : `<span class="text-gray-400">—</span>`;
+          const statusQaBadge = p.qaScore !== null && p.qaScore !== undefined
+            ? `<span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 border border-emerald-200 text-[10px] font-semibold">QA Selesai</span>`
+            : `<span class="px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-semibold">Menunggu QA</span>`;
+
+          return `
+            <tr class="hover:bg-gray-50">
+              <td class="py-2.5 px-3 font-mono font-bold text-gray-800">${p.code}</td>
+              <td class="py-2.5 px-3 font-medium text-gray-800">${escapeHtml(p.name)}</td>
+              <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${p.status === 'SUBMITTED' ? 'coral-bg text-white' : 'bg-gray-100 text-gray-600'}">${p.status}</span></td>
+              <td class="py-2.5 px-3 text-gray-600">${detailText}</td>
+              <td class="py-2.5 px-3">${finalScoreHtml}</td>
+              <td class="py-2.5 px-3">${statusQaBadge}</td>
+              <td class="py-2.5 px-3 text-right space-x-1">
+                <button onclick="openParticipantReviewModal(${pIdx})" class="px-2.5 py-1 rounded coral-bg text-white text-[10px] font-semibold">NILAI</button>
+                <button onclick="autoGradeSingleParticipant(${pIdx})" class="px-2.5 py-1 rounded border border-gray-300 coral-text text-[10px] font-semibold">NILAI AUTO</button>
+              </td>
+            </tr>
+          `;
+        }).join("");
+    }
+
+    function addBulkSessionParticipants() {
+      const ses = getActiveAdminSession();
+      if (!ses) return;
+      const raw = document.getElementById("admin-bulk-agents-input").value.trim();
+      if (!raw) {
+        showToast("Masukkan minimal 1 nama atau kode peserta.", "error");
+        return;
+      }
+      const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      let added = 0;
+      lines.forEach(line => {
+        let code = "";
+        let name = "";
+        if (line.includes(",")) {
+          const parts = line.split(",");
+          code = parts[0].trim().toUpperCase();
+          name = parts.slice(1).join(",").trim();
+        } else {
+          name = line;
+          const rand = Math.random().toString(36).substring(2, 7).toUpperCase();
+          code = `L1-${rand}`;
+        }
+        if (name && !ses.participants.some(p => p.code === code)) {
+          ses.participants.push({
+            code,
+            name,
+            status: "BELUM MULAI",
+            startedAt: "-",
+            submittedAt: "-",
+            qaScore: null,
+            qaNote: ""
+          });
+          added++;
+        }
+      });
+      saveMockSessionsStore();
+      document.getElementById("admin-bulk-agents-input").value = "";
+      renderAdminPortal();
+      showToast(`${added} akun peserta berhasil ditambahkan!`, "success");
+    }
+
+    function removeSessionParticipant(idx) {
+      const ses = getActiveAdminSession();
+      if (!ses) return;
+      ses.participants.splice(idx, 1);
+      saveMockSessionsStore();
+      renderAdminPortal();
+    }
+
+    function copyAllParticipantCodes() {
+      const ses = getActiveAdminSession();
+      if (!ses || !ses.participants.length) {
+        showToast("Belum ada daftar peserta untuk disalin.", "info");
+        return;
+      }
+      const text = `Daftar Akun Roleplay (${ses.name}):\n` +
+        ses.participants.map(p => `- ${p.code} : ${p.name}`).join("\n");
+      copyTextValue(text, "Daftar Kode Peserta");
+    }
+
+    function assignDefaultCasesToAllParticipants() {
+      const ses = getActiveAdminSession();
+      if (!ses) return;
+      const basePool = SCENARIOS.slice(0, 3).map(s => {
+        const copy = JSON.parse(JSON.stringify(s));
+        copy.caseId = generateRandom19DigitCaseId();
+        copy.isCustomMentor = true;
+        return copy;
+      });
+      ses.cases.push(...basePool);
+      saveMockSessionsStore();
+      renderAdminPortal();
+      showToast(`${basePool.length} kasus dari Bank Skenario ditambahkan ke sesi ini!`, "success");
+    }
+
+    function removeSessionCase(idx) {
+      const ses = getActiveAdminSession();
+      if (!ses) return;
+      ses.cases.splice(idx, 1);
+      saveMockSessionsStore();
+      renderAdminPortal();
+    }
+
+    function copySessionShareBundle() {
+      const ses = getActiveAdminSession();
+      if (!ses) return;
+      const codes = (ses.cases || []).map(c => `${c.caseId} -> ${encodeScenarioShareCode(c)}`).join("\n");
+      const msg = `Sesi Mentoring: ${ses.name}\nKode Skenario:\n${codes || "(Belum ada kasus)"}`;
+      copyTextValue(msg, "Paket Kode Sesi");
+    }
+
+    function openBankSkenarioModal() {
+      document.getElementById("generic-modal-title").textContent = `Bank Skenario & Master Reason Code (${MASTER_REASON_CODES.length} L3)`;
+      document.getElementById("generic-modal-body").innerHTML = `
+        <div class="space-y-2">
+          <div class="font-semibold text-gray-700">Template Skenario Bawaan:</div>
+          ${SCENARIOS.slice(0, 3).map(s => `
+            <div class="p-2.5 border border-gray-200 rounded bg-gray-50">
+              <div class="font-bold text-gray-800">${escapeHtml(s.title)}</div>
+              <div class="text-[11px] text-gray-600 mt-0.5">${escapeHtml(s.summary)}</div>
+              <div class="text-[10px] text-indigo-700 mt-1">Kunci L3: <strong>${s.expectedL3 || s.rcL3}</strong></div>
+            </div>
+          `).join("")}
+        </div>
+      `;
+      openModal("modal-generic");
+    }
+
+    function autoGradeSingleParticipant(pIdx) {
+      const ses = getActiveAdminSession();
+      const p = ses.participants[pIdx];
+      if (!p) return;
+      if (!p.submission) {
+        p.qaScore = 0;
+        p.qaNote = "Peserta belum mensubmit jawaban kasus.";
+      } else {
+        const sub = p.submission;
+        const total = Math.max(1, sub.totalCases || 1);
+        const l3Score = (sub.l3Matched / total) * 50;
+        const mandScore = (sub.mandatoryComplete / total) * 35;
+        const actionScore = sub.actionsCount > 0 ? 15 : 0;
+        p.qaScore = Math.min(100, Math.round(l3Score + mandScore + actionScore));
+        p.qaNote = `Auto-QA: Reason Code ${sub.l3Matched}/${total}, Mandatory ${sub.mandatoryComplete}/${total}, Aktivitas ${sub.actionsCount} log.`;
+      }
+      saveMockSessionsStore();
+      renderAdminSessionDetail();
+      showToast(`Auto-QA selesai untuk ${p.name}: Skor ${p.qaScore}`, "success");
+    }
+
+    function runAutoQaForAllParticipants() {
+      const ses = getActiveAdminSession();
+      if (!ses) return;
+      ses.participants.forEach((_, idx) => autoGradeSingleParticipant(idx));
+    }
+
+    function unlockParticipantSubmission(pIdx) {
+      const ses = getActiveAdminSession();
+      const p = ses.participants[pIdx];
+      if (!p) return;
+      p.status = "WORKING";
+      saveMockSessionsStore();
+      renderAdminSessionDetail();
+      showToast(`Kunci submit dibuka kembali untuk ${p.name}.`, "info");
+    }
+
+    function openParticipantReviewModal(pIdx) {
+      const ses = getActiveAdminSession();
+      const p = ses.participants[pIdx];
+      if (!p) return;
+      const sub = p.submission;
+      const detailsHtml = sub && Array.isArray(sub.caseSnapshots)
+        ? sub.caseSnapshots.map(snap => `
+            <div class="p-2.5 border border-gray-200 rounded bg-gray-50 space-y-1">
+              <div class="flex justify-between font-bold text-gray-800">
+                <span>Case ID: ${snap.caseId}</span>
+                <span class="${snap.isL3Correct ? 'text-emerald-600' : 'text-red-600'}">${snap.isL3Correct ? 'Reason Code L3 Tepat' : 'Reason Code L3 Kurang Tepat'}</span>
+              </div>
+              <div class="text-[11px] text-gray-600">Pilihan Agent: <strong>${snap.rcL3 || '(Kosong)'}</strong> | Kunci: <strong>${snap.expectedL3 || '-'}</strong></div>
+              <div class="text-[11px] text-gray-600">Status: <strong>${snap.status}</strong> • Priority: <strong>${snap.priority || '-'}</strong> • Product: <strong>${snap.creditProduct || '-'}</strong></div>
+            </div>
+          `).join("")
+        : `<div class="p-3 bg-amber-50 border border-amber-200 rounded text-amber-800">Peserta belum menekan tombol "Submit Sesi Mock".</div>`;
+
+      document.getElementById("generic-modal-title").textContent = `Penilaian QA: ${p.name} (${p.code})`;
+      document.getElementById("generic-modal-body").innerHTML = `
+        <div class="space-y-3">
+          ${detailsHtml}
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2 border-t border-gray-100">
+            <div>
+              <label class="text-[11px] text-gray-600 font-semibold block mb-1">Skor Akhir (0 - 100)</label>
+              <input id="manual-qa-score-input" type="number" min="0" max="100" value="${p.qaScore !== null && p.qaScore !== undefined ? p.qaScore : 85}" class="crm-input font-bold" />
+            </div>
+            <div class="sm:col-span-2">
+              <label class="text-[11px] text-gray-600 font-semibold block mb-1">Catatan Feedback Mentor</label>
+              <input id="manual-qa-note-input" type="text" value="${escapeHtml(p.qaNote || '')}" placeholder="Contoh: Verifikasi bagus, perhatikan pemilihan HCP hashtag." class="crm-input" />
+            </div>
+          </div>
+          <div class="flex justify-end gap-2 pt-2">
+            <button onclick="closeAllModals()" class="px-3 py-1.5 rounded border border-gray-300">Tutup</button>
+            <button onclick="saveManualParticipantQa(${pIdx})" class="px-4 py-1.5 rounded coral-bg text-white font-semibold">Simpan Nilai QA</button>
+          </div>
+        </div>
+      `;
+      openModal("modal-generic");
+    }
+
+    function saveManualParticipantQa(pIdx) {
+      const ses = getActiveAdminSession();
+      const p = ses.participants[pIdx];
+      if (!p) return;
+      const val = parseInt(document.getElementById("manual-qa-score-input").value || "0", 10);
+      p.qaScore = Math.max(0, Math.min(100, isNaN(val) ? 0 : val));
+      p.qaNote = document.getElementById("manual-qa-note-input").value.trim();
+      saveMockSessionsStore();
+      closeAllModals();
+      renderAdminSessionDetail();
+      showToast(`Nilai QA (${p.qaScore}) tersimpan untuk ${p.name}!`, "success");
+    }
+
+    function submitAgentMockSession() {
+      // Save current open ticket edits back to SCENARIOS array first
+      if (currentState && SCENARIOS[currentScenarioIndex]) {
+        SCENARIOS[currentScenarioIndex] = JSON.parse(JSON.stringify(currentState));
+      }
+      const agentCases = SCENARIOS.filter(s => s.isCustomMentor);
+      if (agentCases.length === 0) {
+        showToast("Belum ada kasus yang dikerjakan untuk disubmit.", "error");
+        return;
+      }
+
+      let l3Matched = 0;
+      let mandatoryComplete = 0;
+      let actionsCount = 0;
+      const caseSnapshots = agentCases.map(c => {
+        const isL3Correct = !c.expectedL3 || c.rcL3 === c.expectedL3;
+        if (isL3Correct) l3Matched++;
+        const isMandOk = !!(c.rcL1 && c.rcL2 && c.rcL3 && c.status && c.origin && c.ownerValue && c.entryPoint && c.priority && c.caseSubject && c.creditProduct);
+        if (isMandOk) mandatoryComplete++;
+        actionsCount += Math.max(0, (c.timeline || []).length - 1);
+        return {
+          caseId: c.caseId,
+          rcL3: c.rcL3,
+          expectedL3: c.expectedL3,
+          isL3Correct,
+          status: c.status,
+          priority: c.priority,
+          creditProduct: c.creditProduct
+        };
+      });
+
+      // Sync submission to matching participant in MOCK_SESSIONS
+      const ses = MOCK_SESSIONS.find(s => s.id === currentSession.sessionId) || MOCK_SESSIONS[0];
+      if (ses) {
+        let p = (ses.participants || []).find(pt => pt.code === currentSession.agentCode);
+        if (!p) {
+          p = { code: currentSession.agentCode, name: currentSession.name, startedAt: getFormattedNow(), qaScore: null, qaNote: "" };
+          ses.participants.push(p);
+        }
+        p.status = "SUBMITTED";
+        p.submittedAt = getFormattedNow();
+        p.submission = {
+          totalCases: agentCases.length,
+          completedCount: agentCases.length,
+          l3Matched,
+          mandatoryComplete,
+          actionsCount,
+          caseSnapshots
+        };
+        saveMockSessionsStore();
+      }
+
+      showToast("Jawaban Mock Case berhasil disubmit ke Mentor untuk dinilai QA!", "success");
+    }
+
+    function showTodoDashboard() {
+      document.getElementById("todo-dashboard-view").classList.remove("hidden");
+      document.getElementById("case-detail-workspace").classList.add("hidden");
+      document.getElementById("case-action-footer").classList.add("hidden");
+      document.getElementById("active-ticket-tab-chip").classList.add("hidden");
+      document.getElementById("rail-todo-btn").className = "w-8 h-8 rounded bg-orange-50 coral-text flex items-center justify-center";
+      renderTodoDashboard();
+    }
+
+    function openCaseDetailWorkspace(scenarioIdx) {
+      loadScenario(scenarioIdx, true);
+      document.getElementById("todo-dashboard-view").classList.add("hidden");
+      document.getElementById("case-detail-workspace").classList.remove("hidden");
+      document.getElementById("case-action-footer").classList.remove("hidden");
+      document.getElementById("active-ticket-tab-chip").classList.remove("hidden");
+      document.getElementById("rail-todo-btn").className = "w-8 h-8 rounded hover:bg-gray-100 hover:text-gray-700 flex items-center justify-center";
+    }
+
+    function switchTodoTab(tab) {
+      currentTodoTab = tab;
+      document.querySelectorAll(".todo-top-tab").forEach(btn => {
+        btn.classList.remove("coral-border", "coral-text");
+        btn.classList.add("border-transparent");
+      });
+      const active = document.getElementById(`todo-tab-${tab}`);
+      if (active) {
+        active.classList.remove("border-transparent");
+        active.classList.add("coral-border", "coral-text");
+      }
+      renderTodoDashboard();
+    }
+
+    function filterTodoMetric(metric) {
+      currentTodoMetricFilter = metric;
+      document.querySelectorAll(".todo-metric-card").forEach(card => {
+        card.classList.remove("border-t-2", "border-t-[#EE4D2D]");
+      });
+      const mapId = metric === "On Hold" ? "metric-card-OnHold" : (metric === "Open" ? "metric-card-Open" : "metric-card-All");
+      const target = document.getElementById(mapId);
+      if (target) target.classList.add("border-t-2", "border-t-[#EE4D2D]");
+      renderTodoDashboard();
+    }
+
+    function renderTodoDashboard() {
+      // By default show scenarios created by Mentor (plus any active case in current session)
+      const mentorCases = SCENARIOS.map((sc, idx) => ({ sc, idx })).filter(item => item.sc.isCustomMentor);
+      const openCases = mentorCases.filter(i => (i.sc.status || "Open") === "Open");
+      const onHoldCases = mentorCases.filter(i => i.sc.status === "On Hold");
+
+      document.getElementById("todo-tab-count-Kasus").textContent = openCases.length;
+      document.getElementById("todo-tab-count-Chat").textContent = openCases.filter(i => i.sc.origin === "Chat").length;
+      document.getElementById("todo-tab-count-Panggilan").textContent = openCases.filter(i => i.sc.origin === "Call").length;
+      document.getElementById("todo-tab-count-Email").textContent = openCases.filter(i => i.sc.origin === "Email").length;
+      document.getElementById("todo-tab-count-Webform").textContent = openCases.filter(i => (i.sc.origin || "").includes("Webform")).length;
+
+      document.getElementById("metric-open-count").textContent = openCases.length;
+      document.getElementById("metric-onhold-count").textContent = onHoldCases.length;
+      document.getElementById("metric-total-count").textContent = mentorCases.length;
+      document.getElementById("todo-last-updated").textContent = getFormattedNow();
+
+      let filtered = mentorCases;
+      if (currentTodoTab === "Chat") filtered = filtered.filter(i => i.sc.origin === "Chat");
+      else if (currentTodoTab === "Panggilan") filtered = filtered.filter(i => i.sc.origin === "Call");
+      else if (currentTodoTab === "Email") filtered = filtered.filter(i => i.sc.origin === "Email");
+      else if (currentTodoTab === "Webform") filtered = filtered.filter(i => (i.sc.origin || "").includes("Webform"));
+
+      if (currentTodoMetricFilter === "Open") filtered = filtered.filter(i => (i.sc.status || "Open") === "Open");
+      else if (currentTodoMetricFilter === "On Hold") filtered = filtered.filter(i => i.sc.status === "On Hold");
+
+      document.getElementById("todo-total-label").textContent = `${filtered.length} Total Item`;
+
+      const tbody = document.getElementById("todo-table-body");
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="10" class="py-16 text-center text-gray-400">
+              <div class="flex flex-col items-center justify-center gap-2">
+                <i class="fa-solid fa-box-open text-3xl text-gray-300"></i>
+                <span class="text-xs text-gray-400">No data</span>
+                <span class="text-[11px] text-gray-400">Menunggu Mentor membuat skenario kasus baru atau tempel Case ID dari Mentor di kolom kanan atas.</span>
+              </div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(({ sc, idx }) => `
+        <tr class="hover:bg-orange-50/40 transition-colors">
+          <td class="py-2.5 px-3"><input type="checkbox" value="${idx}" class="todo-row-cb rounded border-gray-300" /></td>
+          <td class="py-2.5 px-3">
+            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-red-50 text-red-600 text-[10px] font-semibold border border-red-100">
+              <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span> New Roleplay
+            </span>
+          </td>
+          <td class="py-2.5 px-3 font-medium">
+            <button onclick="openCaseDetailWorkspace(${idx})" class="text-blue-600 hover:underline font-mono">
+              ${sc.caseId}
+            </button>
+          </td>
+          <td class="py-2.5 px-3 text-gray-800 max-w-xs truncate">
+            <button onclick="openCaseDetailWorkspace(${idx})" class="hover:text-[#EE4D2D] text-left truncate block w-full">
+              ${escapeHtml(sc.caseSubject || sc.title)}
+            </button>
+          </td>
+          <td class="py-2.5 px-3 text-gray-500">${sc.createdTime || "-"}</td>
+          <td class="py-2.5 px-3">
+            <span class="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 text-[10px] font-medium border border-emerald-200">23j 55m</span>
+          </td>
+          <td class="py-2.5 px-3 text-gray-500 font-mono">TSK-${sc.caseId.slice(-5)}</td>
+          <td class="py-2.5 px-3 text-gray-700">${sc.origin} • ${sc.creditProduct || "SPayLater"}</td>
+          <td class="py-2.5 px-3">
+            <span class="px-2 py-0.5 rounded bg-red-50 text-red-500 text-[10px] font-medium border border-red-100">${sc.status || "Open"}</span>
+          </td>
+          <td class="py-2.5 px-3 text-gray-500">ID - Credit - L1</td>
+        </tr>
+      `).join("");
+    }
+
+    function refreshTodoTable() {
+      SCENARIOS = SCENARIOS.filter(s => !s.isCustomMentor);
+      loadSavedCustomScenarios();
+      renderTodoDashboard();
+      showToast("Daftar Open Cases diperbarui.", "info");
+    }
+
+    function toggleAllTodoCheckboxes(masterCb) {
+      document.querySelectorAll(".todo-row-cb").forEach(cb => cb.checked = masterCb.checked);
+    }
+
+    function openSelectedTodoCase() {
+      const checked = document.querySelector(".todo-row-cb:checked");
+      if (checked) {
+        openCaseDetailWorkspace(Number(checked.value));
+      } else {
+        const firstCustom = SCENARIOS.findIndex(s => s.isCustomMentor);
+        if (firstCustom !== -1) openCaseDetailWorkspace(firstCustom);
+        else showToast("Belum ada kasus di Open Cases.", "info");
+      }
+    }
+
+    function generateRandom19DigitCaseId() {
+      let id = "21237";
+      for (let i = 0; i < 14; i++) {
+        id += Math.floor(Math.random() * 10);
+      }
+      return id;
+    }
+
+    function regenerateScenarioCaseId() {
+      document.getElementById("new-sc-caseid").value = generateRandom19DigitCaseId();
+    }
+
+    // Encode/Decode scenario payload so Mentor can share a portable Case Code across different laptops!
+    function encodeScenarioShareCode(scObj) {
+      try {
+        const compact = {
+          t: scObj.title,
+          id: scObj.caseId,
+          o: scObj.origin,
+          p: scObj.creditProduct,
+          e: scObj.requestEmail,
+          l3: scObj.expectedL3,
+          m: scObj.summary,
+          b: !scObj.rcL3
+        };
+        return "CF-" + btoa(unescape(encodeURIComponent(JSON.stringify(compact))));
+      } catch (e) {
+        return scObj.caseId;
+      }
+    }
+
+    function importCaseFromMentorCode() {
+      const raw = document.getElementById("receive-case-code-input").value.trim();
+      if (!raw) {
+        showToast("Masukkan Case ID atau Kode Skenario dari Mentor.", "error");
+        return;
+      }
+
+      // 1. Check if Case ID already exists in local SCENARIOS
+      const existingIdx = SCENARIOS.findIndex(s => s.caseId === raw);
+      if (existingIdx !== -1) {
+        SCENARIOS[existingIdx].isCustomMentor = true;
+        document.getElementById("receive-case-code-input").value = "";
+        renderTodoDashboard();
+        showToast(`Case ID ${raw} ditambahkan ke Open Cases!`, "success");
+        return;
+      }
+
+      // 2. Check if it is a portable CF-... scenario share code
+      if (raw.startsWith("CF-")) {
+        try {
+          const decoded = JSON.parse(decodeURIComponent(escape(atob(raw.slice(3)))));
+          const rcObj = MASTER_REASON_CODES.find(r => r.l3 === decoded.l3) || MASTER_REASON_CODES[0];
+          const importedSc = buildScenarioObject({
+            title: decoded.t,
+            caseId: decoded.id,
+            origin: decoded.o || "Call",
+            product: decoded.p || "SPaylater",
+            email: decoded.e || "nasabah.roleplay@example.com",
+            rcObj,
+            msg: decoded.m,
+            blankMandatory: decoded.b !== false
+          });
+          SCENARIOS.unshift(importedSc);
+          persistCustomScenario(importedSc);
+          document.getElementById("receive-case-code-input").value = "";
+          renderTodoDashboard();
+          showToast(`Kasus ${importedSc.caseId} berhasil masuk ke Open Cases!`, "success");
+          return;
+        } catch (err) {
+          showToast("Kode skenario tidak valid.", "error");
+          return;
+        }
+      }
+
+      showToast("Case ID tidak ditemukan. Pastikan menyalin Kode Skenario lengkap dari Mentor.", "error");
+    }
+
+    function buildScenarioObject({ title, caseId, origin, product, email, rcObj, msg, blankMandatory }) {
+      return {
+        isCustomMentor: true,
         title: title,
-        difficulty: "Custom Mentor",
+        difficulty: "Mentoring Live",
         summary: msg,
         caseId: caseId,
         rcL1: blankMandatory ? "" : rcObj.l1,
@@ -1862,13 +3038,13 @@
         status: "Open",
         origin: origin,
         createdTime: getFormattedNow(),
-        age: "0 hari 0 jam 5 menit",
+        age: "0 hari 0 jam 1 menit",
         ownerType: "Agent",
         ownerValue: "Agent L1 Call SPaylater",
         ownerTeam: "ID - Credit - L1 - Call Credit - Agent",
         entryPoint: blankMandatory ? "" : "None",
         priority: blankMandatory ? "" : "Medium",
-        caseSubject: blankMandatory ? "" : `${caseId} - ${rcObj.l3}`,
+        caseSubject: blankMandatory ? `${caseId} - Kasus Baru` : `${caseId} - ${rcObj.l3}`,
         shopeeUserId: "8100" + Math.floor(10000 + Math.random() * 89999),
         caseDescription: "",
         modifiedTime: getFormattedNow(),
@@ -1909,34 +3085,138 @@
           }
         ]
       };
+    }
 
-      SCENARIOS.unshift(newSc);
+    function persistCustomScenario(scObj) {
       try {
         const saved = JSON.parse(localStorage.getItem("cf_custom_scenarios") || "[]");
-        saved.unshift(newSc);
+        saved.unshift(scObj);
         localStorage.setItem("cf_custom_scenarios", JSON.stringify(saved));
       } catch (e) {}
+    }
+
+    function handleAppLogout() {
+      currentSession.isLoggedIn = false;
+      document.getElementById("profile-dropdown").classList.add("hidden");
+      document.getElementById("mentor-drawer").classList.add("translate-x-full");
+      document.getElementById("login-screen").classList.remove("hidden");
+      showToast("Berhasil logout. Silakan pilih peran kembali.", "info");
+    }
+
+    function applySessionPermissions() {
+      const isMentor = currentSession.role === "mentor";
+      const initials = currentSession.name.split(" ").map(p => p[0]).join("").slice(0, 2).toUpperCase() || "CS";
+
+      document.getElementById("header-avatar-initials").textContent = initials;
+      document.getElementById("header-user-name").textContent = currentSession.name;
+      document.getElementById("menu-user-fullname").textContent = currentSession.name;
+      document.getElementById("menu-user-role").textContent = currentSession.teamTitle;
+
+      const roleBadge = document.getElementById("header-role-badge");
+      if (isMentor) {
+        roleBadge.textContent = "MENTOR MODE";
+        roleBadge.className = "hidden sm:inline-block px-2 py-0.5 text-[10px] font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 rounded";
+      } else {
+        roleBadge.textContent = "AGENT TRAINEE";
+        roleBadge.className = "hidden sm:inline-block px-2 py-0.5 text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 rounded";
+      }
+
+      // Toggle Mentor-only controls
+      document.getElementById("mentor-toggle-btn").classList.toggle("hidden", !isMentor);
+      document.getElementById("header-new-case-btn").classList.toggle("hidden", !isMentor);
+      document.getElementById("rail-mentor-btn").classList.toggle("hidden", !isMentor);
+      document.getElementById("rail-csv-btn").classList.toggle("hidden", !isMentor);
+      document.getElementById("tab-sim-reply-btn").classList.toggle("hidden", !isMentor);
+      document.getElementById("todo-mentor-create-btn").classList.toggle("hidden", !isMentor);
+    }
+
+    function handleBuatKasusTabClick() {
+      if (currentSession.role === "mentor") {
+        openCreateScenarioModal();
+      } else {
+        createNewBlankCase();
+      }
+    }
+
+    function openCreateScenarioModal() {
+      document.getElementById("new-sc-caseid").value = generateRandom19DigitCaseId();
+      const l3Sel = document.getElementById("new-sc-target-l3");
+      l3Sel.innerHTML = MASTER_REASON_CODES.map(r =>
+        `<option value="${r.l3}">${r.l1} / ${r.l2} / ${r.l3}</option>`
+      ).join("");
+      openModal("modal-create-scenario");
+    }
+
+    function saveNewCustomScenario() {
+      const title = document.getElementById("new-sc-title").value.trim() || "Skenario Roleplay L1";
+      const caseId = document.getElementById("new-sc-caseid").value.trim() || generateRandom19DigitCaseId();
+      const origin = document.getElementById("new-sc-origin").value;
+      const product = document.getElementById("new-sc-product").value;
+      const email = document.getElementById("new-sc-email").value.trim() || "nasabah@example.com";
+      const targetL3 = document.getElementById("new-sc-target-l3").value;
+      const msg = document.getElementById("new-sc-message").value.trim();
+      const blankMandatory = document.getElementById("new-sc-blank-mandatory").checked;
+
+      if (!msg) {
+        showToast("Pesan awal customer / kronologi wajib diisi!", "error");
+        return;
+      }
+
+      const rcObj = MASTER_REASON_CODES.find(r => r.l3 === targetL3) || MASTER_REASON_CODES[0];
+      const newSc = buildScenarioObject({ title, caseId, origin, product, email, rcObj, msg, blankMandatory });
+      const shareCode = encodeScenarioShareCode(newSc);
+
+      SCENARIOS.unshift(newSc);
+      persistCustomScenario(newSc);
+
+      // Also attach directly into active Mock Admin Session if Mentor is creating it
+      const activeSes = getActiveAdminSession();
+      if (activeSes) {
+        activeSes.cases.unshift(JSON.parse(JSON.stringify(newSc)));
+        saveMockSessionsStore();
+      }
 
       renderScenarioLists();
-      closeAllModals();
-      loadScenario(0);
-      showToast("Skenario baru berhasil dibuat & disimpan!", "success");
+      renderTodoDashboard();
+      if (currentSession.role === "mentor" && !document.getElementById("mentor-admin-portal").classList.contains("hidden")) {
+        renderAdminPortal();
+      }
+
+      // Show generated Case ID & Shareable Scenario Code modal so Mentor can hand it over to Agent
+      document.getElementById("generic-modal-title").textContent = "Skenario Berhasil Dibuat & Masuk ke Open Cases!";
+      document.getElementById("generic-modal-body").innerHTML = `
+        <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-md space-y-2">
+          <div class="text-emerald-800 font-semibold">Case ID Random Terbuat:</div>
+          <div class="flex items-center justify-between bg-white px-3 py-2 rounded border border-emerald-200">
+            <span class="font-mono font-bold text-sm text-gray-800">${newSc.caseId}</span>
+            <button onclick="copyTextValue('${newSc.caseId}', 'Case ID')" class="px-2.5 py-1 rounded bg-emerald-600 text-white text-[11px] font-medium">
+              Copy Case ID
+            </button>
+          </div>
+          <p class="text-[11px] text-emerald-700">
+            Jika Agent membuka di perangkat/browser berbeda, bagikan <strong>Kode Skenario</strong> berikut agar langsung muncul di <em>Open Cases</em> Agent:
+          </p>
+          <div class="flex items-center gap-1.5">
+            <input type="text" readonly value="${shareCode}" class="crm-input font-mono text-[11px] bg-white" />
+            <button onclick="copyTextValue('${shareCode}', 'Kode Skenario')" class="px-3 py-1.5 rounded coral-bg text-white text-[11px] font-medium shrink-0">
+              Copy Kode
+            </button>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button onclick="closeAllModals(); showTodoDashboard();" class="px-3 py-1.5 rounded border border-gray-300 text-gray-700">Lihat di Open Cases</button>
+          <button onclick="closeAllModals(); openCaseDetailWorkspace(0);" class="px-4 py-1.5 rounded coral-bg text-white font-medium">Buka Tiket Sekarang</button>
+        </div>
+      `;
+      openModal("modal-generic");
     }
 
     function loadSavedCustomScenarios() {
       try {
         const saved = JSON.parse(localStorage.getItem("cf_custom_scenarios") || "[]");
         if (Array.isArray(saved) && saved.length > 0) {
+          saved.forEach(s => s.isCustomMentor = true);
           SCENARIOS = [...saved, ...SCENARIOS];
-        }
-      } catch (e) {}
-    }
-
-    function loadSavedCsvSettings() {
-      try {
-        const savedRc = JSON.parse(localStorage.getItem("cf_csv_reason_codes") || "null");
-        if (Array.isArray(savedRc) && savedRc.length > 0) {
-          MASTER_REASON_CODES = savedRc;
         }
       } catch (e) {}
     }
@@ -2485,7 +3765,7 @@
 
     function renderScenarioLists() {
       const html = SCENARIOS.map((sc, idx) => `
-        <div onclick="loadScenario(${idx}); closeAllModals();" class="p-3 border border-gray-200 hover:border-[#EE4D2D] rounded-md cursor-pointer transition-all bg-white">
+        <div onclick="openCaseDetailWorkspace(${idx}); closeAllModals();" class="p-3 border border-gray-200 hover:border-[#EE4D2D] rounded-md cursor-pointer transition-all bg-white">
           <div class="flex items-center justify-between mb-1">
             <span class="font-bold text-gray-800">${sc.title}</span>
             <span class="px-2 py-0.5 bg-orange-50 coral-text rounded text-[10px] font-semibold">${sc.difficulty}</span>
@@ -2496,7 +3776,7 @@
       document.getElementById("modal-scenario-list").innerHTML = html;
 
       document.getElementById("drawer-scenario-list").innerHTML = SCENARIOS.map((sc, idx) => `
-        <button onclick="loadScenario(${idx})" class="w-full text-left p-2 rounded border border-gray-200 bg-white hover:border-indigo-400 transition-all">
+        <button onclick="openCaseDetailWorkspace(${idx})" class="w-full text-left p-2 rounded border border-gray-200 bg-white hover:border-indigo-400 transition-all">
           <div class="font-semibold text-gray-800 truncate">${sc.title}</div>
           <div class="text-[10px] text-gray-500">Product: ${sc.creditProduct} • L3: ${sc.rcL3}</div>
         </button>
@@ -3112,8 +4392,8 @@
     function handleGlobalSearch() {
       const q = document.getElementById("global-search-input").value.trim();
       const idx = SCENARIOS.findIndex(s => s.caseId.includes(q) || s.shopeeUserId.includes(q));
-      if (idx !== -1 && idx !== currentScenarioIndex) loadScenario(idx);
-      else showToast(`Menampilkan kasus untuk "${q}"`, "info");
+      if (idx !== -1) openCaseDetailWorkspace(idx);
+      else showToast(`Tidak ditemukan kasus untuk "${q}"`, "info");
     }
 
     function attachDummyFile() {
