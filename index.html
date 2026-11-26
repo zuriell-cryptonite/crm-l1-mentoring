@@ -46,11 +46,11 @@
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
-  <!-- Toast Notification -->
+  <!-- Wadah notifikasi toast -->
   <div id="toast-container" class="fixed top-4 right-4 z-[70] flex flex-col gap-2 max-w-sm"></div>
 
   <!-- ===================================================================== -->
-  <!-- 1. LOGIN SCREEN (AGENT KODE PESERTA & MENTOR / MOCK ADMIN)            -->
+  <!-- 1. HALAMAN LOGIN (AGENT KODE PESERTA & MENTOR / MOCK ADMIN)           -->
   <!-- ===================================================================== -->
   <section id="login-screen" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-orange-50 via-white to-gray-100">
     <div class="w-full max-w-md bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
@@ -122,7 +122,6 @@
   <!-- 2. AGENT WORKSPACE (ITEM PEKERJAAN - TO DO & DETAIL KASUS)            -->
   <!-- ===================================================================== -->
   <div id="app-shell" class="hidden min-h-screen flex flex-col">
-    <!-- Top Bar -->
     <header class="h-12 bg-white border-b border-gray-200 px-4 flex items-center justify-between sticky top-0 z-30">
       <div class="flex items-center gap-3">
         <div class="flex items-center gap-2">
@@ -151,7 +150,7 @@
       </div>
     </header>
 
-    <!-- View A: Item Pekerjaan - To Do -->
+    <!-- Tampilan Item Pekerjaan - To Do -->
     <main id="todo-dashboard-view" class="flex-1 p-4 md:p-6 max-w-7xl w-full mx-auto space-y-4">
       <div class="flex flex-wrap items-center justify-between gap-2">
         <div>
@@ -163,7 +162,6 @@
         </button>
       </div>
 
-      <!-- Summary Metric Cards -->
       <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
         <div class="bg-white p-3 rounded-lg border-t-4 border-[#EE4D2D] shadow-xs">
           <div class="text-[11px] text-gray-500 font-medium">Open Cases</div>
@@ -195,7 +193,6 @@
         </div>
       </div>
 
-      <!-- Open Cases Table -->
       <div class="bg-white rounded-lg border border-gray-200 shadow-xs overflow-hidden">
         <div class="px-4 py-3 border-b border-gray-200 flex items-center justify-between">
           <span class="text-xs font-bold text-gray-800">Daftar Open Cases</span>
@@ -219,7 +216,7 @@
       </div>
     </main>
 
-    <!-- View B: Case Detail & Mandatory Fields -->
+    <!-- Tampilan Detail Kasus & Mandatory Fields -->
     <main id="case-detail-view" class="hidden flex-1 p-4 md:p-6 max-w-7xl w-full mx-auto space-y-4">
       <div class="flex flex-wrap items-center justify-between gap-2 bg-white p-3 rounded-lg border border-gray-200">
         <div class="flex items-center gap-3">
@@ -235,11 +232,13 @@
           <button type="button" onclick="saveAgentCaseDraft()" class="px-3 py-1.5 rounded border border-[#EE4D2D] text-[#EE4D2D] hover:bg-orange-50 text-xs font-semibold">
             <i class="fa-solid fa-floppy-disk mr-1"></i> Simpan Progres
           </button>
+          <button type="button" onclick="submitAgentCaseForQa()" class="px-3 py-1.5 rounded coral-bg text-white hover:opacity-95 text-xs font-semibold">
+            <i class="fa-solid fa-paper-plane mr-1"></i> Submit ke QA
+          </button>
         </div>
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        <!-- Timeline / Kronologi Customer -->
         <div class="lg:col-span-7 bg-white rounded-lg border border-gray-200 p-4 space-y-3">
           <div class="flex items-center justify-between border-b border-gray-100 pb-2">
             <h3 class="text-xs font-bold uppercase tracking-wider text-gray-700">Riwayat & Kronologi Kasus</h3>
@@ -248,7 +247,6 @@
           <div id="detail-timeline-list" class="space-y-2.5 max-h-[420px] overflow-y-auto pr-1"></div>
         </div>
 
-        <!-- Mandatory Fields Panel -->
         <div class="lg:col-span-5 bg-white rounded-lg border border-gray-200 p-4 space-y-3">
           <h3 class="text-xs font-bold uppercase tracking-wider text-gray-700 border-b border-gray-100 pb-2">
             Mandatory Field & Case Info
@@ -340,7 +338,10 @@
         <span class="px-2 py-0.5 rounded text-[10px] font-bold coral-bg text-white">MOCK ADMIN</span>
         <span id="admin-mentor-label" class="hidden sm:inline text-xs text-gray-600 font-medium ml-2"></span>
       </div>
-      <div class="flex items-center gap-2">
+      <div class="flex items-center gap-3 text-xs">
+        <button type="button" onclick="openScenarioBankModal()" class="text-gray-700 hover:text-[#EE4D2D] font-medium">
+          <i class="fa-solid fa-book-open mr-1"></i>Bank Skenario
+        </button>
         <button type="button" onclick="handleAppLogout()" class="px-3 py-1 rounded border border-gray-300 text-gray-700 hover:bg-gray-50 text-xs font-semibold">
           Keluar
         </button>
@@ -348,14 +349,13 @@
     </header>
 
     <div class="flex-1 p-4 md:p-6 max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 gap-5">
-      <!-- Left Column: Buat Sesi & Daftar Sesi -->
       <div class="lg:col-span-4 space-y-4">
         <div class="bg-white rounded-lg border border-gray-200 p-4 shadow-xs space-y-3">
           <h2 class="text-sm font-bold text-gray-900">Buat Sesi Mock Test</h2>
           <form id="create-mock-session-form" onsubmit="handleCreateMockSession(event)" class="space-y-2.5">
             <div>
               <label class="block text-xs font-semibold text-gray-700 mb-1">Nama Sesi *</label>
-              <input id="new-session-name" type="text" required placeholder="Contoh: Roleplay L1 Call - Batch 12" class="crm-input" />
+              <input id="new-session-name" type="text" required placeholder="Contoh: Mock Test L1 - Batch 12" class="crm-input" />
             </div>
             <div>
               <label class="block text-xs font-semibold text-gray-700 mb-1">Channel / Project</label>
@@ -367,13 +367,30 @@
               </select>
             </div>
             <div>
-              <label class="block text-xs font-semibold text-gray-700 mb-1">Durasi Pengerjaan (Menit)</label>
-              <input id="new-session-duration" type="number" min="0" value="30" class="crm-input" />
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Waktu Pengerjaan (Menit)</label>
+              <input id="new-session-duration" type="number" min="0" value="20" class="crm-input" />
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-gray-700 mb-1">Catatan (Opsional)</label>
+              <input id="new-session-notes" type="text" placeholder="Catatan sesi / fokus QA..." class="crm-input" />
             </div>
             <button type="submit" class="w-full py-2 rounded coral-bg text-white font-semibold text-xs hover:opacity-95">
               BUAT SESI
             </button>
           </form>
+        </div>
+
+        <div class="bg-white rounded-lg border border-gray-200 p-4 shadow-xs space-y-2.5">
+          <h3 class="text-xs font-bold text-gray-900">Bank Skenario & Scorecard</h3>
+          <p class="text-[11px] text-gray-500">Kelola skenario master, target Reason Code L3, dan rekap tracker sesi.</p>
+          <div class="grid grid-cols-1 gap-2">
+            <button type="button" onclick="openScenarioBankModal()" class="w-full py-1.5 px-3 rounded border border-gray-300 bg-white hover:bg-gray-50 text-xs font-semibold text-gray-800 text-left">
+              <i class="fa-solid fa-layer-group mr-1.5 text-[#EE4D2D]"></i> LIHAT BANK SKENARIO
+            </button>
+            <button type="button" onclick="exportTrackerReportSummary()" class="w-full py-1.5 px-3 rounded border border-gray-300 bg-white hover:bg-gray-50 text-xs font-semibold text-gray-800 text-left">
+              <i class="fa-solid fa-file-export mr-1.5 text-[#EE4D2D]"></i> SALIN REKAP TRACKER & REPORT
+            </button>
+          </div>
         </div>
 
         <div class="bg-white rounded-lg border border-gray-200 p-4 shadow-xs space-y-2">
@@ -382,14 +399,13 @@
         </div>
       </div>
 
-      <!-- Right Column: Manajemen Sesi & Paket Kasus -->
       <div class="lg:col-span-8">
         <div id="admin-active-session-panel" class="bg-white rounded-lg border border-gray-200 p-5 shadow-xs space-y-4"></div>
       </div>
     </div>
   </div>
 
-  <!-- Generic Modal -->
+  <!-- Modal Dinamis -->
   <div id="modal-generic" class="modal-backdrop" onclick="if(event.target===this) closeAllModals()">
     <div class="bg-white rounded-xl shadow-xl border border-gray-200 w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
       <div class="px-5 py-3.5 border-b border-gray-200 flex items-center justify-between">
@@ -423,7 +439,7 @@
     };
 
     // =========================================================================
-    // HELPER FORMAT CASE OWNER SESUAI NAMA AGENT & ROLE (CALL, EMAIL, CCS, DLL)
+    // HELPER CASE OWNER OTOMATIS (NAMA AGENT - ROLE)
     // =========================================================================
     function formatAgentCaseOwner(agentName, roleChannel) {
       const cleanName = (agentName || "Agent").trim();
@@ -465,7 +481,7 @@
     }
 
     // =========================================================================
-    // POP-UP / MODAL BUAT SKENARIO KASUS BARU DI ADMIN
+    // POP-UP BUAT SKENARIO KASUS BARU DI ADMIN
     // =========================================================================
     function openCreateScenarioModal() {
       const ses = getActiveAdminSession();
@@ -545,7 +561,7 @@
           </div>
 
           <div>
-            <label class="block font-semibold text-gray-700 mb-1">Kunci Jawaban Reason Code Level 3 (Dari Sheet Master_Reason_Code) *</label>
+            <label class="block font-semibold text-gray-700 mb-1">Kunci Jawaban Reason Code Level 3 *</label>
             <select id="new-sc-target-l3" required class="crm-select">
               <option value="">-- Pilih Target Reason Code L3 --</option>
               ${l3OptionsHtml}
@@ -846,7 +862,7 @@
             <td class="py-2.5 px-3 font-mono font-semibold text-[#EE4D2D]">
               <button type="button" onclick="openScenarioById('${escapeHtmlAttr(c.caseId)}')" class="hover:underline">${escapeHtml(c.caseId)}</button>
             </td>
-            <td class="py-2.5 px-3 font-medium text-gray-800">${escapeHtml(c.caseSubject || c.title || "(Kosong - Isi di Detail Kasus)")}</td>
+            <td class="py-2.5 px-3 font-medium text-gray-800">${escapeHtml(c.caseSubject || "(Kosong - Isi di Detail Kasus)")}</td>
             <td class="py-2.5 px-3 text-gray-600">${escapeHtml(c.origin || "Call")}</td>
             <td class="py-2.5 px-3 text-gray-700">${escapeHtml(c.ownerValue || previewOwner)}</td>
             <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-700 font-semibold text-[11px]">${escapeHtml(c.status || "Open")}</span></td>
@@ -952,6 +968,30 @@
       showToast("Progres kasus & Case Owner berhasil disimpan!", "success");
     }
 
+    function submitAgentCaseForQa() {
+      saveAgentCaseDraft();
+      loadMockSessionsStore();
+      MOCK_SESSIONS.forEach(ses => {
+        (ses.cases || []).forEach(c => {
+          if (String(c.caseId) === String(ACTIVE_SCENARIO_ID)) {
+            c.status = "Submitted";
+            c.submittedAt = getFormattedNow();
+            c.submittedBy = CURRENT_SESSION.agentName;
+          }
+        });
+        (ses.participants || []).forEach(p => {
+          if (String(p.code || "").toUpperCase() === String(CURRENT_SESSION.participantCode || "").toUpperCase() ||
+              String(p.name || "").toLowerCase() === String(CURRENT_SESSION.agentName || "").toLowerCase()) {
+            p.status = "SUBMITTED";
+            p.submittedAt = getFormattedNow();
+          }
+        });
+      });
+      saveMockSessionsStore();
+      showToast("Kasus berhasil di-submit ke Penilaian QA Mentor!", "success");
+      showTodoDashboard();
+    }
+
     function takeScenarioByCodeOrId() {
       const raw = (document.getElementById("quick-take-case-input").value || "").trim();
       if (!raw) return;
@@ -961,7 +1001,7 @@
         loadMockSessionsStore();
         let targetSession = getActiveAdminSession() || MOCK_SESSIONS[0];
         if (!targetSession) {
-          targetSession = { id: "SES-QUICK", name: "Sesi Cepat", project: CURRENT_SESSION.role || "Call", duration: 30, cases: [], participants: [] };
+          targetSession = { id: "SES-QUICK", name: "Sesi Cepat", project: CURRENT_SESSION.role || "Call", duration: 20, status: "ACTIVE", cases: [], participants: [] };
           MOCK_SESSIONS.unshift(targetSession);
         }
         applyAgentOwnerToScenario(decoded, CURRENT_SESSION.agentName, CURRENT_SESSION.role);
@@ -980,7 +1020,7 @@
     }
 
     // =========================================================================
-    // ADMIN PORTAL RENDERING & SESSION MANAGEMENT
+    // ADMIN PORTAL & 4 TAB (PESERTA, PAKET KASUS, PROGRES, PENILAIAN QA)
     // =========================================================================
     function getActiveAdminSession() {
       return MOCK_SESSIONS.find(s => s.id === ACTIVE_ADMIN_SESSION_ID) || MOCK_SESSIONS[0] || null;
@@ -990,7 +1030,8 @@
       event.preventDefault();
       const name = document.getElementById("new-session-name").value.trim();
       const project = document.getElementById("new-session-project").value;
-      const duration = parseInt(document.getElementById("new-session-duration").value || "30", 10);
+      const duration = parseInt(document.getElementById("new-session-duration").value || "20", 10);
+      const notes = (document.getElementById("new-session-notes").value || "").trim();
       if (!name) return;
 
       const newSession = {
@@ -998,17 +1039,344 @@
         name,
         project,
         duration,
+        notes,
         status: "ACTIVE",
         participants: [],
         cases: []
       };
       MOCK_SESSIONS.unshift(newSession);
       ACTIVE_ADMIN_SESSION_ID = newSession.id;
+      ACTIVE_ADMIN_TAB = "peserta";
       saveMockSessionsStore();
       document.getElementById("create-mock-session-form").reset();
-      document.getElementById("new-session-duration").value = "30";
+      document.getElementById("new-session-duration").value = "20";
       renderAdminPortal();
       showToast(`Sesi "${name}" berhasil dibuat!`, "success");
+    }
+
+    function updateActiveSessionMeta() {
+      const ses = getActiveAdminSession();
+      if (!ses) return;
+      ses.name = (document.getElementById("edit-ses-name").value || "").trim() || ses.name;
+      ses.project = document.getElementById("edit-ses-project").value || ses.project;
+      ses.status = document.getElementById("edit-ses-status").value || "ACTIVE";
+      ses.duration = parseInt(document.getElementById("edit-ses-duration").value || "20", 10);
+      ses.notes = (document.getElementById("edit-ses-notes").value || "").trim();
+      saveMockSessionsStore();
+      renderAdminPortal();
+      showToast("Pengaturan sesi tersimpan.", "success");
+    }
+
+    function addParticipantsToActiveSession() {
+      const ses = getActiveAdminSession();
+      if (!ses) return;
+      const raw = (document.getElementById("admin-participants-bulk-input").value || "").trim();
+      if (!raw) return;
+
+      ses.participants = ses.participants || [];
+      const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+      let addedCount = 0;
+
+      lines.forEach((line, idx) => {
+        const parts = line.split(",").map(p => p.trim()).filter(Boolean);
+        let code = "";
+        let name = "";
+        let role = ses.project || "Call";
+
+        if (parts.length >= 2) {
+          code = parts[0].toUpperCase();
+          name = parts[1];
+          if (parts[2]) role = parts[2];
+        } else {
+          name = parts[0];
+          const suffix = String(Date.now()).slice(-3) + String(idx + 1);
+          code = `L1-${suffix}`;
+        }
+
+        const exists = ses.participants.some(p => String(p.code).toUpperCase() === code);
+        if (!exists && name) {
+          ses.participants.push({
+            code,
+            name,
+            role,
+            status: "READY",
+            startedAt: "",
+            submittedAt: "",
+            qaScore: null,
+            qaKo: false,
+            qaNotes: "",
+            qaBy: ""
+          });
+          addedCount++;
+        }
+      });
+
+      document.getElementById("admin-participants-bulk-input").value = "";
+      saveMockSessionsStore();
+      renderAdminPortal();
+      showToast(`${addedCount} peserta ditambahkan ke sesi.`, "success");
+    }
+
+    function copyAllParticipantCodes() {
+      const ses = getActiveAdminSession();
+      if (!ses || !(ses.participants || []).length) {
+        showToast("Belum ada kode peserta untuk disalin.", "warning");
+        return;
+      }
+      const text = ses.participants.map(p => `${p.code} - ${p.name} (${p.role || ses.project || "Call"})`).join("\n");
+      copyTextValue(text, "Daftar Kode Peserta");
+    }
+
+    function assignCasesToParticipantsInSession(onlyUnassigned = true) {
+      const ses = getActiveAdminSession();
+      if (!ses) return;
+      ses.cases = ses.cases || [];
+      ses.participants = ses.participants || [];
+
+      if (!ses.cases.length) {
+        const defaultL3 = MASTER_REASON_CODES[0] || { l1: "Credit & Finance", l2: "Account & Limit", l3: "Akun pembayaran dibekukan" };
+        const sampleCase = buildScenarioObject({
+          title: `Mock Case ${ses.name}`,
+          caseId: generateRandom19DigitCaseId(),
+          origin: ses.project || "Call",
+          product: "SPaylater",
+          email: "nasabah.test@email.com",
+          rcObj: defaultL3,
+          msg: "Nasabah menginformasikan kendala pada akun dan meminta pengecekan lebih lanjut.",
+          blankMandatory: true
+        });
+        ses.cases.push(sampleCase);
+      }
+
+      if (!ses.participants.length) {
+        saveMockSessionsStore();
+        renderAdminPortal();
+        showToast("Kasus siap di sesi. Tambahkan peserta di tab Peserta untuk assign per peserta.", "info");
+        return;
+      }
+
+      let assignedCount = 0;
+      ses.participants.forEach((p, idx) => {
+        const alreadyHas = ses.cases.some(c => String(c.assignedToCode || "").toUpperCase() === String(p.code || "").toUpperCase());
+        if (onlyUnassigned && alreadyHas) return;
+
+        const template = ses.cases[idx % ses.cases.length];
+        const cloned = JSON.parse(JSON.stringify(template));
+        cloned.caseId = generateRandom19DigitCaseId();
+        cloned.assignedToCode = p.code;
+        cloned.rcL1 = "";
+        cloned.rcL2 = "";
+        cloned.rcL3 = "";
+        cloned.entryPoint = "";
+        cloned.priority = "";
+        cloned.caseSubject = "";
+        cloned.caseDescription = "";
+        cloned.requestEmail = "";
+        applyAgentOwnerToScenario(cloned, p.name, resolveParticipantRole(ses, p.code, p.name));
+        ses.cases.push(cloned);
+        assignedCount++;
+      });
+
+      saveMockSessionsStore();
+      renderAdminPortal();
+      renderTodoDashboard();
+      showToast(`${assignedCount} paket kasus di-assign ke peserta.`, "success");
+    }
+
+    function unlockParticipantSubmission(participantCode) {
+      const ses = getActiveAdminSession();
+      if (!ses) return;
+      const p = (ses.participants || []).find(item => String(item.code) === String(participantCode));
+      if (p) {
+        p.status = "IN_PROGRESS";
+        p.submittedAt = "";
+        saveMockSessionsStore();
+        renderAdminPortal();
+        showToast(`Status peserta ${p.name} dibuka kembali.`, "info");
+      }
+    }
+
+    function inspectParticipantCase(participantCode, participantName) {
+      const ses = getActiveAdminSession();
+      if (!ses) return;
+      const matchedCase = (ses.cases || []).find(c =>
+        (participantCode && String(c.assignedToCode || "").toUpperCase() === String(participantCode).toUpperCase()) ||
+        (participantName && String(c.assignedAgentName || "").toLowerCase() === String(participantName).toLowerCase())
+      ) || (ses.cases || [])[0];
+
+      if (!matchedCase) {
+        showToast("Belum ada kasus untuk peserta ini.", "warning");
+        return;
+      }
+
+      const l3Correct = matchedCase.expectedL3 && matchedCase.rcL3 === matchedCase.expectedL3;
+      document.getElementById("generic-modal-title").textContent = `Review Jawaban — ${participantName || matchedCase.caseId}`;
+      document.getElementById("generic-modal-body").innerHTML = `
+        <div class="space-y-3 text-xs">
+          <div class="grid grid-cols-2 gap-2 p-3 rounded-lg bg-gray-50 border border-gray-200">
+            <div><span class="text-gray-500">Case ID:</span> <strong class="font-mono">${escapeHtml(matchedCase.caseId)}</strong></div>
+            <div><span class="text-gray-500">Case Owner:</span> <strong>${escapeHtml(matchedCase.ownerValue || "-")}</strong></div>
+            <div><span class="text-gray-500">Target L3:</span> <strong>${escapeHtml(matchedCase.expectedL3 || "-")}</strong></div>
+            <div><span class="text-gray-500">Pilihan Agent L3:</span> <strong class="${l3Correct ? "text-emerald-700" : "text-red-600"}">${escapeHtml(matchedCase.rcL3 || "(Kosong)")}</strong></div>
+          </div>
+          <div class="space-y-1.5">
+            <div><span class="font-semibold text-gray-700">Case Subject:</span> ${escapeHtml(matchedCase.caseSubject || "(Kosong)")}</div>
+            <div><span class="font-semibold text-gray-700">Case Description:</span> ${escapeHtml(matchedCase.caseDescription || "(Kosong)")}</div>
+            <div><span class="font-semibold text-gray-700">Request Email:</span> ${escapeHtml(matchedCase.requestEmail || "(Kosong)")}</div>
+            <div><span class="font-semibold text-gray-700">Credit Product:</span> ${escapeHtml(matchedCase.creditProduct || "(Kosong)")}</div>
+          </div>
+          <div class="flex justify-end pt-2 border-t border-gray-200">
+            <button type="button" onclick="closeAllModals()" class="px-3 py-1.5 rounded coral-bg text-white font-semibold">Tutup</button>
+          </div>
+        </div>
+      `;
+      openModal("modal-generic");
+    }
+
+    function openQaScoringModal(participantCode, participantName) {
+      const ses = getActiveAdminSession();
+      if (!ses) return;
+      const p = (ses.participants || []).find(item => String(item.code) === String(participantCode));
+      const qaNameDefault = (document.getElementById("qa-evaluator-name-input") && document.getElementById("qa-evaluator-name-input").value.trim()) || CURRENT_SESSION.mentorId || "SPLQA";
+
+      document.getElementById("generic-modal-title").textContent = `Penilaian QA — ${participantName || participantCode}`;
+      document.getElementById("generic-modal-body").innerHTML = `
+        <form onsubmit="saveQaEvaluation(event, '${escapeHtmlAttr(participantCode)}')" class="space-y-3 text-xs">
+          <div>
+            <label class="block font-semibold text-gray-700 mb-1">Nama Evaluator / QA</label>
+            <input id="qa-eval-by" type="text" value="${escapeHtmlAttr((p && p.qaBy) || qaNameDefault)}" class="crm-input" />
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block font-semibold text-gray-700 mb-1">Skor Akhir (0 - 100)</label>
+              <input id="qa-eval-score" type="number" min="0" max="100" required value="${p && p.qaScore !== null && p.qaScore !== undefined ? p.qaScore : 85}" class="crm-input" />
+            </div>
+            <div>
+              <label class="block font-semibold text-gray-700 mb-1">Status KO / Lulus</label>
+              <select id="qa-eval-ko" class="crm-select">
+                <option value="false" ${!(p && p.qaKo) ? "selected" : ""}>Lulus / Tanpa KO</option>
+                <option value="true" ${p && p.qaKo ? "selected" : ""}>KO (Fatal / Salah SOP)</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label class="block font-semibold text-gray-700 mb-1">Catatan Feedback Mentor</label>
+            <textarea id="qa-eval-notes" rows="3" placeholder="Tuliskan evaluasi Reason Code, kelengkapan mandatory field, dan tindak lanjut..." class="crm-textarea">${escapeHtml((p && p.qaNotes) || "")}</textarea>
+          </div>
+          <div class="flex justify-end gap-2 pt-2 border-t border-gray-200">
+            <button type="button" onclick="closeAllModals()" class="px-3 py-1.5 rounded border border-gray-300 text-gray-700">Batal</button>
+            <button type="submit" class="px-4 py-1.5 rounded coral-bg text-white font-semibold">Simpan Nilai QA</button>
+          </div>
+        </form>
+      `;
+      openModal("modal-generic");
+    }
+
+    function saveQaEvaluation(event, participantCode) {
+      event.preventDefault();
+      const ses = getActiveAdminSession();
+      if (!ses) return;
+      const p = (ses.participants || []).find(item => String(item.code) === String(participantCode));
+      if (!p) return;
+
+      p.qaBy = (document.getElementById("qa-eval-by").value || "").trim() || CURRENT_SESSION.mentorId || "SPLQA";
+      p.qaScore = Math.max(0, Math.min(100, parseInt(document.getElementById("qa-eval-score").value || "0", 10)));
+      p.qaKo = document.getElementById("qa-eval-ko").value === "true";
+      p.qaNotes = (document.getElementById("qa-eval-notes").value || "").trim();
+      p.qaCompleted = true;
+
+      saveMockSessionsStore();
+      closeAllModals();
+      renderAdminPortal();
+      showToast(`Nilai QA untuk ${p.name} tersimpan.`, "success");
+    }
+
+    function autoScoreUnratedParticipants() {
+      const ses = getActiveAdminSession();
+      if (!ses) return;
+      const qaName = (document.getElementById("qa-evaluator-name-input") && document.getElementById("qa-evaluator-name-input").value.trim()) || CURRENT_SESSION.mentorId || "SPLQA";
+
+      (ses.participants || []).forEach(p => {
+        const pCase = (ses.cases || []).find(c => String(c.assignedToCode || "").toUpperCase() === String(p.code || "").toUpperCase()) || (ses.cases || [])[0];
+        let score = 60;
+        let ko = false;
+        let notes = "Evaluasi otomatis awal berdasarkan kelengkapan mandatory field.";
+
+        if (pCase) {
+          const l3Match = pCase.expectedL3 && pCase.rcL3 === pCase.expectedL3;
+          const hasSubject = Boolean((pCase.caseSubject || "").trim());
+          const hasDesc = Boolean((pCase.caseDescription || "").trim());
+          const hasProduct = Boolean((pCase.creditProduct || "").trim());
+          score = (l3Match ? 50 : 10) + (hasSubject ? 20 : 0) + (hasDesc ? 15 : 0) + (hasProduct ? 15 : 0);
+          ko = !l3Match && Boolean(pCase.rcL3);
+          notes = l3Match
+            ? "Reason Code L3 sesuai target kunci skenario."
+            : `Target L3: ${pCase.expectedL3 || "-"} | Pilihan Agent: ${pCase.rcL3 || "(Kosong)"}`;
+        }
+
+        p.qaScore = score;
+        p.qaKo = ko;
+        p.qaNotes = notes;
+        p.qaBy = qaName;
+        p.qaCompleted = true;
+      });
+
+      saveMockSessionsStore();
+      renderAdminPortal();
+      showToast("Penilaian otomatis sampel peserta selesai dijalankan.", "success");
+    }
+
+    function openScenarioBankModal() {
+      const rowsHtml = MASTER_REASON_CODES.map((r, i) => `
+        <tr class="border-b border-gray-100">
+          <td class="py-2 px-2.5 font-mono text-[11px] text-gray-500">RC-${i + 1}</td>
+          <td class="py-2 px-2.5 text-gray-700">${escapeHtml(r.l1)}</td>
+          <td class="py-2 px-2.5 text-gray-700">${escapeHtml(r.l2)}</td>
+          <td class="py-2 px-2.5 font-semibold text-gray-900">${escapeHtml(r.l3)}</td>
+        </tr>
+      `).join("");
+
+      document.getElementById("generic-modal-title").textContent = "Bank Skenario & Master Reason Code (L1 - L3)";
+      document.getElementById("generic-modal-body").innerHTML = `
+        <div class="space-y-3 text-xs">
+          <p class="text-gray-600">Daftar Reason Code Level 3 yang tersedia sebagai kunci skenario saat Mentor membuat kasus baru.</p>
+          <div class="overflow-x-auto border border-gray-200 rounded-lg">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead class="bg-gray-50 border-b border-gray-200 text-gray-600">
+                <tr>
+                  <th class="py-2 px-2.5">Kode</th>
+                  <th class="py-2 px-2.5">Level 1</th>
+                  <th class="py-2 px-2.5">Level 2</th>
+                  <th class="py-2 px-2.5">Level 3 (Target)</th>
+                </tr>
+              </thead>
+              <tbody>${rowsHtml}</tbody>
+            </table>
+          </div>
+          <div class="flex justify-end gap-2 pt-2">
+            <button type="button" onclick="closeAllModals()" class="px-3 py-1.5 rounded border border-gray-300 text-gray-700">Tutup</button>
+            <button type="button" onclick="closeAllModals(); openCreateScenarioModal();" class="px-3.5 py-1.5 rounded coral-bg text-white font-semibold">+ Buat Kasus Baru</button>
+          </div>
+        </div>
+      `;
+      openModal("modal-generic");
+    }
+
+    function exportTrackerReportSummary() {
+      const ses = getActiveAdminSession();
+      if (!ses) {
+        showToast("Pilih sesi terlebih dahulu.", "warning");
+        return;
+      }
+      const lines = [
+        `Sesi: ${ses.name} (${ses.id}) | Channel: ${ses.project} | Status: ${ses.status || "ACTIVE"}`,
+        `Total Peserta: ${(ses.participants || []).length} | Total Kasus: ${(ses.cases || []).length}`,
+        "--- Rekap Peserta & Skor QA ---",
+        ...(ses.participants || []).map(p =>
+          `- ${p.code} | ${p.name} | Role: ${p.role || ses.project} | Status: ${p.status || "READY"} | Skor QA: ${p.qaScore ?? "-"} | KO: ${p.qaKo ? "YA" : "TIDAK"}`
+        )
+      ];
+      copyTextValue(lines.join("\n"), "Rekap Tracker & Report");
     }
 
     function renderAdminPortal() {
@@ -1018,13 +1386,20 @@
       } else {
         listEl.innerHTML = MOCK_SESSIONS.map(s => {
           const isSelected = s.id === (getActiveAdminSession() && getActiveAdminSession().id);
+          const statusVal = s.status || "ACTIVE";
+          const badgeCls = statusVal === "CLOSED"
+            ? "bg-red-100 text-red-700"
+            : statusVal === "DRAFT"
+              ? "bg-gray-200 text-gray-700"
+              : "bg-emerald-100 text-emerald-700";
+          const submittedCount = (s.participants || []).filter(p => p.status === "SUBMITTED").length;
           return `
             <div onclick="ACTIVE_ADMIN_SESSION_ID='${escapeHtmlAttr(s.id)}'; renderAdminPortal();" class="p-2.5 rounded-lg border cursor-pointer transition ${isSelected ? "border-[#EE4D2D] bg-orange-50/60" : "border-gray-200 hover:bg-gray-50"}">
-              <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-gray-900">${escapeHtml(s.name)}</span>
-                <span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-700">${escapeHtml(s.status || "ACTIVE")}</span>
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-bold text-gray-900 truncate">${escapeHtml(s.name)}</span>
+                <span class="px-1.5 py-0.5 rounded text-[10px] font-bold ${badgeCls}">${escapeHtml(statusVal)}</span>
               </div>
-              <div class="text-[11px] text-gray-500 mt-1">${escapeHtml(s.project)} • ${(s.cases || []).length} kasus</div>
+              <div class="text-[11px] text-gray-500 mt-1">${escapeHtml(s.project)} • ${s.duration || 20} mnt • ${(s.participants || []).length} peserta • ${submittedCount} submit • ${(s.cases || []).length} kasus</div>
             </div>
           `;
         }).join("");
@@ -1033,54 +1408,274 @@
       const activeSes = getActiveAdminSession();
       const panel = document.getElementById("admin-active-session-panel");
       if (!activeSes) {
-        panel.innerHTML = `<div class="py-12 text-center text-xs text-gray-400">Buat sesi baru di panel kiri untuk mulai mengelola kasus dan peserta.</div>`;
+        panel.innerHTML = `<div class="py-12 text-center text-xs text-gray-400">Buat sesi baru di panel kiri untuk mulai mengelola peserta, paket kasus, progres, dan penilaian QA.</div>`;
         return;
       }
 
-      const casesHtml = !(activeSes.cases || []).length
-        ? `<div class="p-6 text-center text-xs text-gray-400 border border-dashed border-gray-200 rounded-lg">Belum ada kasus di sesi ini. Klik <strong>+ BUAT KASUS BARU</strong> untuk membuat skenario.</div>`
-        : `<div class="grid grid-cols-1 md:grid-cols-2 gap-3">` + (activeSes.cases || []).map((c, idx) => {
-            const shareCode = encodeScenarioShareCode(c);
-            return `
-              <div class="p-3 rounded-lg border border-gray-200 bg-gray-50/70 space-y-2">
-                <div class="flex items-start justify-between gap-2">
-                  <div>
-                    <div class="text-xs font-bold text-gray-900">${escapeHtml(c.title || "Skenario")}</div>
-                    <div class="text-[11px] font-mono text-[#EE4D2D] font-semibold mt-0.5">${escapeHtml(c.caseId)}</div>
+      const participants = activeSes.participants || [];
+      const cases = activeSes.cases || [];
+
+      let tabContentHtml = "";
+
+      if (ACTIVE_ADMIN_TAB === "peserta") {
+        const rows = participants.length
+          ? participants.map(p => `
+              <tr class="border-b border-gray-100">
+                <td class="py-2 px-3 font-mono font-semibold text-[#EE4D2D]">${escapeHtml(p.code)}</td>
+                <td class="py-2 px-3 font-medium text-gray-800">${escapeHtml(p.name)}</td>
+                <td class="py-2 px-3 text-gray-600">${escapeHtml(p.role || activeSes.project || "Call")}</td>
+                <td class="py-2 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${p.status === "SUBMITTED" ? "bg-blue-100 text-blue-700" : "bg-amber-100 text-amber-700"}">${escapeHtml(p.status || "READY")}</span></td>
+                <td class="py-2 px-3 text-gray-500">${escapeHtml(p.submittedAt || "-")}</td>
+              </tr>
+            `).join("")
+          : `<tr><td colspan="5" class="py-6 text-center text-gray-400">Belum ada peserta pada sesi ini.</td></tr>`;
+
+        tabContentHtml = `
+          <div class="space-y-3 text-xs">
+            <div class="p-3 rounded-lg bg-orange-50/60 border border-orange-200 text-gray-700">
+              Tambah peserta: satu baris = satu peserta. Format <strong>KODE, Nama Lengkap</strong> atau cukup <strong>Nama Lengkap</strong> (kode dibuat otomatis). Peserta login menggunakan kode tersebut.
+            </div>
+            <textarea id="admin-participants-bulk-input" rows="3" placeholder="Contoh:&#10;L1-AGT01, Budi Santoso&#10;Siti Rahma" class="crm-textarea"></textarea>
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <button type="button" onclick="copyAllParticipantCodes()" class="px-3 py-1.5 rounded border border-gray-300 bg-white hover:bg-gray-50 text-xs font-semibold text-gray-700">
+                <i class="fa-regular fa-copy mr-1"></i> SALIN DAFTAR KODE (${participants.length} peserta)
+              </button>
+              <button type="button" onclick="addParticipantsToActiveSession()" class="px-4 py-1.5 rounded coral-bg text-white text-xs font-semibold hover:opacity-95">
+                TAMBAH PESERTA
+              </button>
+            </div>
+            <div class="overflow-x-auto border border-gray-200 rounded-lg">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead class="bg-gray-50 border-b border-gray-200 text-gray-600">
+                  <tr>
+                    <th class="py-2 px-3">KODE</th>
+                    <th class="py-2 px-3">NAMA LENGKAP</th>
+                    <th class="py-2 px-3">ROLE</th>
+                    <th class="py-2 px-3">STATUS</th>
+                    <th class="py-2 px-3">SUBMIT</th>
+                  </tr>
+                </thead>
+                <tbody>${rows}</tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      } else if (ACTIVE_ADMIN_TAB === "paket") {
+        const casesHtml = !cases.length
+          ? `<div class="p-6 text-center text-xs text-gray-400 border border-dashed border-gray-200 rounded-lg">Belum ada kasus di sesi ini. Klik <strong>+ BUAT KASUS BARU</strong> untuk membuat skenario.</div>`
+          : `<div class="grid grid-cols-1 md:grid-cols-2 gap-3">` + cases.map((c, idx) => {
+              const shareCode = encodeScenarioShareCode(c);
+              return `
+                <div class="p-3 rounded-lg border border-gray-200 bg-gray-50/70 space-y-2">
+                  <div class="flex items-start justify-between gap-2">
+                    <div>
+                      <div class="text-xs font-bold text-gray-900">${escapeHtml(c.title || "Skenario")}</div>
+                      <div class="text-[11px] font-mono text-[#EE4D2D] font-semibold mt-0.5">${escapeHtml(c.caseId)}</div>
+                    </div>
+                    <button type="button" onclick="deleteSessionCase(${idx})" class="text-[11px] text-red-600 hover:underline">Hapus</button>
                   </div>
-                  <button type="button" onclick="deleteSessionCase(${idx})" class="text-[11px] text-red-600 hover:underline">Hapus</button>
+                  <div class="text-[11px] text-gray-600">Origin: <strong>${escapeHtml(c.origin)}</strong> • Produk: <strong>${escapeHtml(c.expectedProduct || "-")}</strong></div>
+                  <div class="text-[11px] text-gray-600">Target L3: <strong class="text-gray-800">${escapeHtml(c.expectedL3 || "-")}</strong></div>
+                  <div class="text-[11px] text-gray-600">Case Owner Awal: <strong>${escapeHtml(c.ownerValue || "(Menyesuaikan Agent saat dibuka)")}</strong></div>
+                  <div class="flex items-center justify-between pt-1 border-t border-gray-200/80">
+                    <button type="button" onclick="copyTextValue('${escapeHtmlAttr(shareCode)}', 'Kode Skenario')" class="text-[11px] font-semibold text-[#EE4D2D] hover:underline">
+                      <i class="fa-regular fa-copy mr-1"></i>Copy Kode Skenario
+                    </button>
+                    <button type="button" onclick="copyTextValue('${escapeHtmlAttr(c.caseId)}', 'Case ID')" class="text-[11px] text-gray-600 hover:underline">
+                      Copy Case ID
+                    </button>
+                  </div>
                 </div>
-                <div class="text-[11px] text-gray-600">Origin: <strong>${escapeHtml(c.origin)}</strong> • Produk: <strong>${escapeHtml(c.expectedProduct || "-")}</strong></div>
-                <div class="text-[11px] text-gray-600">Target L3: <strong class="text-gray-800">${escapeHtml(c.expectedL3 || "-")}</strong></div>
-                <div class="flex items-center justify-between pt-1 border-t border-gray-200/80">
-                  <button type="button" onclick="copyTextValue('${escapeHtmlAttr(shareCode)}', 'Kode Skenario')" class="text-[11px] font-semibold text-[#EE4D2D] hover:underline">
-                    <i class="fa-regular fa-copy mr-1"></i>Copy Kode Skenario
-                  </button>
-                  <button type="button" onclick="copyTextValue('${escapeHtmlAttr(c.caseId)}', 'Case ID')" class="text-[11px] text-gray-600 hover:underline">
-                    Copy Case ID
-                  </button>
-                </div>
+              `;
+            }).join("") + `</div>`;
+
+        tabContentHtml = `
+          <div class="space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <div class="text-xs font-bold text-gray-800">Daftar Kasus dalam Sesi Ini (${cases.length})</div>
+              <div class="flex items-center gap-2">
+                <button type="button" onclick="assignCasesToParticipantsInSession(true)" class="px-3 py-1.5 rounded border border-[#EE4D2D] text-[#EE4D2D] hover:bg-orange-50 text-xs font-semibold">
+                  ASSIGN KE PESERTA
+                </button>
+                <button type="button" onclick="openCreateScenarioModal()" class="px-3.5 py-1.5 rounded coral-bg text-white text-xs font-semibold hover:opacity-95 shadow-xs">
+                  <i class="fa-solid fa-plus mr-1"></i> + BUAT KASUS BARU
+                </button>
               </div>
-            `;
-          }).join("") + `</div>`;
+            </div>
+            ${casesHtml}
+          </div>
+        `;
+      } else if (ACTIVE_ADMIN_TAB === "progres") {
+        const progRows = participants.length
+          ? participants.map(p => {
+              const pCases = cases.filter(c => !c.assignedToCode || String(c.assignedToCode).toUpperCase() === String(p.code).toUpperCase());
+              const doneCount = pCases.filter(c => Boolean(c.rcL3)).length;
+              return `
+                <tr class="border-b border-gray-100">
+                  <td class="py-2.5 px-3 font-mono font-semibold text-[#EE4D2D]">${escapeHtml(p.code)}</td>
+                  <td class="py-2.5 px-3 font-medium text-gray-800">${escapeHtml(p.name)}</td>
+                  <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${p.status === "SUBMITTED" ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-700"}">${escapeHtml(p.status || "READY")}</span></td>
+                  <td class="py-2.5 px-3 text-gray-700">${doneCount}/${pCases.length}</td>
+                  <td class="py-2.5 px-3 font-semibold text-gray-900">${p.qaScore !== null && p.qaScore !== undefined ? `${p.qaScore}${p.qaKo ? " • KO" : ""}` : "-"}</td>
+                  <td class="py-2.5 px-3">
+                    <div class="flex items-center gap-1.5">
+                      <button type="button" onclick="inspectParticipantCase('${escapeHtmlAttr(p.code)}', '${escapeHtmlAttr(p.name)}')" class="px-2 py-1 rounded border border-gray-300 text-[11px] font-medium hover:bg-gray-50">Lihat</button>
+                      <button type="button" onclick="openQaScoringModal('${escapeHtmlAttr(p.code)}', '${escapeHtmlAttr(p.name)}')" class="px-2 py-1 rounded coral-bg text-white text-[11px] font-semibold">Nilai</button>
+                      <button type="button" onclick="unlockParticipantSubmission('${escapeHtmlAttr(p.code)}')" class="px-2 py-1 rounded border border-gray-300 text-[11px] text-gray-600 hover:bg-gray-50">Buka Kunci</button>
+                    </div>
+                  </td>
+                </tr>
+              `;
+            }).join("")
+          : `<tr><td colspan="6" class="py-6 text-center text-gray-400">Belum ada data progres peserta.</td></tr>`;
+
+        tabContentHtml = `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-gray-800">Progres & Jawaban Peserta</span>
+              <button type="button" onclick="renderAdminPortal()" class="px-2.5 py-1 rounded border border-gray-300 text-xs font-medium hover:bg-gray-50">
+                <i class="fa-solid fa-rotate-right mr-1"></i> Refresh
+              </button>
+            </div>
+            <div class="overflow-x-auto border border-gray-200 rounded-lg">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead class="bg-gray-50 border-b border-gray-200 text-gray-600">
+                  <tr>
+                    <th class="py-2 px-3">KODE</th>
+                    <th class="py-2 px-3">NAMA</th>
+                    <th class="py-2 px-3">STATUS</th>
+                    <th class="py-2 px-3">TERISI RC</th>
+                    <th class="py-2 px-3">SKOR QA</th>
+                    <th class="py-2 px-3">AKSI</th>
+                  </tr>
+                </thead>
+                <tbody>${progRows}</tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      } else if (ACTIVE_ADMIN_TAB === "qa") {
+        const totalP = participants.length;
+        const submittedP = participants.filter(p => p.status === "SUBMITTED").length;
+        const ratedList = participants.filter(p => p.qaScore !== null && p.qaScore !== undefined);
+        const avgScore = ratedList.length
+          ? (ratedList.reduce((acc, item) => acc + Number(item.qaScore || 0), 0) / ratedList.length).toFixed(1)
+          : "0";
+
+        const qaRows = participants.length
+          ? participants.map(p => `
+              <tr class="border-b border-gray-100">
+                <td class="py-2.5 px-3 font-mono font-semibold text-[#EE4D2D]">${escapeHtml(p.code)}</td>
+                <td class="py-2.5 px-3 font-medium text-gray-800">${escapeHtml(p.name)}</td>
+                <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${p.status === "SUBMITTED" ? "bg-emerald-100 text-emerald-700" : "bg-gray-100 text-gray-700"}">${escapeHtml(p.status || "READY")}</span></td>
+                <td class="py-2.5 px-3">
+                  <div class="font-bold text-gray-900">${p.qaScore !== null && p.qaScore !== undefined ? `${p.qaScore} ${p.qaKo ? '<span class="text-red-600">(KO)</span>' : ""}` : "—"}</div>
+                  <div class="text-[11px] text-gray-500">${escapeHtml(p.qaNotes || "Belum dinilai")}</div>
+                </td>
+                <td class="py-2.5 px-3">
+                  <button type="button" onclick="openQaScoringModal('${escapeHtmlAttr(p.code)}', '${escapeHtmlAttr(p.name)}')" class="px-3 py-1 rounded coral-bg text-white text-[11px] font-semibold">
+                    NILAI
+                  </button>
+                </td>
+              </tr>
+            `).join("")
+          : `<tr><td colspan="5" class="py-6 text-center text-gray-400">Belum ada peserta untuk dinilai.</td></tr>`;
+
+        tabContentHtml = `
+          <div class="space-y-3 text-xs">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+              <div class="p-3 rounded-lg border border-gray-200 bg-gray-50">
+                <div class="text-[11px] text-gray-500">SIAP DINILAI (SUBMIT)</div>
+                <div class="text-base font-bold text-gray-900 mt-0.5">${submittedP}/${totalP}</div>
+              </div>
+              <div class="p-3 rounded-lg border border-gray-200 bg-gray-50">
+                <div class="text-[11px] text-gray-500">BELUM DINILAI</div>
+                <div class="text-base font-bold text-gray-900 mt-0.5">${Math.max(0, totalP - ratedList.length)}</div>
+              </div>
+              <div class="p-3 rounded-lg border border-gray-200 bg-gray-50">
+                <div class="text-[11px] text-gray-500">QA SELESAI</div>
+                <div class="text-base font-bold text-gray-900 mt-0.5">${ratedList.length}</div>
+              </div>
+              <div class="p-3 rounded-lg border border-gray-200 bg-gray-50">
+                <div class="text-[11px] text-gray-500">RATA-RATA SKOR AKHIR</div>
+                <div class="text-base font-bold text-[#EE4D2D] mt-0.5">${avgScore}</div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <input id="qa-evaluator-name-input" type="text" placeholder="Nama QA / Evaluator..." value="${escapeHtmlAttr(CURRENT_SESSION.mentorId || "")}" class="crm-input !w-52" />
+              <button type="button" onclick="autoScoreUnratedParticipants()" class="px-3 py-1.5 rounded coral-bg text-white text-xs font-semibold hover:opacity-95">
+                NILAI OTOMATIS SAMPEL PESERTA
+              </button>
+            </div>
+
+            <div class="overflow-x-auto border border-gray-200 rounded-lg">
+              <table class="w-full text-left border-collapse text-xs">
+                <thead class="bg-gray-50 border-b border-gray-200 text-gray-600">
+                  <tr>
+                    <th class="py-2 px-3">KODE</th>
+                    <th class="py-2 px-3">NAMA</th>
+                    <th class="py-2 px-3">STATUS</th>
+                    <th class="py-2 px-3">SKOR & CATATAN QA</th>
+                    <th class="py-2 px-3">AKSI</th>
+                  </tr>
+                </thead>
+                <tbody>${qaRows}</tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }
+
+      const tabCls = tabKey => ACTIVE_ADMIN_TAB === tabKey
+        ? "px-3 py-2 text-xs font-bold text-[#EE4D2D] border-b-2 border-[#EE4D2D]"
+        : "px-3 py-2 text-xs font-medium text-gray-600 hover:text-gray-900";
 
       panel.innerHTML = `
-        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-gray-200 pb-3">
-          <div>
-            <h2 class="text-base font-bold text-gray-900">${escapeHtml(activeSes.name)}</h2>
-            <p class="text-[11px] text-gray-500">ID: ${escapeHtml(activeSes.id)} • Channel: ${escapeHtml(activeSes.project)} • Durasi: ${escapeHtml(String(activeSes.duration))} menit</p>
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-2.5 pb-3 border-b border-gray-200 items-end">
+          <div class="md:col-span-4">
+            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Nama Sesi</label>
+            <input id="edit-ses-name" type="text" value="${escapeHtmlAttr(activeSes.name)}" class="crm-input" />
           </div>
-          <div class="flex items-center gap-2">
-            <button type="button" onclick="openCreateScenarioModal()" class="px-3.5 py-2 rounded coral-bg text-white text-xs font-semibold hover:opacity-95 shadow-xs">
-              <i class="fa-solid fa-plus mr-1"></i> + BUAT KASUS BARU
+          <div class="md:col-span-2">
+            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Channel</label>
+            <select id="edit-ses-project" class="crm-select">
+              <option value="Call" ${activeSes.project === "Call" ? "selected" : ""}>Call</option>
+              <option value="Email" ${activeSes.project === "Email" ? "selected" : ""}>Email</option>
+              <option value="CCS" ${activeSes.project === "CCS" ? "selected" : ""}>CCS</option>
+              <option value="Live Chat" ${activeSes.project === "Live Chat" ? "selected" : ""}>Live Chat</option>
+            </select>
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Status</label>
+            <select id="edit-ses-status" class="crm-select">
+              <option value="ACTIVE" ${(activeSes.status || "ACTIVE") === "ACTIVE" ? "selected" : ""}>ACTIVE</option>
+              <option value="DRAFT" ${activeSes.status === "DRAFT" ? "selected" : ""}>DRAFT</option>
+              <option value="CLOSED" ${activeSes.status === "CLOSED" ? "selected" : ""}>CLOSED</option>
+            </select>
+          </div>
+          <div class="md:col-span-2">
+            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Waktu (Menit)</label>
+            <input id="edit-ses-duration" type="number" min="0" value="${escapeHtmlAttr(String(activeSes.duration ?? 20))}" class="crm-input" />
+          </div>
+          <div class="md:col-span-2">
+            <button type="button" onclick="updateActiveSessionMeta()" class="w-full py-1.5 rounded coral-bg text-white text-xs font-semibold hover:opacity-95">
+              SIMPAN
             </button>
+          </div>
+          <div class="md:col-span-12">
+            <input id="edit-ses-notes" type="text" placeholder="Catatan sesi (opsional)..." value="${escapeHtmlAttr(activeSes.notes || "")}" class="crm-input !py-1 !text-[11px]" />
           </div>
         </div>
 
-        <div class="space-y-2">
-          <div class="text-xs font-bold text-gray-800">Daftar Kasus dalam Sesi Ini (${(activeSes.cases || []).length})</div>
-          ${casesHtml}
+        <div class="flex flex-wrap items-center gap-1 border-b border-gray-200">
+          <button type="button" onclick="ACTIVE_ADMIN_TAB='peserta'; renderAdminPortal();" class="${tabCls("peserta")}">Peserta</button>
+          <button type="button" onclick="ACTIVE_ADMIN_TAB='paket'; renderAdminPortal();" class="${tabCls("paket")}">Paket Kasus</button>
+          <button type="button" onclick="ACTIVE_ADMIN_TAB='progres'; renderAdminPortal();" class="${tabCls("progres")}">Progres & Jawaban</button>
+          <button type="button" onclick="ACTIVE_ADMIN_TAB='qa'; renderAdminPortal();" class="${tabCls("qa")}">Penilaian QA</button>
         </div>
+
+        <div>${tabContentHtml}</div>
       `;
     }
 
